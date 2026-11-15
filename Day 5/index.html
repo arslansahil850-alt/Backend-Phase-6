@@ -1,0 +1,1061 @@
+Here are all three complete files for Day 5: Background Jobs and Task
+Scheduling, ready to copy and save into your Phase 6/Day 5/ folder.
+
+1. Phase 6/Day 5/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 5: Background Jobs and Task Scheduling. Learn synchronous vs asynchronous work, job queues, workers, cron scheduling, retry strategies, idempotency, and observability in Node.js.">
+  <title>Day 5: Background Jobs and Task Scheduling | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="5">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 5: Background Jobs &amp; Scheduling</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html" selected>Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 4/index.html" class="nav-step-btn" title="Go to Day 4">Prev</a>
+            <a href="../Day 6/index.html" class="nav-step-btn" title="Go to Day 6">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 5 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 05</span>
+          <span class="category-pill">Async Processing &amp; Workers</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="5" aria-pressed="false">Mark Day 5 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Background Jobs and Task Scheduling</h1>
+        <p class="lesson-intro">
+          Sending transactional emails, generating multi-page PDF invoices, resizing uploaded media, or syncing third-party webhooks inside an HTTP request forces users to wait on slow dependencies and risks load-balancer timeouts. Today you will learn how to offload heavy or unreliable tasks to persistent job queues and dedicated workers with safe retries, idempotency, scheduling, and status visibility.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2 &amp; 3</span>
+            <p>Offloading slow work keeps HTTP latency low, protects the Node.js event loop, and stops per-instance cron timers from duplicating work across scaled replicas.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>An HTTP endpoint should validate intent, record durable state, enqueue a job, and return <code>202 Accepted</code> quickly—letting workers handle slow execution reliably.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Move a slow report-generation workflow out of an Express route into a Redis-backed BullMQ queue and standalone worker with status tracking.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Job Execution Lifecycle</a>
+            <a href="#diagrams">Queue &amp; State Diagrams</a>
+            <a href="#implementation">Express + BullMQ Implementation</a>
+            <a href="#real-world">Use Cases &amp; Trade-offs</a>
+            <a href="#mistakes-security">Mistakes, Security &amp; Reliability</a>
+            <a href="#practical-task">Practical Implementation Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Not every piece of backend work needs to finish before the HTTP response returns to the browser. Separating immediate request acknowledgment from deferred execution is one of the highest-leverage reliability upgrades in production backend engineering.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Separate Sync vs. Async Work</h3>
+              <p>Identify which steps must complete during an HTTP request and which belong in background queues.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design Queues &amp; Workers</h3>
+              <p>Separate Express web producers from standalone worker processes with controlled concurrency.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Handle Retries &amp; Idempotency</h3>
+              <p>Configure exponential backoff, distinguish permanent failures, and prevent duplicate side effects.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Schedule &amp; Observe Jobs</h3>
+              <p>Run centralized recurring tasks and expose safe job progress and health metrics.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Background Job Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Synchronous vs. Asynchronous Work</h3>
+            <p>
+              In an HTTP request-response cycle, <strong>synchronous work</strong> (in the workflow sense) means the client waits on the open TCP connection until every step finishes—for example, validating input, inserting an order row, calling an email provider, and generating a PDF invoice.
+            </p>
+            <p>
+              <strong>Asynchronous background work</strong> decouples request acceptance from task completion: the API validates input, persists the record, pushes a job onto a persistent queue, and returns <code>202 Accepted</code> in ~20ms. A separate worker picks up the job milliseconds later.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Why Background Jobs Are Useful</h3>
+            <ul>
+              <li><strong>Faster User Experience:</strong> Users do not stare at a spinning button for 6 seconds while an SMTP server or PDF renderer works.</li>
+              <li><strong>Resilience to Transient Outages:</strong> If an external email or webhook API goes down for 3 minutes, the queued job retries automatically instead of failing the user's signup or checkout.</li>
+              <li><strong>Traffic Smoothing (Backpressure):</strong> If 2,000 users trigger video/report exports during a spike, the queue buffers them safely while 10 workers process jobs at a steady rate without crashing your database.</li>
+              <li><strong>Independent Scaling:</strong> CPU-heavy workers can scale independently on high-CPU machines while lightweight web servers remain responsive.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Job Queues and Workers</h3>
+            <p>
+              A background job system has three components:
+            </p>
+            <ul>
+              <li><strong>Producer (Express API / Service):</strong> Enqueues a lightweight job name and JSON payload (e.g., <code>{ reportId, userId }</code>) into a durable backing store such as Redis (via BullMQ), PostgreSQL (via <code>pg-boss</code>), or MongoDB (via Agenda).</li>
+              <li><strong>Queue Broker / Store:</strong> Persists waiting, delayed, active, and failed jobs so nothing vanishes if a Node.js process restarts.</li>
+              <li><strong>Worker Process:</strong> A separate Node.js process pulling jobs from the queue, enforcing concurrency limits (for example, 5 concurrent jobs per worker), updating progress, and marking jobs complete or failed.</li>
+            </ul>
+            <p>
+              <em>Important distinction:</em> Calling <code>sendEmail().catch(console.error)</code> without <code>await</code> inside an Express route is <strong>not</strong> a reliable background job! If the container restarts or crashes 100ms later, that in-memory Promise vanishes permanently.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Scheduled and Recurring Tasks</h3>
+            <p>
+              Two scheduling patterns appear frequently in production:
+            </p>
+            <ul>
+              <li><strong>Delayed Jobs:</strong> Run once after a specified delay—such as sending a trial-expiration reminder 48 hours after registration or canceling an unpaid reservation after 15 minutes.</li>
+              <li><strong>Recurring (Cron) Jobs:</strong> Run on a schedule—such as generating daily digest emails at <code>08:00 UTC</code> or purging expired tokens every hour.</li>
+            </ul>
+            <p>
+              Unlike naive <code>setInterval</code> or <code>node-cron</code> inside web servers (which execute N times if you run N web instances), queue-backed schedulers deduplicate repeatable job definitions in the central store so only one job fires per schedule interval.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Retry Strategies and Failure Handling</h3>
+            <p>
+              Retrying immediately in a tight loop punishes struggling external APIs and wastes worker capacity. Instead, configure <strong>exponential backoff with jitter</strong>: e.g., retry after 2s, 4s, 8s, 16s, plus slight randomness.
+            </p>
+            <p>
+              Equally important is separating <strong>transient errors</strong> (network timeout, HTTP <code>503</code>, temporary lock) from <strong>permanent errors</strong> (malformed user email, deleted account, invalid schema). Permanent errors should fail immediately without wasting retries (in BullMQ, by throwing <code>UnrecoverableError</code>). Exhausted jobs stay in a <code>failed</code> state for inspection, alerting, or manual replay.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Idempotency Concepts</h3>
+            <p>
+              Most reliable job queues guarantee <strong>at-least-once delivery</strong>: if a worker finishes calling an external API and crashes right before acknowledging completion to Redis, the queue re-queues the job and another worker runs it again.
+            </p>
+            <p>
+              To prevent charging a customer twice or sending duplicate emails, job handlers must be <strong>idempotent</strong>:
+            </p>
+            <ul>
+              <li>Use deterministic <strong>job IDs</strong> (e.g., <code>jobId: `welcome-email:${userId}`</code>) so duplicate enqueue calls are ignored by the queue.</li>
+              <li>Track a durable <code>processedAt</code> or status transition in your primary database using conditional atomic updates (<code>WHERE status = 'pending'</code>) before executing external side effects.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Job Status and Observability</h3>
+            <p>
+              Once work leaves the HTTP request, users and engineers need visibility. Expose a protected status endpoint (e.g., <code>GET /api/reports/:id</code>) backed by your domain record or job state, track job duration, failure counts, and queue depth (number of waiting jobs). A steadily climbing waiting queue means workers are falling behind incoming traffic or stuck on slow downstream calls.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Suitable Use Cases</h3>
+            <p>
+              Classic candidates include transactional emails, SMS/push delivery, PDF/CSV report exports, image/video processing, webhook fan-out to customer endpoints, search-index synchronization, and scheduled cleanup jobs.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>End-to-End Background Job Execution Lifecycle</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Client Requests Slow Work:</strong> Client sends <code>POST /api/reports</code> requesting an annual sales export.
+            </li>
+            <li>
+              <strong>API Validates &amp; Persists Intent:</strong> Express checks authorization, creates a <code>Report</code> row with <code>status: 'queued'</code> in the database, and pushes <code>{ reportId, userId }</code> into the queue with a deterministic <code>jobId</code>.
+            </li>
+            <li>
+              <strong>Fast HTTP Response:</strong> Express immediately replies <code>202 Accepted</code> with <code>{ reportId, statusUrl: '/api/reports/...' }</code>.
+            </li>
+            <li>
+              <strong>Worker Consumes &amp; Updates Progress:</strong> A separate worker node picks up the job, transitions DB status to <code>processing</code>, queries data in batches, uploads the finished CSV/PDF to object storage, and sets status to <code>ready</code>.
+            </li>
+            <li>
+              <strong>Failure &amp; Recovery Path:</strong> If a transient error occurs, the queue reschedules the job into a <code>delayed</code> set according to exponential backoff until attempts are exhausted.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Queue &amp; Job State Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Offloading Slow Work from HTTP API to Worker Pool</h3>
+            <p class="diagram-caption">
+              Express responds in milliseconds with <code>202 Accepted</code> while standalone worker processes absorb heavy generation and external API retries.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 220" class="arch-svg" role="img" aria-label="Client POST request hitting Express producer, persisting record, enqueuing to Redis BullMQ, returning 202 Accepted immediately while standalone workers process and update DB and Storage">
+                <defs>
+                  <marker id="arrow-job" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="68" width="96" height="62" rx="10" class="svg-box-muted"></rect>
+                <text x="66" y="96" text-anchor="middle" class="svg-title">Client</text>
+                <text x="66" y="114" text-anchor="middle" class="svg-sub">POST /reports</text>
+
+                <line x1="114" y1="99" x2="152" y2="99" class="svg-arrow" marker-end="url(#arrow-job)"></line>
+
+                <rect x="156" y="58" width="144" height="82" rx="10" class="svg-box-blue"></rect>
+                <text x="228" y="88" text-anchor="middle" class="svg-title">Express API</text>
+                <text x="228" y="106" text-anchor="middle" class="svg-sub">1. Save DB Row</text>
+                <text x="228" y="123" text-anchor="middle" class="svg-sub">2. Return 202 (~20ms)</text>
+
+                <line x1="300" y1="99" x2="346" y2="99" class="svg-arrow" marker-end="url(#arrow-job)"></line>
+
+                <rect x="350" y="62" width="146" height="74" rx="10" class="svg-box-accent"></rect>
+                <text x="423" y="92" text-anchor="middle" class="svg-title">Redis Job Queue</text>
+                <text x="423" y="110" text-anchor="middle" class="svg-sub">Waiting / Delayed</text>
+                <text x="423" y="126" text-anchor="middle" class="svg-sub">Durable Job State</text>
+
+                <line x1="496" y1="84" x2="548" y2="52" class="svg-arrow" marker-end="url(#arrow-job)"></line>
+                <line x1="496" y1="114" x2="548" y2="146" class="svg-arrow" marker-end="url(#arrow-job)"></line>
+
+                <rect x="552" y="20" width="190" height="62" rx="10" class="svg-box-blue"></rect>
+                <text x="647" y="47" text-anchor="middle" class="svg-title">Worker Process 1</text>
+                <text x="647" y="65" text-anchor="middle" class="svg-sub">Generate PDF + Email</text>
+
+                <rect x="552" y="116" width="190" height="62" rx="10" class="svg-box-blue"></rect>
+                <text x="647" y="143" text-anchor="middle" class="svg-title">Worker Process 2</text>
+                <text x="647" y="161" text-anchor="middle" class="svg-sub">Concurrency = 5</text>
+
+                <rect x="156" y="168" width="340" height="36" rx="8" class="svg-box-muted"></rect>
+                <text x="326" y="191" text-anchor="middle" class="svg-sub">Client polls GET /reports/:id until status === 'ready'</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Job State Machine &amp; Exponential Retry Loop</h3>
+            <p class="diagram-caption">
+              Jobs transition atomically between states. Exhausting max attempts or throwing an unrecoverable error moves the job to <code>failed</code> for investigation.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 180" class="arch-svg" role="img" aria-label="Job state transitions from waiting to active, then completed on success or delayed backoff retry on transient error or failed after max attempts">
+                <defs>
+                  <marker id="arrow-state" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="24" y="56" width="120" height="52" rx="10" class="svg-box-muted"></rect>
+                <text x="84" y="86" text-anchor="middle" class="svg-title">waiting</text>
+
+                <line x1="144" y1="82" x2="210" y2="82" class="svg-arrow" marker-end="url(#arrow-state)"></line>
+
+                <rect x="214" y="56" width="130" height="52" rx="10" class="svg-box-accent"></rect>
+                <text x="279" y="86" text-anchor="middle" class="svg-title">active</text>
+
+                <line x1="344" y1="70" x2="430" y2="38" class="svg-arrow" marker-end="url(#arrow-state)"></line>
+                <text x="382" y="42" text-anchor="middle" class="svg-sub">Success</text>
+
+                <rect x="434" y="14" width="144" height="46" rx="10" class="svg-box-blue"></rect>
+                <text x="506" y="42" text-anchor="middle" class="svg-title">completed</text>
+
+                <line x1="344" y1="94" x2="430" y2="128" class="svg-arrow" marker-end="url(#arrow-state)"></line>
+                <text x="378" y="128" text-anchor="middle" class="svg-sub">Error</text>
+
+                <rect x="434" y="106" width="144" height="52" rx="10" class="svg-box-muted"></rect>
+                <text x="506" y="129" text-anchor="middle" class="svg-title">delayed (Retry)</text>
+                <text x="506" y="147" text-anchor="middle" class="svg-sub">Backoff 2s, 4s, 8s</text>
+
+                <line x1="578" y1="132" x2="624" y2="132" class="svg-arrow" marker-end="url(#arrow-state)"></line>
+                <rect x="628" y="106" width="112" height="52" rx="10" class="svg-box-blue"></rect>
+                <text x="684" y="129" text-anchor="middle" class="svg-title">failed</text>
+                <text x="684" y="147" text-anchor="middle" class="svg-sub">Max attempts</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Moving Heavy Report Generation to a BullMQ Queue &amp; Worker</h2>
+          <p>
+            Below is a practical refactoring using <strong>BullMQ</strong> (backed by Redis). Notice that the Express API process and the Worker process live in separate entrypoints so they can run and scale independently.
+          </p>
+
+          <h3>Step 1: Define the Queue &amp; Default Retry Policy</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/queues/report.queue.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { Queue } from 'bullmq';
+import IORedis from 'ioredis';
+
+export function createQueueConnection() {
+  return new IORedis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null
+  });
+}
+
+export function createReportQueue(connection) {
+  return new Queue('reports', {
+    connection,
+    defaultJobOptions: {
+      attempts: 4,
+      backoff: {
+        type: 'exponential',
+        delay: 2000
+      },
+      removeOnComplete: { age: 3600, count: 500 },
+      removeOnFail: { age: 86400, count: 1000 }
+    }
+  });
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Enqueue Jobs from Express &amp; Expose Safe Status</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/reports/report.routes.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+
+export function createReportRouter({ reportRepository, reportQueue }) {
+  const router = express.Router();
+
+  router.post('/', async (req, res, next) =&gt; {
+    try {
+      const report = await reportRepository.create({
+        userId: req.user.id,
+        rangeStart: req.body.rangeStart,
+        rangeEnd: req.body.rangeEnd,
+        status: 'queued'
+      });
+
+      const job = await reportQueue.add(
+        'generate-monthly-report',
+        { reportId: report._id, userId: req.user.id },
+        { jobId: `report:${report._id}` }
+      );
+
+      res.status(202).json({
+        status: 'accepted',
+        data: {
+          reportId: report._id,
+          jobId: job.id,
+          pollUrl: `/api/reports/${report._id}`
+        }
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get('/:id', async (req, res, next) =&gt; {
+    try {
+      const report = await reportRepository.findOwnedById(req.params.id, req.user.id);
+      if (!report) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+      const job = await reportQueue.getJob(`report:${report._id}`);
+      const progress = job ? job.progress : report.status === 'ready' ? 100 : 0;
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          reportId: report._id,
+          state: report.status,
+          progress,
+          downloadUrl: report.downloadUrl || null
+        }
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  return router;
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Implement the Idempotent Standalone Worker Process</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/workers/report.worker.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { Worker, UnrecoverableError } from 'bullmq';
+import { createQueueConnection } from '../queues/report.queue.js';
+
+export function startReportWorker({ reportRepository, reportBuilder, storage, mailer }) {
+  const connection = createQueueConnection();
+
+  const worker = new Worker(
+    'reports',
+    async (job) =&gt; {
+      const { reportId, userId } = job.data;
+
+      const claimed = await reportRepository.claimForProcessing(reportId);
+      if (!claimed) {
+        const existing = await reportRepository.findById(reportId);
+        if (!existing) {
+          throw new UnrecoverableError(`Report ${reportId} no longer exists`);
+        }
+        if (existing.status === 'ready') {
+          return { skipped: true, reason: 'already_completed' };
+        }
+      }
+
+      await job.updateProgress(20);
+      const buffer = await reportBuilder.buildCsvBuffer(claimed);
+
+      await job.updateProgress(70);
+      const objectKey = `reports/${userId}/${reportId}.csv`;
+      await storage.uploadBuffer(objectKey, buffer, 'text/csv');
+
+      await reportRepository.markReady(reportId, objectKey);
+      await job.updateProgress(90);
+
+      await mailer.sendReportReadyEmail({ userId, reportId });
+      await job.updateProgress(100);
+
+      return { objectKey };
+    },
+    {
+      connection,
+      concurrency: 5
+    }
+  );
+
+  worker.on('failed', async (job, err) =&gt; {
+    console.error(`Job ${job?.id} failed on attempt ${job?.attemptsMade}:`, err.message);
+    if (job && job.attemptsMade &gt;= (job.opts.attempts || 1)) {
+      await reportRepository.markFailed(job.data.reportId, err.message);
+    }
+  });
+
+  const shutdown = async () =&gt; {
+    await worker.close();
+    await connection.quit();
+    process.exit(0);
+  };
+
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
+
+  return worker;
+}</code></pre>
+          </div>
+
+          <h3>Step 4: Register a Centralized Recurring Schedule</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/queues/scheduler.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export async function registerScheduledJobs(reportQueue) {
+  await reportQueue.upsertJobScheduler(
+    'daily-cleanup-scheduler',
+    { pattern: '0 2 * * *', tz: 'UTC' },
+    {
+      name: 'purge-expired-reports',
+      data: { retentionDays: 30 }
+    }
+  );
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>maxRetriesPerRequest: null</code>:</strong> Required by BullMQ on <code>ioredis</code> connections so blocking worker commands wait reliably without throwing premature retry-limit errors.</li>
+              <li><strong><code>HTTP 202 Accepted</code> + <code>jobId: `report:${report._id}`</code>:</strong> Signals that processing was accepted asynchronously while deterministic IDs prevent duplicate queue entries on client double-clicks.</li>
+              <li><strong><code>claimForProcessing(reportId)</code> + <code>UnrecoverableError</code>:</strong> Atomic DB state transitions guard against duplicate execution if a worker crashes mid-job, while missing records abort retries immediately instead of burning 4 useless attempts.</li>
+              <li><strong><code>removeOnComplete</code> &amp; <code>removeOnFail</code> Bounds:</strong> Prevents completed/failed job metadata from filling Redis RAM endlessly over months.</li>
+              <li><strong><code>worker.close()</code> on <code>SIGTERM</code>:</strong> Lets active jobs finish cleanly before the worker container stops during deployment.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Implementation Options &amp; Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Approach</th>
+                  <th>Durability</th>
+                  <th>Retry &amp; Scheduling</th>
+                  <th>Best Fit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Inline HTTP Execution</strong></td>
+                  <td>Tied to request socket</td>
+                  <td>None (fails user request)</td>
+                  <td>Fast operations (&lt; 100ms) whose outcome the client needs immediately</td>
+                </tr>
+                <tr>
+                  <td><strong>Detached Fire-and-Forget Promise</strong></td>
+                  <td>Lost on process crash/deploy</td>
+                  <td>None; unhandled errors risk memory leaks</td>
+                  <td>Only truly disposable metrics where dropping events is acceptable</td>
+                </tr>
+                <tr>
+                  <td><strong>BullMQ (Redis-Backed Queue)</strong></td>
+                  <td>High (when Redis uses persistence + <code>noeviction</code>)</td>
+                  <td>Built-in backoff, priorities, cron schedulers, concurrency</td>
+                  <td>High-throughput Node.js apps already running Redis</td>
+                </tr>
+                <tr>
+                  <td><strong><code>pg-boss</code> / Agenda (DB-Backed)</strong></td>
+                  <td>Transactional with primary DB</td>
+                  <td>Good for low/moderate throughput</td>
+                  <td>Teams wanting zero extra Redis infrastructure at small-to-medium scale</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>When to Move Work to a Background Queue</h3>
+              <ul>
+                <li>Operation depends on slow external APIs (email, SMS, webhooks, AI APIs).</li>
+                <li>Task takes longer than ~300–500ms or is CPU-intensive (PDF/CSV/media processing).</li>
+                <li>Work needs reliable automatic retries or delayed execution.</li>
+              </ul>
+            </div>
+            <div class="decision-card">
+              <h3>When NOT to Queue</h3>
+              <ul>
+                <li>The client immediately needs the computed result to render the very next screen (e.g., login authentication or validating a promo code at checkout).</li>
+                <li>A simple 5ms DB insert where queue serialization and worker round-trips add needless complexity.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes, Security &amp; Reliability</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Storing Multi-Megabyte Blobs Inside Job Payloads</h3>
+              <p><strong>Performance risk:</strong> Passing entire base64 images or 5 MB JSON arrays in <code>queue.add()</code> bloats Redis RAM and slows every queue scan.</p>
+              <p><strong>Fix:</strong> Store large files in object storage or records in your DB, and pass only compact IDs/keys inside the job payload.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Running Queues on an Evicting Redis Instance</h3>
+              <p><strong>Data loss risk:</strong> If Redis uses <code>allkeys-lru</code> (appropriate for Day 4 caches), memory pressure silently deletes queued jobs!</p>
+              <p><strong>Fix:</strong> Run queue Redis with <code>maxmemory-policy noeviction</code> and AOF persistence enabled, separate from cache Redis.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Skipping Ownership Checks on Job Status Endpoints</h3>
+              <p><strong>Security risk:</strong> If <code>GET /api/jobs/:jobId</code> returns job details without verifying <code>req.user.id === job.data.userId</code>, attackers can enumerate job IDs to read other users' report links.</p>
+              <p><strong>Fix:</strong> Always authorize status lookups against the authenticated owner.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Retrying Forever or Retrying Invalid Data</h3>
+              <p><strong>Reliability risk:</strong> Infinite retries or retrying malformed payloads wastes worker slots and fills logs indefinitely.</p>
+              <p><strong>Fix:</strong> Cap attempts (e.g., 3–5), use exponential backoff, and wrap non-retryable domain errors in <code>UnrecoverableError</code>.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Implementation Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Offload User Welcome Email &amp; Onboarding Export</h3>
+            <p>
+              Take a <code>POST /api/users/register</code> Express endpoint that currently waits 1.5 seconds to send an SMTP welcome email and build a starter PDF welcome packet before responding:
+            </p>
+            <ol>
+              <li>Keep password hashing and user DB insertion inside the HTTP request so validation errors still return <code>400</code>/<code>409</code> immediately.</li>
+              <li>Enqueue an <code>onboarding-package</code> job into a queue with deterministic <code>jobId: `onboard:${user.id}`</code>, <code>attempts: 4</code>, and exponential backoff starting at 2 seconds.</li>
+              <li>Return <code>201 Created</code> (or <code>202 Accepted</code> for async export endpoints) immediately with user profile data and job reference.</li>
+              <li>Build a standalone worker script that checks an idempotency flag (<code>welcomeEmailSentAt</code>) on the user record before sending, updates the flag atomically, and handles <code>SIGTERM</code> gracefully.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 5 Quiz: Background Jobs &amp; Scheduling (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="c" data-explanation="202 Accepted indicates the server validated and accepted the request for asynchronous processing that has not yet completed.">
+              <p class="quiz-prompt">1. Which HTTP status code is most appropriate when an endpoint validates a report request, enqueues a background job, and returns before the report is finished?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> 503 Service Unavailable</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> 304 Not Modified</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> 202 Accepted</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> 408 Request Timeout</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="b" data-explanation="An unawaited Promise lives only in volatile process memory; if the server restarts, deploys, or crashes, the task is permanently lost.">
+              <p class="quiz-prompt">2. Why is calling <code>sendEmail().catch(log)</code> without <code>await</code> inside an Express route NOT a reliable background job solution?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Express forbids calling async functions without await.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> The task exists only in volatile RAM; a server restart, crash, or deploy silently loses it with no durable retry.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Promises without await run synchronously on the browser.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Node.js rejects more than 10 unawaited Promises.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Exponential backoff spaces retries out progressively (2s, 4s, 8s...) so struggling downstream services have time to recover instead of being hammered.">
+              <p class="quiz-prompt">3. Why do production job queues prefer exponential backoff over immediate fixed-loop retries?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Immediate retries overload an already struggling downstream service; increasing delays give it room to recover.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Exponential backoff deletes failed records from the database.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Redis cannot schedule retries shorter than 1 hour.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> It converts TCP sockets into UDP packets.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Under at-least-once delivery, a worker crash after performing a side effect but before acknowledging the job causes a second worker to execute the same job again; idempotency prevents duplicate charges or emails.">
+              <p class="quiz-prompt">4. Why must background job handlers be designed to be idempotent?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> So workers can skip reading Redis entirely.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Because JavaScript executes async functions twice by default.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> To force every job to fail at least once.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Under at-least-once delivery, crashes or network blips can cause a job to execute more than once without duplicating side effects.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Permanent errors like a deleted record or invalid schema will never succeed on retry, so throwing UnrecoverableError fails fast and saves worker capacity.">
+              <p class="quiz-prompt">5. When should a worker throw an unrecoverable error (such as BullMQ's <code>UnrecoverableError</code>) instead of letting the job retry?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> When the third-party SMTP server returns a temporary 503 Service Unavailable.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> When the failure is permanent, such as a deleted target record or invalid input that retrying cannot fix.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Whenever a job takes longer than 100ms.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Only on HTTP GET requests.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Running node-cron or setInterval inside each horizontally scaled web container causes N replicas to trigger the exact same scheduled job N times.">
+              <p class="quiz-prompt">6. What goes wrong if you schedule a daily billing task using <code>setInterval</code> inside an Express web server scaled to 4 containers?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Node.js disables timers when behind a load balancer.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> The interval only runs on Container 4.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> All 4 containers execute the billing job independently, creating 4x duplicate execution.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Express automatically turns setInterval into a BullMQ job.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Queue Redis must use noeviction so Redis never silently evicts queued jobs under memory pressure.">
+              <p class="quiz-prompt">7. Which Redis memory eviction policy is recommended for a Redis instance storing background job queues?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> <code>noeviction</code></label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> <code>allkeys-lru</code></label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> <code>allkeys-random</code></label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> <code>volatile-ttl</code></label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Passing compact references (record IDs or object keys) keeps Redis fast and memory-lean instead of bloating queue storage with large binary files.">
+              <p class="quiz-prompt">8. Why should job payloads contain compact IDs or storage keys rather than raw 10 MB file buffers?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Workers cannot read strings shorter than 1 MB.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Redis converts buffers into SQL tables.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> JavaScript objects cannot store IDs.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Large payloads bloat Redis RAM, slow queue serialization, and degrade throughput across all jobs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="A growing waiting queue count indicates jobs are arriving faster than workers can finish them or workers are stalled.">
+              <p class="quiz-prompt">9. In queue observability, what does a steadily rising <code>waiting</code> job count over 30 minutes usually signal?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Zero users are calling the API.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Enqueue rate exceeds worker processing capacity (workers are saturated, down, or blocked on slow dependencies).</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> All jobs are completing in under 1ms.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Redis compression is enabled.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Calling worker.close() on SIGTERM stops pulling new jobs while letting currently active jobs complete cleanly before process exit.">
+              <p class="quiz-prompt">10. What does calling <code>await worker.close()</code> during a <code>SIGTERM</code> handler accomplish?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> It deletes all waiting jobs in Redis.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> It doubles worker concurrency during shutdown.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> It stops accepting new jobs while allowing currently running jobs to finish cleanly before exit.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> It restarts the Express web server automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why is it beneficial to run workers in a separate Node.js process from the Express HTTP API?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Separating processes isolates the HTTP event loop from heavy CPU or memory spikes in PDF generation, media processing, or large exports. It also lets you autoscale worker replicas based on queue depth independently from web replicas based on HTTP traffic.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Explain how deterministic <code>jobId</code> values prevent duplicate jobs.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>If a user double-clicks a submit button or a client retries a timed-out request, passing a deterministic key such as <code>jobId: `invoice:${invoiceId}`</code> ensures the queue detects an existing job with that ID and avoids inserting a second duplicate job into the queue.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should <code>removeOnComplete</code> and <code>removeOnFail</code> retention limits be configured?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>By default, retaining every finished job hash forever causes Redis memory usage to grow indefinitely until the instance runs out of memory. Setting age and count bounds keeps recent debugging history available while pruning old entries automatically.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Give one example of work that should remain synchronous in the HTTP request and one that should become a background job.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Keep synchronous:</strong> Checking user credentials during login or reserving inventory stock atomically at checkout, because the client cannot proceed without the immediate pass/fail decision. <strong>Move to background job:</strong> Sending the order confirmation email and generating the downloadable PDF receipt after the order is committed.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. When might a database-backed queue like <code>pg-boss</code> be preferable to Redis + BullMQ?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>When a team already uses PostgreSQL and wants transactional outbox guarantees (inserting a domain record and enqueueing the job inside the exact same ACID SQL transaction) at moderate job throughput without operating and securing an extra Redis server.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Duplicate Email Sends on Worker Retry</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A worker handler sends an email first and then calls <code>await invoiceRepo.markEmailSent(invoiceId)</code>. Whenever the database briefly times out on step 2, BullMQ retries the job and sends the customer the same email 4 times! Fix the handler logic.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function processInvoiceEmailJob(job, { invoiceRepo, mailer }) {
+  const { invoiceId } = job.data;
+  const invoice = await invoiceRepo.findById(invoiceId);
+  if (!invoice) {
+    throw new UnrecoverableError('Invoice missing');
+  }
+  if (invoice.emailStatus === 'sent') {
+    return { skipped: true };
+  }
+
+  const sendResult = await mailer.sendInvoice({
+    to: invoice.customerEmail,
+    invoiceId: invoice._id,
+    idempotencyKey: `invoice-email:${invoice._id}`
+  });
+
+  await invoiceRepo.markEmailSent(invoiceId, sendResult.messageId);
+  return { messageId: sendResult.messageId };
+}</code></pre>
+                </div>
+                <p><strong>Explanation:</strong> Checking <code>emailStatus === 'sent'</code> handles retries after a partial success, and passing an email-provider idempotency key (or recording a <code>sending</code> lock state with timestamp) protects even when the DB write fails right after sending.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Compute Exponential Backoff with Jitter</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Implement a pure JavaScript custom backoff function <code>computeBackoffMs(attemptsMade, baseMs = 2000, maxMs = 60000)</code> using exponential growth capped at <code>maxMs</code> plus ±20% jitter.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function computeBackoffMs(attemptsMade, baseMs = 2000, maxMs = 60000) {
+  const exp = Math.min(maxMs, baseMs * Math.pow(2, Math.max(0, attemptsMade - 1)));
+  const jitterSpan = exp * 0.2;
+  const offset = (Math.random() * 2 - 1) * jitterSpan;
+  return Math.max(500, Math.round(exp + offset));
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Designing Priority Lanes for Queued Emails</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> At 9:00 AM, your system enqueues 50,000 marketing newsletter emails. At 9:01 AM, a user requests a password-reset email and waits 18 minutes because all workers are busy with newsletters. How do you fix this architecturally?</p>
+                <p><strong>Reference Architecture:</strong> Separate critical transactional jobs from bulk low-priority jobs using <strong>separate queues</strong> (<code>auth-emails</code> vs. <code>bulk-newsletters</code>) with dedicated worker pools—never let bulk batch jobs starve latency-sensitive user authentication flows. Within a single queue, job priorities also help, but separate queues guarantee dedicated worker capacity even during massive bulk spikes.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 5 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Offload slow work:</strong> Return <code>202 Accepted</code> rapidly from Express and run heavy or unreliable tasks in persistent workers.</li>
+              <li><strong>Durable queues beat in-memory promises:</strong> Redis-backed BullMQ (with <code>noeviction</code>) persists jobs across crashes and deployments.</li>
+              <li><strong>Centralize schedules:</strong> Use queue schedulers for recurring/delayed tasks instead of per-instance <code>setInterval</code> timers.</li>
+              <li><strong>Smart retries &amp; idempotency:</strong> Combine exponential backoff, <code>UnrecoverableError</code> for permanent faults, deterministic <code>jobId</code>s, and atomic DB status claims.</li>
+              <li><strong>Monitor queue health:</strong> Watch waiting depth, failure rates, job durations, and expose authorized status polling.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 5 Background Jobs Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 5 Background Jobs and Task Scheduling visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 5 local visual reference (<code>Day 5/image.webp</code>). Review producer-to-queue offloading, worker concurrency, retries, and idempotency.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 4/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 4: Caching with Redis</span>
+          </a>
+          <a href="../Day 6/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 6: Message Queues &amp; Event-Driven Architecture &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 4/index.html">Day 4: Redis Caching</a></li>
+          <li><a href="../Day 5/index.html">Day 5: Background Jobs</a></li>
+          <li><a href="../Day 6/index.html">Day 6: Message Queues</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

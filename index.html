@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Phase 6: Advanced Backend Development by Arslan Weblab. An 18-day production-oriented backend engineering curriculum covering architecture, scalability, caching, queues, WebSockets, security, testing, Docker, and CI/CD.">
+  <title>Phase 6: Advanced Backend Development | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="32" height="32">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Advanced Backend Development</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false"
+          aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="index.html" class="nav-home-link active" aria-current="page">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="index.html" selected>Home Page</option>
+              <option value="Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <button type="button" class="nav-step-btn" disabled aria-disabled="true">Prev</button>
+            <a href="Day 1/index.html" class="nav-step-btn">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero-section">
+      <div class="hero-ambient" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge-row">
+            <span class="eyebrow-badge">Phase 6 Curriculum</span>
+            <span class="eyebrow-meta">18 Structured Days</span>
+          </div>
+          <h1 class="hero-title">Advanced Backend Development for Production-Ready Systems</h1>
+          <p class="hero-description">
+            Bridge the gap between building basic APIs and engineering resilient, scalable, observable backend systems.
+            Master clean architecture, distributed caching, queues, real-time messaging, database optimization,
+            defensive security, Docker, and CI/CD across 18 focused lessons.
+          </p>
+          <div class="hero-actions">
+            <a href="Day 1/index.html" class="btn btn-primary">Begin Day 1</a>
+            <a href="#curriculum" class="btn btn-secondary">Explore Curriculum</a>
+          </div>
+          <div class="hero-highlights">
+            <div class="highlight-item">
+              <span class="highlight-value">17</span>
+              <span class="highlight-label">Core Engineering Topics</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-value">180+</span>
+              <span class="highlight-label">Practice Questions &amp; Tasks</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-value">Day 18</span>
+              <span class="highlight-label">Revision &amp; Final Assessment</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Course progress summary">
+          <div class="panel-header">
+            <span class="panel-title">Your Learning Tracker</span>
+            <span class="progress-badge" id="progress-percentage">0% Complete</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+            aria-labelledby="progress-percentage" id="overall-progress-bar">
+            <div class="progress-fill" id="overall-progress-fill"></div>
+          </div>
+          <p class="panel-subtext" id="progress-summary-text">0 of 18 days marked completed</p>
+          <div class="panel-checklist">
+            <div class="panel-step">
+              <span class="step-dot"></span>
+              <span>Concept deep-dives with architecture diagrams</span>
+            </div>
+            <div class="panel-step">
+              <span class="step-dot"></span>
+              <span>Production-oriented Node.js &amp; Express code</span>
+            </div>
+            <div class="panel-step">
+              <span class="step-dot"></span>
+              <span>Interactive quizzes, debugging &amp; design tasks</span>
+            </div>
+            <div class="panel-step">
+              <span class="step-dot"></span>
+              <span>Trade-off analysis for real backend decisions</span>
+            </div>
+          </div>
+          <div class="panel-footer-actions">
+            <a href="Day 1/index.html" class="btn btn-outline-sm" id="continue-learning-btn">Start at Day 1</a>
+            <button type="button" class="btn-link-reset" id="reset-progress-btn">Reset progress</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">Course Overview</span>
+          <h2 class="section-title">Designed to Elevate Intermediate Developers to Systems Thinking</h2>
+          <p class="section-subtitle">
+            This phase focuses on the architectural, operational, and reliability patterns that distinguish hobby
+            projects from maintainable production backends.
+          </p>
+        </div>
+
+        <div class="overview-grid">
+          <article class="info-card">
+            <h3>What This Phase Teaches</h3>
+            <p>
+              Every lesson targets a core backend engineering pillar: layered design, horizontal scalability, profiling,
+              Redis caching, job queues, message brokers, WebSockets, token lifecycles, API versioning, database
+              indexing, object storage, observability, testing, security hardening, containers, and deployment
+              workflows.
+            </p>
+          </article>
+
+          <article class="info-card">
+            <h3>Who It Is Designed For</h3>
+            <p>
+              Built for developers who can already create basic CRUD APIs in Node.js and Express and now want to
+              understand how real-world backends handle concurrency, failures, security boundaries, data growth, and
+              team maintainability.
+            </p>
+          </article>
+
+          <article class="info-card">
+            <h3>Prerequisite Knowledge</h3>
+            <p>
+              You should be comfortable with modern JavaScript (async/await, Promises, modules), Node.js basics, Express
+              routing and middleware, HTTP fundamentals, basic MongoDB or SQL queries, and standard Git workflows.
+            </p>
+          </article>
+
+          <article class="info-card">
+            <h3>How Lessons Are Organized</h3>
+            <p>
+              Days 1–17 each cover one focused topic through fundamental theory, visual diagrams, annotated JavaScript
+              implementations, trade-off comparisons, exercises, quizzes, and coding challenges. Day 18 consolidates
+              everything into revision guides and a comprehensive assessment.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="outcomes">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">Core Competencies</span>
+          <h2 class="section-title">Ten Pillars of Advanced Backend Engineering</h2>
+          <p class="section-subtitle">
+            Rather than centering the entire course around building a single application, each pillar is studied in
+            depth and applied through targeted practical tasks.
+          </p>
+        </div>
+
+        <div class="outcomes-grid">
+          <div class="outcome-card">
+            <span class="outcome-index">01</span>
+            <h3>Architecture</h3>
+            <p>Structure services, repositories, dependency injection, and SOLID boundaries so codebases stay modular as
+              complexity grows.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">02</span>
+            <h3>Scalability</h3>
+            <p>Design stateless APIs, understand load balancing, spot concurrency bottlenecks, and plan application and
+              database scaling.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">03</span>
+            <h3>Performance</h3>
+            <p>Avoid blocking the Node.js event loop, paginate large datasets, compress payloads, and measure latency
+              bottlenecks accurately.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">04</span>
+            <h3>Caching</h3>
+            <p>Implement cache-aside patterns with Redis, design effective cache keys and TTLs, and manage invalidation
+              safely.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">05</span>
+            <h3>Queues &amp; Background Jobs</h3>
+            <p>Offload slow work from HTTP request cycles using workers, retries, idempotency keys, and event-driven
+              message brokers.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">06</span>
+            <h3>Real-Time Systems</h3>
+            <p>Build authenticated WebSocket and Socket.IO workflows with rooms, presence tracking, reconnection, and
+              scaling strategies.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">07</span>
+            <h3>Security</h3>
+            <p>Combine access/refresh tokens, RBAC, ownership checks, rate limiting, input validation, secure headers,
+              and threat modeling.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">08</span>
+            <h3>Databases</h3>
+            <p>Optimize indexes and explain plans, eliminate N+1 queries, use transactions safely, and weigh NoSQL vs.
+              relational trade-offs.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">09</span>
+            <h3>Testing</h3>
+            <p>Write reliable unit, integration, and API tests with isolated test databases, mocks, auth verification,
+              and edge-case coverage.</p>
+          </div>
+          <div class="outcome-card">
+            <span class="outcome-index">10</span>
+            <h3>Deployment &amp; Production</h3>
+            <p>Containerize services with Docker, automate CI checks, implement structured logging and health checks,
+              and plan safe rollbacks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="curriculum">
+      <div class="container">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-kicker">18-Day Roadmap</span>
+            <h2 class="section-title">Complete Phase 6 Curriculum</h2>
+            <p class="section-subtitle">
+              Follow the curriculum in sequence from architecture fundamentals to production readiness and final
+              assessment.
+            </p>
+          </div>
+          <div class="roadmap-filters" role="group" aria-label="Filter days by track">
+            <button type="button" class="filter-btn active" data-filter="all">All 18 Days</button>
+            <button type="button" class="filter-btn" data-filter="architecture">Architecture &amp; Scale</button>
+            <button type="button" class="filter-btn" data-filter="async">Async &amp; Real-Time</button>
+            <button type="button" class="filter-btn" data-filter="data-api">APIs, Data &amp; Auth</button>
+            <button type="button" class="filter-btn" data-filter="ops">Testing, Security &amp; Ops</button>
+          </div>
+        </div>
+
+        <div class="roadmap-grid" id="roadmap-grid">
+          <article class="day-card" data-day="1" data-category="architecture">
+            <div class="day-card-top">
+              <span class="day-badge">Day 1</span>
+              <span class="topic-tag">Architecture</span>
+            </div>
+            <h3>Advanced Backend Architecture and Design Patterns</h3>
+            <p>Monolithic vs. modular design, layered architecture, MVC, service and repository patterns, dependency
+              injection, and SOLID principles.</p>
+            <div class="day-card-footer">
+              <a href="Day 1/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="1" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="2" data-category="architecture">
+            <div class="day-card-top">
+              <span class="day-badge">Day 2</span>
+              <span class="topic-tag">Scalability</span>
+            </div>
+            <h3>Scalable Backend Systems</h3>
+            <p>Vertical vs. horizontal scaling, stateless backend design, load balancing, concurrency handling,
+              bottlenecks, and shared state management.</p>
+            <div class="day-card-footer">
+              <a href="Day 2/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="2" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="3" data-category="architecture">
+            <div class="day-card-top">
+              <span class="day-badge">Day 3</span>
+              <span class="topic-tag">Performance</span>
+            </div>
+            <h3>Performance Optimization</h3>
+            <p>Event loop behavior, avoiding blocking I/O, efficient async execution, query tuning, pagination,
+              compression, and profiling concepts.</p>
+            <div class="day-card-footer">
+              <a href="Day 3/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="3" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="4" data-category="async">
+            <div class="day-card-top">
+              <span class="day-badge">Day 4</span>
+              <span class="topic-tag">Caching</span>
+            </div>
+            <h3>Caching with Redis</h3>
+            <p>Cache-aside, read-through, and write-through strategies, TTLs, key naming, invalidation, core Redis data
+              types, and cache consistency.</p>
+            <div class="day-card-footer">
+              <a href="Day 4/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="4" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="5" data-category="async">
+            <div class="day-card-top">
+              <span class="day-badge">Day 5</span>
+              <span class="topic-tag">Background Jobs</span>
+            </div>
+            <h3>Background Jobs and Task Scheduling</h3>
+            <p>Offloading slow work to job queues and workers, recurring schedules, retries, idempotency, failure
+              handling, and job observability.</p>
+            <div class="day-card-footer">
+              <a href="Day 5/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="5" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="6" data-category="async">
+            <div class="day-card-top">
+              <span class="day-badge">Day 6</span>
+              <span class="topic-tag">Messaging</span>
+            </div>
+            <h3>Message Queues and Event-Driven Architecture</h3>
+            <p>Producers, consumers, brokers, pub/sub messaging, delivery guarantees, dead-letter queues, duplicate
+              handling, and eventual consistency.</p>
+            <div class="day-card-footer">
+              <a href="Day 6/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="6" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="7" data-category="async">
+            <div class="day-card-top">
+              <span class="day-badge">Day 7</span>
+              <span class="topic-tag">Real-Time</span>
+            </div>
+            <h3>Real-Time Communication with WebSockets</h3>
+            <p>Persistent connections, WebSocket and Socket.IO fundamentals, rooms, namespaces, presence, real-time
+              auth, and horizontal scaling.</p>
+            <div class="day-card-footer">
+              <a href="Day 7/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="7" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="8" data-category="data-api">
+            <div class="day-card-top">
+              <span class="day-badge">Day 8</span>
+              <span class="topic-tag">Authorization</span>
+            </div>
+            <h3>Advanced Authentication and Authorization</h3>
+            <p>Access and refresh token lifecycles, RBAC, permission systems, resource ownership checks, revocation,
+              sessions, and MFA concepts.</p>
+            <div class="day-card-footer">
+              <a href="Day 8/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="8" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="9" data-category="data-api">
+            <div class="day-card-top">
+              <span class="day-badge">Day 9</span>
+              <span class="topic-tag">API Design</span>
+            </div>
+            <h3>Advanced API Design and Versioning</h3>
+            <p>REST conventions, versioning strategies, filtering, sorting, pagination, idempotency, OpenAPI/Swagger
+              documentation, and GraphQL overview.</p>
+            <div class="day-card-footer">
+              <a href="Day 9/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="9" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="10" data-category="data-api">
+            <div class="day-card-top">
+              <span class="day-badge">Day 10</span>
+              <span class="topic-tag">Databases</span>
+            </div>
+            <h3>Advanced Database Optimization</h3>
+            <p>Single and compound indexes, explain plans, N+1 elimination, atomic transactions, connection pooling,
+              aggregation pipelines, and SQL vs. NoSQL.</p>
+            <div class="day-card-footer">
+              <a href="Day 10/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="10" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="11" data-category="data-api">
+            <div class="day-card-top">
+              <span class="day-badge">Day 11</span>
+              <span class="topic-tag">Storage</span>
+            </div>
+            <h3>Cloud File Storage</h3>
+            <p>Object storage concepts, upload/download workflows, file validation, metadata, signed URLs, CDN delivery,
+              and lifecycle policies.</p>
+            <div class="day-card-footer">
+              <a href="Day 11/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="11" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="12" data-category="ops">
+            <div class="day-card-top">
+              <span class="day-badge">Day 12</span>
+              <span class="topic-tag">Observability</span>
+            </div>
+            <h3>Logging, Monitoring, and Error Tracking</h3>
+            <p>Structured logs, correlation IDs, centralized error handling, health/readiness endpoints, metrics,
+              alerting, and data redaction.</p>
+            <div class="day-card-footer">
+              <a href="Day 12/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="12" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="13" data-category="ops">
+            <div class="day-card-top">
+              <span class="day-badge">Day 13</span>
+              <span class="topic-tag">Testing</span>
+            </div>
+            <h3>Advanced Backend Testing</h3>
+            <p>Unit, integration, and API tests, mocking and stubbing, isolated test databases, auth scenario testing,
+              edge cases, and coverage limits.</p>
+            <div class="day-card-footer">
+              <a href="Day 13/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="13" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="14" data-category="ops">
+            <div class="day-card-top">
+              <span class="day-badge">Day 14</span>
+              <span class="topic-tag">Security</span>
+            </div>
+            <h3>Rate Limiting and API Security</h3>
+            <p>Threat modeling, rate limiting, brute-force defense, validation, CORS, security headers, secrets
+              management, and injection/SSRF prevention.</p>
+            <div class="day-card-footer">
+              <a href="Day 14/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="14" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="15" data-category="ops">
+            <div class="day-card-top">
+              <span class="day-badge">Day 15</span>
+              <span class="topic-tag">Containers</span>
+            </div>
+            <h3>Docker and Containerization</h3>
+            <p>Images vs. containers, authoring Node.js Dockerfiles, environment injection, Docker Compose multi-service
+              setups, volumes, and networks.</p>
+            <div class="day-card-footer">
+              <a href="Day 15/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="15" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="16" data-category="ops">
+            <div class="day-card-top">
+              <span class="day-badge">Day 16</span>
+              <span class="topic-tag">Deployment</span>
+            </div>
+            <h3>CI/CD and Deployment</h3>
+            <p>Automated build and test pipelines, environment separation, secret injection, database migrations,
+              release strategies, and safe rollbacks.</p>
+            <div class="day-card-footer">
+              <a href="Day 16/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="16" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card" data-day="17" data-category="architecture">
+            <div class="day-card-top">
+              <span class="day-badge">Day 17</span>
+              <span class="topic-tag">Synthesis</span>
+            </div>
+            <h3>Production Backend Architecture</h3>
+            <p>Synthesizing architecture, reliability, timeouts, retries, circuit breakers, backup recovery,
+              caching/queue choices, and readiness checklists.</p>
+            <div class="day-card-footer">
+              <a href="Day 17/index.html" class="day-link">Open Lesson</a>
+              <button type="button" class="completion-toggle" data-day-toggle="17" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+
+          <article class="day-card day-card-capstone" data-day="18" data-category="ops">
+            <div class="day-card-top">
+              <span class="day-badge">Day 18</span>
+              <span class="topic-tag">Revision &amp; Assessment</span>
+            </div>
+            <h3>Complete Revision and Advanced Practical Assessment</h3>
+            <p>Full summaries of Days 1–17, reference diagrams, comparison tables, 40+ MCQs, 20+ short answers, 12+
+              challenges, 3 case studies, and final test.</p>
+            <div class="day-card-footer">
+              <a href="Day 18/index.html" class="day-link">Open Assessment</a>
+              <button type="button" class="completion-toggle" data-day-toggle="18" aria-pressed="false">Mark
+                Done</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="technologies">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">Technology Stack</span>
+          <h2 class="section-title">Practical Tools Grounded in Transferable Concepts</h2>
+          <p class="section-subtitle">
+            JavaScript and Node.js power the code examples, while every lesson highlights why a tool is chosen and what
+            alternatives fit different constraints.
+          </p>
+        </div>
+
+        <div class="tech-grid">
+          <div class="tech-card">
+            <h3>Node.js &amp; Express.js</h3>
+            <p>Core server runtime and HTTP framework used to demonstrate layered architecture, middleware pipelines,
+              error handling, and performance tuning.</p>
+          </div>
+          <div class="tech-card">
+            <h3>MongoDB, Mongoose &amp; SQL Concepts</h3>
+            <p>Used to explore indexing, aggregation pipelines, connection pooling, atomic transactions, and when
+              relational databases outperform document stores.</p>
+          </div>
+          <div class="tech-card">
+            <h3>Redis &amp; Queue Workers</h3>
+            <p>Powers cache-aside implementations, rate-limit counters, pub/sub messaging, and background job queues
+              such as BullMQ.</p>
+          </div>
+          <div class="tech-card">
+            <h3>Socket.IO &amp; WebSockets</h3>
+            <p>Demonstrates persistent bidirectional communication, rooms, connection authentication, presence tracking,
+              and multi-instance scaling.</p>
+          </div>
+          <div class="tech-card">
+            <h3>Docker &amp; Docker Compose</h3>
+            <p>Standardizes local development environments and multi-container API + database + Redis orchestration for
+              consistent deployments.</p>
+          </div>
+          <div class="tech-card">
+            <h3>Testing &amp; OpenAPI / Swagger</h3>
+            <p>Node test tooling, Supertest, and OpenAPI specifications establish automated behavioral verification and
+              clear API contracts.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="approach">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">Learning Methodology</span>
+          <h2 class="section-title">How Theory, Diagrams, Code, and Challenges Fit Together</h2>
+        </div>
+
+        <div class="approach-grid">
+          <div class="approach-step">
+            <div class="approach-num">1</div>
+            <h3>First-Principles Explanations</h3>
+            <p>Every topic begins with the underlying system problem before introducing frameworks or libraries, helping
+              you understand why a pattern exists.</p>
+          </div>
+          <div class="approach-step">
+            <div class="approach-num">2</div>
+            <h3>Visual System Flows</h3>
+            <p>Readable architecture, request-lifecycle, caching, queue, and deployment diagrams make multi-component
+              interactions easy to trace mentally.</p>
+          </div>
+          <div class="approach-step">
+            <div class="approach-num">3</div>
+            <h3>Secure, Runnable Examples</h3>
+            <p>Code snippets use realistic Express and Node.js patterns, environment-variable placeholders for secrets,
+              and explicit security boundaries.</p>
+          </div>
+          <div class="approach-step">
+            <div class="approach-num">4</div>
+            <h3>Active Recall &amp; Design Practice</h3>
+            <p>Each day closes with interactive MCQs with feedback, short-answer drills, debugging or architecture
+              challenges, and a focused implementation task.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="final-outcomes">
+      <div class="container final-outcomes-grid">
+        <div class="outcomes-summary">
+          <span class="section-kicker">Upon Completion</span>
+          <h2 class="section-title">What You Will Be Able to Design and Implement</h2>
+          <p>
+            Completing Phase 6 equips you with a coherent mental model of production backend engineering. Rather than
+            memorizing isolated syntax, you will be able to evaluate trade-offs and justify architectural decisions
+            clearly.
+          </p>
+          <ul class="outcomes-list">
+            <li>Refactor unstructured Express apps into clean layered modules with testable services and repositories.
+            </li>
+            <li>Diagnose event-loop blocking, slow database queries, and single-instance state bottlenecks.</li>
+            <li>Combine Redis caching, background workers, and message queues to keep HTTP responses fast and reliable.
+            </li>
+            <li>Design versioned, documented APIs protected by refresh-token flows, RBAC, rate limiting, and defensive
+              validation.</li>
+            <li>Instrument backends with structured logs, health checks, automated test suites, Dockerfiles, and CI
+              workflows.</li>
+          </ul>
+        </div>
+
+        <div class="cta-card">
+          <h3>Ready to Start Phase 6?</h3>
+          <p>
+            Begin with Day 1 on Advanced Backend Architecture and Design Patterns, or jump directly to any topic in the
+            18-day roadmap.
+          </p>
+          <div class="cta-card-actions">
+            <a href="Day 1/index.html" class="btn btn-primary">Start Day 1 Now</a>
+            <a href="Day 18/index.html" class="btn btn-secondary">Preview Day 18 Assessment</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability,
+          security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="index.html">Course Homepage</a></li>
+          <li><a href="Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="Day 4/index.html">Day 4: Redis Caching</a></li>
+          <li><a href="Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="Day 15/index.html">Day 15: Docker</a></li>
+          <li><a href="Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          </li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

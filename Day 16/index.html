@@ -1,0 +1,2615 @@
+Direct file/archive downloads are not supported in this chat interface, so here
+are all three separate complete files for Day 16: CI/CD and Deployment—ready to
+copy and save into your Phase 6/Day 16/ folder.
+
+1. Phase 6/Day 16/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 16: CI/CD and Deployment. Learn continuous integration, continuous delivery, environment separation, secrets management, zero-downtime migrations, rollbacks, release strategies, and safe production deployment.">
+  <title>Day 16: CI/CD and Deployment | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="16">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 16: CI/CD &amp; Deployment</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html" selected>Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 15/index.html" class="nav-step-btn" title="Go to Day 15">Prev</a>
+            <a href="../Day 17/index.html" class="nav-step-btn" title="Go to Day 17">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 16 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 16</span>
+          <span class="category-pill">Automation, Releases &amp; Cloud Ops</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="16" aria-pressed="false">Mark Day 16 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">CI/CD and Deployment</h1>
+        <p class="lesson-intro">
+          Manual deployments over SSH—"git pull, restart pm2, hope nothing broke"—eventually push untested code, forget migrations, or drop active user requests. Today you will learn how automated Continuous Integration and Continuous Delivery/Deployment pipelines verify code quality, separate environments safely, handle backward-compatible database migrations, execute zero-downtime releases, and roll back cleanly when health checks fail.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 12, 13 &amp; 15</span>
+            <p>CI/CD ties together automated tests (Day 13), Docker image builds (Day 15), and readiness health checks + error tracking (Day 12) into a repeatable release pipeline.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Build and tag an immutable artifact once per commit, verify it in staging with realistic checks, and shift production traffic only after readiness passes.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Design a GitHub Actions CI/CD workflow with ephemeral test services, Docker SHA tagging, staging smoke checks, and a post-deploy readiness verifier.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Pipeline Execution Flow</a>
+            <a href="#diagrams">CI/CD &amp; Migration Diagrams</a>
+            <a href="#implementation">GitHub Actions &amp; Verifier</a>
+            <a href="#real-world">Release &amp; Hosting Strategies</a>
+            <a href="#mistakes-security">Deployment Mistakes &amp; Safety</a>
+            <a href="#practical-task">Practical CI/CD Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Reliable shipping turns deployments from high-stress midnight events into routine, automated, reversible steps.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Distinguish CI, Delivery &amp; Deployment</h3>
+              <p>Understand automated pull-request gates versus manual-approval delivery and full continuous deployment.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Isolate Environments &amp; Secrets</h3>
+              <p>Keep dev, staging, and production credentials, databases, and cloud permissions strictly separated.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Plan Safe Schema Migrations</h3>
+              <p>Use backward-compatible expand-and-contract steps so rolling containers never crash mid-deploy.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Execute Health-Gated Rollbacks</h3>
+              <p>Compare rolling, blue-green, and canary releases and automate readiness verification.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core CI/CD and Deployment Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Continuous Integration vs. Delivery vs. Deployment</h3>
+            <ul>
+              <li><strong>Continuous Integration (CI):</strong> Automatically merging code frequently into the main branch after passing automated checks: formatting/linting, dependency security audit, unit tests, integration tests against ephemeral DB/Redis services, and container build verification.</li>
+              <li><strong>Continuous Delivery (CD):</strong> Every passing commit produces a release-ready, immutable tagged Docker image deployed automatically to staging—awaiting a human click (or release gate) for production.</li>
+              <li><strong>Continuous Deployment:</strong> Every commit passing all automated tests and staging gates automatically rolls out to production with zero manual intervention, guarded by automated health checks and rollback triggers.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Build, Test Pipelines &amp; Environment Separation</h3>
+            <p>
+              Maintain strictly isolated environments: <strong>development</strong> (local Docker Compose), <strong>staging</strong> (production-like cloud mirror for verifying migrations and smoke tests), and <strong>production</strong> (live customer data). Never share a database, Redis instance, S3 bucket, or JWT signing secret between staging and production!
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Secrets in Deployment Environments</h3>
+            <p>
+              Store deployment credentials inside encrypted CI/CD environment secrets (e.g., GitHub Environments with required reviewers for production) or cloud secret managers (AWS Secrets Manager, GCP Secret Manager, Doppler). Prefer short-lived <strong>OIDC federation tokens</strong> over static long-lived cloud access keys, mask secret values in CI output, and never inject production secrets into pull-request jobs from untrusted external forks.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Database Migration Considerations</h3>
+            <p>
+              During a rolling deployment, <strong>old code (v1) and new code (v2) run simultaneously</strong> against the exact same database! Running a destructive migration—such as renaming or dropping a column/field that v1 still reads—immediately crashes live v1 containers.
+            </p>
+            <p>
+              Follow the <strong>Expand-and-Contract</strong> pattern across safe releases:
+            </p>
+            <ol>
+              <li><strong>Expand:</strong> Add the new nullable column/field alongside the old one; deploy app code that writes to both and reads from new (falling back to old).</li>
+              <li><strong>Backfill:</strong> Migrate existing historical rows safely in bounded batches.</li>
+              <li><strong>Contract:</strong> Once 100% of containers run the new code and backfill finishes, drop the legacy column/field in a later cleanup migration.</li>
+            </ol>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Release Strategies, Health Checks &amp; Rollbacks</h3>
+            <ul>
+              <li><strong>Rolling Update:</strong> Replaces old containers gradually in batches; zero downtime when graceful <code>SIGTERM</code> shutdown and readiness probes (<code>/ready</code>) are configured.</li>
+              <li><strong>Blue-Green Deployment:</strong> Spins up a full parallel "Green" fleet running the new version, verifies <code>/ready</code> + smoke checks, and flips the load balancer from "Blue" to "Green". Instant rollback by flipping back to Blue!</li>
+              <li><strong>Canary Release:</strong> Routes 5% of production traffic to the new release first, compares 5xx error rates and p99 latency against baseline (Day 12), and promotes to 100% or aborts automatically.</li>
+              <li><strong>Immutable Tag Rollbacks:</strong> Always deploy explicit commit tags (e.g., <code>ghcr.io/arslan/api:sha-9f4a21c</code>), never mutable <code>:latest</code>. Rolling back simply redeploys the previous known-good SHA tag.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Cloud Hosting Concepts &amp; Safe Production Config</h3>
+            <p>
+              Hosting choices scale along a control-vs-operations spectrum: <strong>Managed Container PaaS</strong> (Render, Railway, Fly.io, AWS App Runner, Google Cloud Run) handle TLS, load balancing, and health-gated deploys out of the box; <strong>Container Orchestrators</strong> (AWS ECS, Kubernetes) provide granular autoscaling and multi-region control; <strong>VPS + Reverse Proxy</strong> (Ubuntu + Docker + Nginx/Caddy) keeps costs low while placing OS patching and firewall upkeep on your team.
+            </p>
+            <p>
+              Regardless of host, safe production configuration enforces: <code>NODE_ENV=production</code>, fail-fast env schema validation at boot, non-root containers, <code>trust proxy</code> matched to the load balancer, and automated error/latency monitoring.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>End-to-End Automated Release Flow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Pull Request CI Gate:</strong> Developer opens a PR; CI installs locked packages via <code>npm ci</code>, runs lint + <code>npm audit</code>, boots ephemeral MongoDB/Redis test containers, and executes unit + integration suites.
+            </li>
+            <li>
+              <strong>Artifact Build on Merge:</strong> Merging to <code>main</code> builds the Docker image once and pushes it with an immutable Git commit tag (<code>sha-abc1234</code>).
+            </li>
+            <li>
+              <strong>Staging Deploy &amp; Smoke Check:</strong> Pipeline applies backward-compatible DB migrations, deploys <code>sha-abc1234</code> to staging, and polls <code>/ready</code> + smoke endpoints.
+            </li>
+            <li>
+              <strong>Production Promotion:</strong> After approval/canary verification, production shifts traffic only when new replicas pass <code>/ready</code>, draining old replicas cleanly via <code>SIGTERM</code>.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>CI/CD Pipeline &amp; Zero-Downtime Migration Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Automated CI/CD Pipeline with Health-Gated Rollout</h3>
+            <p class="diagram-caption">
+              Every stage gates the next: failing tests, audit highs, or a failing readiness probe stops bad builds before customers ever see them.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 160" class="arch-svg" role="img" aria-label="Git commit flowing through Lint and Audit, Automated Tests with Mongo and Redis containers, Docker SHA Build, Staging Readiness Check, and Production Release">
+                <defs>
+                  <marker id="arrow-ci" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="14" y="42" width="124" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="76" y="71" text-anchor="middle" class="svg-title">1. Push / PR</text>
+                <text x="76" y="89" text-anchor="middle" class="svg-sub">Lint + Audit</text>
+
+                <line x1="138" y1="76" x2="162" y2="76" class="svg-arrow" marker-end="url(#arrow-ci)"></line>
+
+                <rect x="166" y="42" width="142" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="237" y="71" text-anchor="middle" class="svg-title">2. Test Suite</text>
+                <text x="237" y="89" text-anchor="middle" class="svg-sub">Ephemeral DB+Redis</text>
+
+                <line x1="308" y1="76" x2="332" y2="76" class="svg-arrow" marker-end="url(#arrow-ci)"></line>
+
+                <rect x="336" y="42" width="136" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="404" y="71" text-anchor="middle" class="svg-title">3. Build Image</text>
+                <text x="404" y="89" text-anchor="middle" class="svg-sub">Tag :sha-a1b2c3</text>
+
+                <line x1="472" y1="76" x2="496" y2="76" class="svg-arrow" marker-end="url(#arrow-ci)"></line>
+
+                <rect x="500" y="42" width="124" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="562" y="71" text-anchor="middle" class="svg-title">4. Staging</text>
+                <text x="562" y="89" text-anchor="middle" class="svg-sub">/ready + Smoke</text>
+
+                <line x1="624" y1="76" x2="648" y2="76" class="svg-arrow" marker-end="url(#arrow-ci)"></line>
+
+                <rect x="652" y="42" width="96" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="700" y="71" text-anchor="middle" class="svg-title">5. Prod</text>
+                <text x="700" y="89" text-anchor="middle" class="svg-sub">Roll / Canary</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Expand-and-Contract Zero-Downtime Schema Migration</h3>
+            <p class="diagram-caption">
+              Adding new fields compatibly before removing old ones lets v1 and v2 containers run side by side safely during rolling deploys and rollbacks.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 155" class="arch-svg" role="img" aria-label="Three-phase expand and contract schema migration across Phase 1 Expand, Phase 2 Backfill and Deploy v2, and Phase 3 Contract cleanup">
+                <rect x="20" y="24" width="224" height="106" rx="10" class="svg-box-blue"></rect>
+                <text x="132" y="52" text-anchor="middle" class="svg-title">Step 1: Expand</text>
+                <text x="132" y="74" text-anchor="middle" class="svg-sub">Add nullable new_col</text>
+                <text x="132" y="94" text-anchor="middle" class="svg-sub">Keep old_col intact</text>
+                <text x="132" y="114" text-anchor="middle" class="svg-sub">v1 &amp; v2 both work</text>
+
+                <rect x="268" y="24" width="224" height="106" rx="10" class="svg-box-accent"></rect>
+                <text x="380" y="52" text-anchor="middle" class="svg-title">Step 2: Dual-Write &amp; Backfill</text>
+                <text x="380" y="74" text-anchor="middle" class="svg-sub">v2 writes both cols</text>
+                <text x="380" y="94" text-anchor="middle" class="svg-sub">Batched backfill job</text>
+                <text x="380" y="114" text-anchor="middle" class="svg-sub">Safe instant rollback</text>
+
+                <rect x="516" y="24" width="224" height="106" rx="10" class="svg-box-muted"></rect>
+                <text x="628" y="52" text-anchor="middle" class="svg-title">Step 3: Contract</text>
+                <text x="628" y="74" text-anchor="middle" class="svg-sub">Only v2 running 100%</text>
+                <text x="628" y="94" text-anchor="middle" class="svg-sub">Stop writing old_col</text>
+                <text x="628" y="114" text-anchor="middle" class="svg-sub">Drop old_col later</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Designing a GitHub Actions CI/CD Pipeline &amp; Readiness Gate</h2>
+
+          <h3>Step 1: CI Test, Audit &amp; Immutable Docker Build Workflow</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">.github/workflows/ci-cd.yml</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>name: Backend CI and Safe Deploy
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test-and-audit:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm audit --audit-level=high
+      - name: Run unit and integration tests
+        env:
+          NODE_ENV: test
+          TEST_MONGO_URI: mongodb://127.0.0.1:27017/app_test
+          REDIS_URL: redis://127.0.0.1:6379
+          JWT_ACCESS_SECRET: test-only-ci-placeholder-secret-min-32-chars
+          JWT_ISSUER: api-test
+          JWT_AUDIENCE: web-test
+        run: npm test
+
+  build-and-deploy-staging:
+    needs: test-and-audit
+    if: github.ref == 'refs/heads/main' &amp;&amp; github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build tagged Docker image
+        run: docker build -t ghcr.io/${{ github.repository }}/api:sha-${{ github.sha }} .
+      - name: Trigger staging deploy and verify readiness
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.STAGING_DEPLOY_WEBHOOK }}
+          STAGING_READY_URL: https://staging-api.example.com/ready
+        run: |
+          curl -fsS -X POST "$DEPLOY_HOOK_URL" -d "{\"tag\":\"sha-${{ github.sha }}\"}"
+          node scripts/verifyDeployment.js "$STAGING_READY_URL"</code></pre>
+          </div>
+
+          <h3>Step 2: Post-Deployment Readiness Verification Script</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">scripts/verifyDeployment.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>const targetUrl = process.argv[2];
+if (!targetUrl) {
+  console.error('Usage: node scripts/verifyDeployment.js &lt;ready-url&gt;');
+  process.exit(1);
+}
+
+const MAX_ATTEMPTS = 18;
+const INTERVAL_MS = 5000;
+
+async function checkOnce() {
+  const res = await fetch(targetUrl, { signal: AbortSignal.timeout(3000) });
+  if (!res.ok) {
+    throw new Error(`Readiness returned HTTP ${res.status}`);
+  }
+  const body = await res.json();
+  if (body.status !== 'ready') {
+    throw new Error(`Unexpected body status: ${body.status}`);
+  }
+}
+
+for (let attempt = 1; attempt &lt;= MAX_ATTEMPTS; attempt += 1) {
+  try {
+    await checkOnce();
+    console.log(`Deployment healthy on attempt ${attempt}`);
+    process.exit(0);
+  } catch (err) {
+    console.warn(`Attempt ${attempt}/${MAX_ATTEMPTS} pending: ${err.message}`);
+    await new Promise((resolve) =&gt; setTimeout(resolve, INTERVAL_MS));
+  }
+}
+
+console.error('Deployment readiness verification failed');
+process.exit(1);</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Ephemeral CI Service Containers:</strong> Running real MongoDB and Redis alongside Node in GitHub Actions lets Day 13 integration tests verify real queries and constraints on every PR.</li>
+              <li><strong><code>sha-${{ github.sha }}</code> Tagging:</strong> Ties every deployed container directly to an exact Git commit so rollbacks and Sentry error tracking map unambiguously.</li>
+              <li><strong><code>environment: staging</code> Secrets:</strong> Scopes credentials per deployment environment, allowing GitHub to require manual reviewer approval before promoting a separate <code>production</code> job.</li>
+              <li><strong><code>scripts/verifyDeployment.js</code>:</strong> Fails the pipeline with exit code <code>1</code> if <code>/ready</code> does not stabilize within 90 seconds, alerting the team or triggering automatic rollback.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Release Strategy Comparison</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th>Downtime</th>
+                  <th>Rollback Speed</th>
+                  <th>Infrastructure Cost &amp; Complexity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Recreate (Stop then Start)</strong></td>
+                  <td>Brief outage during restart</td>
+                  <td>Moderate (redeploy old image)</td>
+                  <td>Lowest — acceptable only for internal tools or non-critical dev</td>
+                </tr>
+                <tr>
+                  <td><strong>Rolling Update</strong></td>
+                  <td>Zero (with <code>/ready</code> + <code>SIGTERM</code> drain)</td>
+                  <td>Fast (roll back to previous SHA tag)</td>
+                  <td>Low — built into most PaaS platforms, ECS, and Kubernetes</td>
+                </tr>
+                <tr>
+                  <td><strong>Blue-Green</strong></td>
+                  <td>Zero</td>
+                  <td>Near-instant (flip load balancer back to Blue)</td>
+                  <td>2x compute briefly during cutover; easy smoke testing pre-switch</td>
+                </tr>
+                <tr>
+                  <td><strong>Canary Release</strong></td>
+                  <td>Zero (limits blast radius to 1–5% users)</td>
+                  <td>Fast automated traffic shift back</td>
+                  <td>Higher — requires traffic-splitting proxy and solid error/latency metrics</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Deployment &amp; Pipeline Mistakes</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Running Destructive Column/Field Drops During Rolling Deploys</h3>
+              <p><strong>Outage cause:</strong> Running <code>ALTER TABLE users DROP COLUMN full_name</code> while v1 containers still query <code>full_name</code> causes immediate 500 crashes for live users.</p>
+              <p><strong>Fix:</strong> Use Expand-and-Contract migrations across separate deployments.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Deploying Mutable <code>:latest</code> Docker Tags</h3>
+              <p><strong>Rollback chaos:</strong> If production pulls <code>my-api:latest</code> and you overwrite <code>:latest</code> on push, rolling back or scaling out a fresh container pulls inconsistent code.</p>
+              <p><strong>Fix:</strong> Tag images with immutable Git commit SHAs (<code>sha-...</code>) or semantic release tags.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Skipping Staging or Sharing Production DBs with Staging</h3>
+              <p><strong>Data hazard:</strong> Testing migrations or load scripts against a shared database risks corrupting or exposing customer data.</p>
+              <p><strong>Fix:</strong> Enforce strict isolation of databases, queues, buckets, and secrets per environment.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Printing Environment Variables in CI Debug Logs</h3>
+              <p><strong>Security leak:</strong> Commands like <code>env</code> or verbose shell tracing (<code>set -x</code>) inside CI steps can print unmasked tokens into build logs.</p>
+              <p><strong>Fix:</strong> Keep secrets inside encrypted secret stores, avoid echoing env dumps, and rotate leaked tokens immediately.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical CI/CD &amp; Deployment Design Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Design a Complete Safe Release Workflow</h3>
+            <p>
+              For a containerized Express API (Day 15) with unit + Supertest integration tests (Day 13) and <code>/ready</code> endpoint (Day 12):
+            </p>
+            <ol>
+              <li>Write a CI workflow file running <code>npm ci</code>, lint, <code>npm audit</code>, ephemeral MongoDB/Redis services, and automated tests on every pull request.</li>
+              <li>Add a CD stage triggered on merges to <code>main</code> that builds an immutable commit-SHA Docker image, deploys to staging, and runs <code>verifyDeployment.js</code>.</li>
+              <li>Document a concrete Expand-and-Contract plan for renaming a database field (e.g., <code>username</code> to <code>handle</code>) without breaking live rolling containers, plus a step-by-step rollback procedure if 5xx errors spike post-release.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 16 Quiz: CI/CD &amp; Deployment (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="Continuous Delivery automates build, test, and staging release so production is always ready to ship with a manual approval gate; Continuous Deployment automates production release too.">
+              <p class="quiz-prompt">1. How does Continuous Delivery differ from Continuous Deployment?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Continuous Delivery skips running automated tests.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Continuous Delivery requires a manual approval step before production release, whereas Continuous Deployment releases automatically after all automated gates pass.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Continuous Deployment deploys directly from developer laptops over FTP.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> They are completely unrelated to Git.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="During rolling deploys, v1 and v2 containers run concurrently; dropping a column that v1 still queries crashes live traffic.">
+              <p class="quiz-prompt">2. Why should you NEVER drop or rename a live database column in the same deployment that introduces new code?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> SQL databases forbid altering columns after creation.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Docker deletes volumes when migrations run.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> During rolling updates, older v1 instances still serve live requests and will crash when querying the removed column.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> GitHub Actions blocks SQL commands.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Immutable Git SHA tags guarantee every scaled container runs the exact same audited build and allow unambiguous instant rollbacks.">
+              <p class="quiz-prompt">3. Why should production deployments reference immutable commit-SHA Docker tags (e.g., <code>:sha-9f4a21c</code>) instead of <code>:latest</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Immutable tags guarantee exact reproducibility across autoscaled replicas and allow instant deterministic rollbacks.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Docker forbids pulling :latest over HTTPS.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> SHA tags compress Docker images by 70%.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> It eliminates the need for environment variables.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Blue-Green keeps the previous healthy fleet warm during cutover so rolling back is an instant load-balancer switch.">
+              <p class="quiz-prompt">4. Which release strategy runs a full parallel new environment alongside the old one and enables near-instant rollback by switching traffic back?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Recreate strategy</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Local bind-mount dev mode</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Manual SSH git pull</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Blue-Green deployment</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Canary deployments expose a small percentage (e.g., 5%) of real traffic to the new release first and monitor 5xx/p99 metrics before full rollout.">
+              <p class="quiz-prompt">5. What is the main purpose of a Canary release?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> To skip running unit tests in CI</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> To limit initial production exposure to a small traffic slice (e.g., 5%) and verify live error/latency metrics before rolling out to 100%</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> To share one database across dev, staging, and prod</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> To bypass TLS certificates on staging</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Expand adds new nullable columns compatibly, dual-writes/backfills data while v1+v2 coexist, and Contract cleans up old columns only after 100% migration.">
+              <p class="quiz-prompt">6. In the Expand-and-Contract migration pattern, when is it safe to execute the final Contract step (dropping the old column)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Before deploying any new application code</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> While 50% of containers still run the old v1 code</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Only after data backfill finishes and 100% of active instances run code that no longer reads or writes the old column</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Every time npm ci runs</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Deployment readiness checks ensure the load balancer waits until the new container's DB/Redis connections are ready before shifting user requests.">
+              <p class="quiz-prompt">7. Why must a deployment pipeline wait for <code>/ready</code> to pass before shifting load-balancer traffic to a new container?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> So user traffic is not routed to booting instances whose database or Redis pools have not connected yet.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Because Express deletes routes unless /ready is called.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> To regenerate JWT secrets on every deploy.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> To flush Redis caches automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="OIDC short-lived federated tokens eliminate static long-lived cloud keys stored in CI secrets, reducing compromise blast radius.">
+              <p class="quiz-prompt">8. Why do modern cloud CI/CD pipelines prefer OIDC workload identity over storing static long-lived cloud IAM access keys?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> OIDC converts Dockerfiles into YAML automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Static keys expire every 2 seconds.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> OIDC removes the need for databases.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> OIDC issues short-lived, workflow-scoped credentials per pipeline run, eliminating permanent leaked cloud keys.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Separating databases, secrets, and buckets prevents staging tests or experimental changes from corrupting or leaking real customer production data.">
+              <p class="quiz-prompt">9. Why must staging and production ALWAYS use separate databases, Redis instances, and JWT secrets?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Docker forbids two apps from connecting to MongoDB.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Sharing them risks staging tests overwriting customer data or allowing staging tokens to authenticate against production.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Production databases run only on Windows.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> To double network latency intentionally.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Running DB and Redis service containers in CI lets automated integration tests verify real queries and constraints on every pull request.">
+              <p class="quiz-prompt">10. What is the advantage of adding ephemeral <code>mongo</code> and <code>redis</code> service containers inside your GitHub Actions CI job?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> They host production user traffic permanently.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> They replace unit tests completely.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Integration tests can verify real database queries, indexes, and Redis behavior automatically on every PR before merging.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> They push local .env files to GitHub.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why is building the Docker image once and promoting that same image from staging to production better than rebuilding separately?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Rebuilding later could pull an updated transitive dependency or OS patch that was never tested in staging. Promoting the exact signed commit-SHA image ensures the exact tested bytes run in production.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Why is rolling back a database migration harder than rolling back application code?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Rolling back code simply switches back to an older container image. Dropping or reversing a destructive database migration can permanently erase newly written customer data. That is why Expand-and-Contract keeps migrations backward-compatible during deployments.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should CI pipelines run <code>npm ci</code> instead of <code>npm install</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>npm ci</code> installs exact versions recorded in <code>package-lock.json</code> and fails immediately if <code>package.json</code> and the lockfile are out of sync, ensuring reproducible builds across every runner.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why must untrusted pull requests from external public forks NOT receive production/staging deployment secrets?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A malicious pull request modifies CI scripts or test code inside the PR branch; if CI exposed secret tokens to fork PR runs, the PR could exfiltrate deployment credentials.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. What role does graceful <code>SIGTERM</code> shutdown play during a zero-downtime rolling deployment?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Once new replicas pass <code>/ready</code>, the orchestrator sends <code>SIGTERM</code> to old containers. Handling <code>SIGTERM</code> stops new connections while finishing active in-flight HTTP requests before closing DB pools and exiting, preventing client 502 errors.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix a Broken Zero-Downtime Release Plan</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A team plans to deploy a single release that (a) renames <code>totalPrice</code> to <code>totalCents</code> in MongoDB via a startup script, (b) pulls <code>:latest</code> Docker image, and (c) replaces all 4 containers simultaneously. Explain why each fails and provide the corrected plan.</p>
+                <p><strong>Reference Solution:</strong> (a) Switch to Expand-and-Contract across two releases so v1 containers do not break if old/new coexist or rollback is needed; (b) Deploy immutable <code>sha-...</code> image tags; (c) Use rolling or blue-green cutover gated by <code>/ready</code> probes and <code>SIGTERM</code> connection draining.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Safe Dual-Read / Dual-Write Adapter During Migration</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a JavaScript mapper helper for Phase 1 of an Expand-and-Contract migration transitioning legacy <code>user.fullName</code> to structured <code>user.displayName</code>.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function toUserWritePayload({ displayName }) {
+  return {
+    displayName,
+    fullName: displayName
+  };
+}
+
+export function readDisplayName(userDoc) {
+  return userDoc.displayName || userDoc.fullName || 'Anonymous';
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Staging vs. Production Environment Matrix</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Design a clean configuration separation checklist for an API running in Local Dev, Staging, and Production.</p>
+                <p><strong>Reference Matrix:</strong> Use distinct DB clusters, Redis instances, S3 buckets, Stripe test vs. live keys, and unique JWT signing secrets per environment. Enable <code>LOG_LEVEL=debug</code> in local dev and <code>info</code> JSON logs in staging/prod. Protect production deployments behind CI branch protections (`main` only), passing test gates, and explicit environment secrets.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 16 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Automated CI gates:</strong> Run <code>npm ci</code>, lint, security audit, and unit/integration tests with ephemeral services on every PR.</li>
+              <li><strong>Immutable artifacts &amp; strict isolation:</strong> Tag Docker images by Git commit SHA and isolate staging and production databases, buckets, and secrets completely.</li>
+              <li><strong>Safe migrations:</strong> Apply Expand-and-Contract steps so concurrent rolling versions and rollbacks stay compatible.</li>
+              <li><strong>Zero-downtime releases:</strong> Gate traffic shifts on <code>/ready</code> probes, drain connections via <code>SIGTERM</code>, and keep instant SHA-tag rollbacks ready.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 16 CI/CD &amp; Deployment Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 16 CI/CD and Deployment visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 16 local visual reference (<code>Day 16/image.webp</code>). Review automated CI test gates, immutable image promotion, Expand-and-Contract migrations, and release strategies.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 15/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 15: Docker and Containerization</span>
+          </a>
+          <a href="../Day 17/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 17: Production Backend Architecture &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 15/index.html">Day 15: Docker</a></li>
+          <li><a href="../Day 16/index.html">Day 16: CI/CD</a></li>
+          <li><a href="../Day 17/index.html">Day 17: Prod Architecture</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+2. Phase 6/Day 16/style.css
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --top-nav-height: 44px;
+  --main-nav-height: 64px;
+  --header-height: 108px;
+  --container-max: 1220px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --transition-fast: 0.18s ease;
+  --transition-base: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+
+  --bg-primary: #070d1a;
+  --bg-secondary: #0b1426;
+  --bg-surface: #101c33;
+  --bg-surface-hover: #152442;
+  --bg-code: #060b16;
+  --bg-glass: rgba(11, 20, 38, 0.92);
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #22d3ee;
+  --accent-violet: #8b5cf6;
+  --accent-success: #10b981;
+  --accent-danger: #ef4444;
+  --border-subtle: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(59, 130, 246, 0.38);
+  --shadow-sm: 0 4px 14px rgba(2, 6, 23, 0.32);
+  --shadow-md: 0 12px 32px rgba(2, 6, 23, 0.45);
+  --grid-line: rgba(56, 189, 248, 0.05);
+  --hero-glow-a: rgba(59, 130, 246, 0.16);
+  --hero-glow-b: rgba(34, 211, 238, 0.12);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f8fafc;
+  --bg-code: #0f172a;
+  --bg-glass: rgba(255, 255, 255, 0.94);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --accent-blue: #2563eb;
+  --accent-cyan: #0891b2;
+  --accent-violet: #7c3aed;
+  --accent-success: #059669;
+  --accent-danger: #dc2626;
+  --border-subtle: rgba(15, 23, 42, 0.11);
+  --border-strong: rgba(37, 99, 235, 0.34);
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 12px 28px rgba(15, 23, 42, 0.08);
+  --grid-line: rgba(37, 99, 235, 0.045);
+  --hero-glow-a: rgba(37, 99, 235, 0.1);
+  --hero-glow-b: rgba(8, 145, 178, 0.09);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--main-nav-height) + 22px); }
+body {
+  margin: 0;
+  padding-top: var(--header-height);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+button, select { font-family: inherit; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed; top: -100px; left: 16px; z-index: 2000; padding: 10px 16px;
+  border-radius: var(--radius-sm); background: var(--accent-blue); color: #ffffff;
+  font-weight: 600; transition: top var(--transition-fast);
+}
+.skip-link:focus { top: 16px; }
+.container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 20px; }
+
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  transition: transform var(--transition-base); will-change: transform;
+}
+.site-header.top-hidden { transform: translateY(calc(-1 * var(--top-nav-height))); }
+.top-navbar {
+  min-height: var(--top-nav-height); background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center;
+}
+.top-navbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding-top: 6px; padding-bottom: 6px;
+}
+.brand-identity {
+  display: inline-flex; align-items: center; gap: 10px; font-weight: 700;
+  font-size: 0.95rem; letter-spacing: -0.01em; color: var(--text-primary); flex-shrink: 0;
+}
+.brand-logo { width: 30px; height: 30px; object-fit: contain; border-radius: 6px; }
+.top-brand-links { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; }
+.top-brand-links a { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: color var(--transition-fast); }
+.top-brand-links a:hover, .top-brand-links a:focus-visible { color: var(--accent-cyan); }
+
+.main-navbar {
+  min-height: var(--main-nav-height); background: var(--bg-glass);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center;
+}
+.main-navbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding-top: 10px; padding-bottom: 10px;
+}
+.course-nav-left { display: flex; align-items: center; min-width: 0; }
+.course-identity { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.phase-pill {
+  display: inline-flex; align-items: center; padding: 4px 10px; border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  color: #ffffff; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; flex-shrink: 0;
+}
+.course-nav-title {
+  font-weight: 700; font-size: 0.96rem; letter-spacing: -0.01em; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mobile-menu-toggle {
+  display: none; align-items: center; justify-content: center; width: 42px; height: 42px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);
+  background: var(--bg-surface); color: var(--text-primary); cursor: pointer; flex-shrink: 0;
+}
+.course-nav-controls { display: flex; align-items: center; gap: 10px; }
+.nav-home-link {
+  display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 14px;
+  border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600; color: var(--text-secondary);
+  border: 1px solid transparent; transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.nav-home-link:hover { color: var(--text-primary); background: var(--bg-surface); border-color: var(--border-strong); }
+.nav-select {
+  height: 38px; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);
+  background: var(--bg-surface); color: var(--text-primary); font-size: 0.86rem; font-weight: 500;
+  cursor: pointer; max-width: 245px; transition: border-color var(--transition-fast);
+}
+.nav-select:hover, .nav-select:focus-visible { border-color: var(--accent-blue); outline: none; }
+.theme-select { max-width: 148px; }
+.nav-prev-next { display: inline-flex; align-items: center; gap: 6px; }
+.nav-step-btn {
+  display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 12px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--bg-surface);
+  color: var(--text-primary); font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+.nav-step-btn:hover:not(:disabled), .nav-step-btn:focus-visible:not(:disabled) { border-color: var(--accent-blue); background: var(--bg-surface-hover); }
+.nav-step-btn:disabled, .nav-step-btn[aria-disabled="true"] { opacity: 0.42; cursor: not-allowed; }
+
+.lesson-hero { position: relative; padding: 46px 0 48px; border-bottom: 1px solid var(--border-subtle); overflow: hidden; }
+.lesson-hero-ambient {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle at 15% 20%, var(--hero-glow-a), transparent 46%),
+    radial-gradient(circle at 85% 15%, var(--hero-glow-b), transparent 42%),
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: auto, auto, 44px 44px, 44px 44px;
+}
+.lesson-hero-inner { position: relative; }
+.lesson-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 0.86rem; color: var(--text-muted); }
+.lesson-breadcrumb a:hover { color: var(--accent-cyan); }
+.lesson-badge-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 16px; }
+.day-pill {
+  padding: 4px 12px; border-radius: var(--radius-pill); background: rgba(59, 130, 246, 0.16);
+  border: 1px solid rgba(59, 130, 246, 0.36); color: var(--accent-blue);
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
+}
+.category-pill {
+  padding: 4px 12px; border-radius: var(--radius-pill); background: var(--bg-surface);
+  border: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 0.8rem; font-weight: 600;
+}
+.mark-complete-btn {
+  margin-left: auto; min-height: 36px; padding: 0 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--accent-cyan);
+  font-size: 0.84rem; font-weight: 600; cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+[data-theme="light"] .mark-complete-btn { color: var(--accent-blue); }
+.mark-complete-btn:hover { background: var(--bg-surface-hover); }
+.mark-complete-btn.is-done { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.45); color: var(--accent-success); }
+.lesson-title { margin: 0 0 14px; font-size: clamp(1.85rem, 3.5vw, 2.75rem); line-height: 1.18; letter-spacing: -0.025em; font-weight: 800; color: var(--text-primary); }
+.lesson-intro { margin: 0 0 28px; max-width: 72ch; font-size: 1.04rem; color: var(--text-secondary); }
+.lesson-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.meta-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+.meta-label { display: inline-block; margin-bottom: 6px; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-cyan); }
+[data-theme="light"] .meta-label { color: var(--accent-blue); }
+.meta-card p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
+
+.lesson-layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 32px; padding-top: 40px; padding-bottom: 68px; align-items: start; }
+.lesson-sidebar { min-width: 0; position: sticky; top: calc(var(--main-nav-height) + 20px); }
+.sidebar-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-sm); }
+.sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.sidebar-header h2 { margin: 0; font-size: 0.94rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-primary); }
+.toc-toggle-btn { padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--bg-secondary); color: var(--text-secondary); font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.toc-list { display: flex; flex-direction: column; gap: 4px; }
+.toc-list.is-collapsed { display: none; }
+.toc-list a { padding: 7px 10px; border-radius: var(--radius-sm); font-size: 0.86rem; font-weight: 500; color: var(--text-muted); transition: background-color var(--transition-fast), color var(--transition-fast); }
+.toc-list a:hover, .toc-list a.active { background: rgba(59, 130, 246, 0.12); color: var(--accent-cyan); }
+[data-theme="light"] .toc-list a:hover, [data-theme="light"] .toc-list a.active { color: var(--accent-blue); }
+
+.lesson-content { min-width: 0; display: flex; flex-direction: column; gap: 32px; }
+.lesson-section { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 30px; box-shadow: var(--shadow-sm); min-width: 0; }
+.section-tag { display: inline-block; margin-bottom: 6px; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-cyan); }
+[data-theme="light"] .section-tag { color: var(--accent-blue); }
+.lesson-section h2 { margin: 0 0 16px; font-size: clamp(1.32rem, 2.2vw, 1.72rem); line-height: 1.25; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); }
+.lesson-section h3 { margin: 22px 0 10px; font-size: 1.12rem; font-weight: 700; color: var(--text-primary); }
+.lesson-section p { margin: 0 0 14px; color: var(--text-secondary); }
+.lesson-section ul, .lesson-section ol { margin: 0 0 16px; padding-left: 22px; color: var(--text-secondary); }
+.lesson-section li { margin-bottom: 8px; }
+.lesson-section p code, .lesson-section li code, .comparison-table code {
+  font-family: var(--font-mono); font-size: 0.87em; padding: 2px 6px; border-radius: 5px;
+  background: rgba(59, 130, 246, 0.13); color: var(--accent-cyan);
+}
+[data-theme="light"] .lesson-section p code, [data-theme="light"] .lesson-section li code, [data-theme="light"] .comparison-table code { color: var(--accent-blue); }
+
+.objectives-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.objective-item { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 18px; }
+.objective-item h3 { margin: 0 0 6px; font-size: 0.98rem; }
+.objective-item p { margin: 0; font-size: 0.9rem; }
+.concept-block { padding-top: 14px; margin-top: 18px; border-top: 1px solid var(--border-subtle); }
+.concept-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+.flow-steps { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+
+.diagram-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin-top: 18px; min-width: 0; }
+.diagram-card h3 { margin: 0 0 8px; font-size: 1.04rem; }
+.diagram-caption { font-size: 0.9rem; margin-bottom: 14px; }
+.diagram-scroll { width: 100%; overflow-x: auto; }
+.arch-svg { width: 100%; min-width: 620px; height: auto; display: block; }
+.svg-box-muted { fill: var(--bg-surface); stroke: var(--border-subtle); stroke-width: 1.5; }
+.svg-box-blue { fill: rgba(59, 130, 246, 0.14); stroke: var(--accent-blue); stroke-width: 1.5; }
+.svg-box-accent { fill: rgba(34, 211, 238, 0.15); stroke: var(--accent-cyan); stroke-width: 1.8; }
+.svg-title { fill: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 700; }
+.svg-sub { fill: var(--text-muted); font-family: var(--font-sans); font-size: 11px; font-weight: 500; }
+.svg-arrow { stroke: var(--accent-cyan); stroke-width: 2; }
+
+.code-card { background: var(--bg-code); border: 1px solid rgba(148, 163, 184, 0.22); border-radius: var(--radius-md); overflow: hidden; margin: 14px 0 18px; min-width: 0; }
+.code-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(148, 163, 184, 0.16); }
+.code-title { font-family: var(--font-mono); font-size: 0.8rem; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.copy-code-btn {
+  min-height: 30px; padding: 0 12px; border-radius: 6px; border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(30, 41, 59, 0.9); color: #e2e8f0; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; flex-shrink: 0; transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+.copy-code-btn:hover { border-color: var(--accent-cyan); }
+.copy-code-btn.is-copied { border-color: var(--accent-success); color: #34d399; }
+.code-card pre { margin: 0; padding: 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; tab-size: 2; }
+
+.callout-box { background: rgba(59, 130, 246, 0.08); border: 1px solid var(--border-strong); border-radius: var(--radius-md); padding: 20px; margin-top: 18px; }
+.callout-box h3 { margin-top: 0; }
+.callout-box p:last-child, .callout-box ul:last-child { margin-bottom: 0; }
+
+.table-wrap { width: 100%; overflow-x: auto; margin: 16px 0 22px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+.comparison-table { width: 100%; min-width: 600px; border-collapse: collapse; font-size: 0.9rem; }
+.comparison-table th, .comparison-table td { padding: 13px 15px; text-align: left; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+.comparison-table th { background: var(--bg-secondary); color: var(--text-primary); font-weight: 700; }
+.comparison-table td { color: var(--text-secondary); }
+.comparison-table tr:last-child td { border-bottom: none; }
+
+.mistakes-list { display: flex; flex-direction: column; gap: 14px; }
+.mistake-item { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-left: 3px solid var(--accent-violet); border-radius: var(--radius-md); padding: 18px; }
+.mistake-item h3 { margin: 0 0 8px; font-size: 1.02rem; }
+.mistake-item p { margin: 0 0 6px; font-size: 0.93rem; }
+.mistake-item p:last-child { margin-bottom: 0; }
+
+.task-card { background: var(--bg-secondary); border: 1px solid var(--border-strong); border-radius: var(--radius-md); padding: 22px; }
+.task-card h3 { margin-top: 0; }
+.task-card p:last-child, .task-card ol:last-child { margin-bottom: 0; }
+
+.quiz-form { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+.quiz-question { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; transition: border-color var(--transition-fast); }
+.quiz-question.is-correct { border-color: rgba(16, 185, 129, 0.6); }
+.quiz-question.is-incorrect { border-color: rgba(239, 68, 68, 0.6); }
+.quiz-prompt { margin: 0 0 12px; font-weight: 700; color: var(--text-primary); }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-option {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle); background: var(--bg-surface); font-size: 0.92rem;
+  color: var(--text-secondary); cursor: pointer; transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+.quiz-option:hover { border-color: var(--border-strong); }
+.quiz-option input[type="radio"] { margin-top: 4px; flex-shrink: 0; accent-color: var(--accent-blue); }
+.quiz-feedback { margin-top: 10px; font-size: 0.88rem; font-weight: 500; }
+.quiz-feedback.is-correct { color: var(--accent-success); }
+.quiz-feedback.is-incorrect { color: var(--accent-danger); }
+.quiz-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 20px;
+  border-radius: var(--radius-sm); font-size: 0.94rem; font-weight: 600; cursor: pointer;
+  border: 1px solid transparent; transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: linear-gradient(135deg, var(--accent-blue), #2563eb); color: #ffffff; }
+.btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-subtle); }
+.btn-secondary:hover { border-color: var(--accent-cyan); }
+.quiz-result-banner { padding: 16px 18px; border-radius: var(--radius-md); background: rgba(59, 130, 246, 0.12); border: 1px solid var(--border-strong); font-weight: 700; color: var(--text-primary); }
+
+.accordion-list { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.accordion-item { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; }
+.accordion-trigger {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 18px;
+  border: none; background: transparent; color: var(--text-primary); font-size: 0.96rem; font-weight: 600; text-align: left; cursor: pointer;
+}
+.accordion-trigger:hover { background: rgba(59, 130, 246, 0.06); }
+.accordion-icon { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan); flex-shrink: 0; }
+.accordion-panel { padding: 0 18px 18px; border-top: 1px solid var(--border-subtle); }
+.accordion-panel p:first-child { margin-top: 14px; }
+.accordion-panel p:last-child { margin-bottom: 0; }
+
+.summary-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px 22px; }
+.summary-box ul { margin: 0; }
+.lesson-image-figure { margin: 0; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; }
+.lesson-local-image { width: 100%; border-radius: var(--radius-sm); background: var(--bg-primary); min-height: 180px; object-fit: cover; }
+.lesson-image-figure figcaption { margin-top: 12px; font-size: 0.88rem; color: var(--text-muted); }
+
+.lesson-pagination { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pagination-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 18px 20px;
+  border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--bg-surface);
+  text-align: left; cursor: pointer; transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+.pagination-btn:hover:not(:disabled) { border-color: var(--accent-cyan); transform: translateY(-2px); }
+.pagination-next { align-items: flex-end; text-align: right; }
+.pagination-btn.is-disabled, .pagination-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.pagination-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+.pagination-title { font-size: 0.96rem; font-weight: 700; color: var(--text-primary); }
+
+.site-footer { background: var(--bg-primary); border-top: 1px solid var(--border-subtle); padding: 52px 0 28px; }
+.footer-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.8fr)); gap: 32px; margin-bottom: 36px; }
+.footer-description { margin: 14px 0 0; max-width: 44ch; font-size: 0.92rem; color: var(--text-muted); }
+.footer-links-group h4 { margin: 0 0 14px; font-size: 0.92rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-primary); }
+.footer-links-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.footer-links-group a { font-size: 0.9rem; color: var(--text-muted); transition: color var(--transition-fast); }
+.footer-links-group a:hover { color: var(--accent-cyan); }
+.footer-bottom { padding-top: 22px; border-top: 1px solid var(--border-subtle); font-size: 0.86rem; color: var(--text-muted); }
+.footer-bottom p { margin: 0; }
+
+@media (max-width: 960px) {
+  .mobile-menu-toggle { display: inline-flex; }
+  .course-nav-controls {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column;
+    align-items: stretch; gap: 10px; padding: 16px 20px; background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle); box-shadow: var(--shadow-md);
+  }
+  .course-nav-controls.is-open { display: flex; }
+  .nav-home-link, .nav-select, .theme-select { width: 100%; max-width: none; }
+  .nav-prev-next { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lesson-meta-grid, .lesson-layout, .objectives-grid { grid-template-columns: 1fr; }
+  .lesson-sidebar { position: static; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+  .top-navbar-inner { flex-wrap: wrap; gap: 6px 12px; }
+  .top-brand-links { gap: 12px; }
+  .top-brand-links a { font-size: 0.8rem; }
+  .lesson-hero { padding: 34px 0 38px; }
+  .mark-complete-btn { margin-left: 0; }
+  .lesson-section { padding: 20px; }
+  .lesson-pagination { grid-template-columns: 1fr; }
+  .pagination-next { align-items: flex-start; text-align: left; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+}
+
+3. Phase 6/Day 16/script.js
+
+(function () {
+  'use strict';
+
+  var THEME_STORAGE_KEY = 'arslan_phase6_theme';
+  var PROGRESS_STORAGE_KEY = 'arslan_phase6_progress';
+  var TOTAL_DAYS = 18;
+
+  var siteHeader = document.getElementById('site-header');
+  var topNavbar = document.getElementById('top-navbar');
+  var mainNavbar = document.getElementById('main-navbar');
+  var mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  var courseNavControls = document.getElementById('course-nav-controls');
+  var daySelector = document.getElementById('day-selector');
+  var themeSelector = document.getElementById('theme-selector');
+  var lessonCompleteBtn = document.getElementById('lesson-complete-btn');
+  var tocToggleBtn = document.getElementById('toc-toggle-btn');
+  var tocList = document.getElementById('toc-list');
+  var quizForm = document.getElementById('day-quiz-form');
+  var quizRetryBtn = document.getElementById('quiz-retry-btn');
+  var quizResultBanner = document.getElementById('quiz-result-banner');
+  var footerYearEl = document.getElementById('footer-year');
+
+  function getSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  }
+
+  function applyTheme(mode) {
+    var safeMode = mode === 'dark' || mode === 'light' || mode === 'system' ? mode : 'system';
+    var resolved = safeMode === 'system' ? getSystemTheme() : safeMode;
+    document.documentElement.setAttribute('data-theme', resolved);
+    document.documentElement.setAttribute('data-theme-mode', safeMode);
+    if (themeSelector && themeSelector.value !== safeMode) {
+      themeSelector.value = safeMode;
+    }
+  }
+
+  function loadTheme() {
+    var savedMode = 'system';
+    try {
+      savedMode = localStorage.getItem(THEME_STORAGE_KEY) || 'system';
+    } catch (err) {
+      savedMode = 'system';
+    }
+    applyTheme(savedMode);
+  }
+
+  function saveTheme(mode) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, mode);
+    } catch (err) {
+    }
+    applyTheme(mode);
+  }
+
+  function initThemeControls() {
+    loadTheme();
+    if (themeSelector) {
+      themeSelector.addEventListener('change', function () {
+        saveTheme(themeSelector.value);
+      });
+    }
+    if (window.matchMedia) {
+      var mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      var onSystemThemeChange = function () {
+        var currentMode = 'system';
+        try {
+          currentMode = localStorage.getItem(THEME_STORAGE_KEY) || 'system';
+        } catch (err) {
+          currentMode = 'system';
+        }
+        if (currentMode === 'system') {
+          applyTheme('system');
+        }
+      };
+      if (typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', onSystemThemeChange);
+      } else if (typeof mediaQuery.addListener === 'function') {
+        mediaQuery.addListener(onSystemThemeChange);
+      }
+    }
+  }
+
+  function syncHeaderHeights() {
+    if (!topNavbar || !mainNavbar) {
+      return;
+    }
+    var topHeight = topNavbar.offsetHeight;
+    var mainHeight = mainNavbar.offsetHeight;
+    document.documentElement.style.setProperty('--top-nav-height', topHeight + 'px');
+    document.documentElement.style.setProperty('--main-nav-height', mainHeight + 'px');
+    document.documentElement.style.setProperty('--header-height', (topHeight + mainHeight) + 'px');
+  }
+
+  function initScrollNavbar() {
+    if (!siteHeader) {
+      return;
+    }
+    var lastScrollY = window.scrollY || window.pageYOffset || 0;
+    var ticking = false;
+    function updateNavbarVisibility() {
+      var currentScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+      var delta = currentScrollY - lastScrollY;
+      if (currentScrollY <= 20) {
+        siteHeader.classList.remove('top-hidden');
+      } else if (delta > 4) {
+        siteHeader.classList.add('top-hidden');
+      } else if (delta < -4) {
+        siteHeader.classList.remove('top-hidden');
+      }
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNavbarVisibility);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenuToggle || !courseNavControls) {
+      return;
+    }
+    courseNavControls.classList.remove('is-open');
+    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  function initMobileMenu() {
+    if (!mobileMenuToggle || !courseNavControls) {
+      return;
+    }
+    mobileMenuToggle.addEventListener('click', function () {
+      var isOpen = courseNavControls.classList.toggle('is-open');
+      mobileMenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (event) {
+      if (courseNavControls.classList.contains('is-open') && mainNavbar && !mainNavbar.contains(event.target)) {
+        closeMobileMenu();
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeMobileMenu();
+      }
+    });
+  }
+
+  function initDaySelector() {
+    if (!daySelector) {
+      return;
+    }
+    daySelector.addEventListener('change', function () {
+      if (daySelector.value) {
+        window.location.href = daySelector.value;
+      }
+    });
+  }
+
+  function getCompletedDays() {
+    try {
+      var raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+      if (!raw) {
+        return [];
+      }
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+      var valid = [];
+      for (var i = 0; i < parsed.length; i += 1) {
+        var num = Number(parsed[i]);
+        if (Number.isInteger(num) && num >= 1 && num <= TOTAL_DAYS && valid.indexOf(num) === -1) {
+          valid.push(num);
+        }
+      }
+      valid.sort(function (a, b) { return a - b; });
+      return valid;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function saveCompletedDays(days) {
+    try {
+      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(days));
+    } catch (err) {
+    }
+  }
+
+  function renderLessonCompletion() {
+    if (!lessonCompleteBtn) {
+      return;
+    }
+    var dayNum = Number(lessonCompleteBtn.getAttribute('data-day') || document.body.getAttribute('data-day'));
+    if (!Number.isInteger(dayNum)) {
+      return;
+    }
+    var isDone = getCompletedDays().indexOf(dayNum) !== -1;
+    lessonCompleteBtn.classList.toggle('is-done', isDone);
+    lessonCompleteBtn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
+    lessonCompleteBtn.textContent = isDone ? 'Day ' + dayNum + ' Completed' : 'Mark Day ' + dayNum + ' Complete';
+  }
+
+  function initLessonCompletion() {
+    if (!lessonCompleteBtn) {
+      return;
+    }
+    renderLessonCompletion();
+    lessonCompleteBtn.addEventListener('click', function () {
+      var dayNum = Number(lessonCompleteBtn.getAttribute('data-day') || document.body.getAttribute('data-day'));
+      if (!Number.isInteger(dayNum) || dayNum < 1 || dayNum > TOTAL_DAYS) {
+        return;
+      }
+      var completed = getCompletedDays();
+      var idx = completed.indexOf(dayNum);
+      if (idx === -1) {
+        completed.push(dayNum);
+      } else {
+        completed.splice(idx, 1);
+      }
+      completed.sort(function (a, b) { return a - b; });
+      saveCompletedDays(completed);
+      renderLessonCompletion();
+    });
+  }
+
+  function initToc() {
+    if (tocToggleBtn && tocList) {
+      tocToggleBtn.addEventListener('click', function () {
+        var collapsed = tocList.classList.toggle('is-collapsed');
+        tocToggleBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        tocToggleBtn.textContent = collapsed ? 'Show' : 'Hide';
+      });
+    }
+    if (!tocList) {
+      return;
+    }
+    var tocLinks = tocList.querySelectorAll('a[href^="#"]');
+    var sections = [];
+    for (var i = 0; i < tocLinks.length; i += 1) {
+      var el = document.getElementById(tocLinks[i].getAttribute('href').slice(1));
+      if (el) {
+        sections.push({ el: el, link: tocLinks[i] });
+      }
+    }
+    if (sections.length && 'IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        for (var j = 0; j < entries.length; j += 1) {
+          if (entries[j].isIntersecting) {
+            for (var k = 0; k < sections.length; k += 1) {
+              sections[k].link.classList.toggle('active', sections[k].el === entries[j].target);
+            }
+          }
+        }
+      }, { rootMargin: '-20% 0px -65% 0px', threshold: 0 });
+      for (var m = 0; m < sections.length; m += 1) {
+        observer.observe(sections[m].el);
+      }
+    }
+  }
+
+  function copyTextFallback(text) {
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    var ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch (err) {
+      ok = false;
+    }
+    document.body.removeChild(textarea);
+    return ok;
+  }
+
+  function initCopyButtons() {
+    var copyButtons = document.querySelectorAll('.copy-code-btn');
+    for (var i = 0; i < copyButtons.length; i += 1) {
+      copyButtons[i].addEventListener('click', function (event) {
+        var btn = event.currentTarget;
+        var card = btn.closest('.code-card');
+        if (!card) {
+          return;
+        }
+        var codeEl = card.querySelector('pre code') || card.querySelector('pre');
+        if (!codeEl) {
+          return;
+        }
+        var text = codeEl.textContent || '';
+        var markCopied = function () {
+          btn.textContent = 'Copied';
+          btn.classList.add('is-copied');
+          window.setTimeout(function () {
+            btn.textContent = 'Copy';
+            btn.classList.remove('is-copied');
+          }, 1800);
+        };
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          navigator.clipboard.writeText(text).then(markCopied, function () {
+            if (copyTextFallback(text)) {
+              markCopied();
+            }
+          });
+        } else if (copyTextFallback(text)) {
+          markCopied();
+        }
+      });
+    }
+  }
+
+  function initQuiz() {
+    if (!quizForm) {
+      return;
+    }
+    var questions = quizForm.querySelectorAll('.quiz-question');
+    quizForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var score = 0;
+      var total = questions.length;
+      var unanswered = 0;
+      for (var i = 0; i < total; i += 1) {
+        var qEl = questions[i];
+        var correctAnswer = qEl.getAttribute('data-answer');
+        var explanation = qEl.getAttribute('data-explanation') || '';
+        var feedbackEl = qEl.querySelector('.quiz-feedback');
+        var selected = qEl.querySelector('input[type="radio"]:checked');
+        qEl.classList.remove('is-correct', 'is-incorrect');
+        if (feedbackEl) {
+          feedbackEl.classList.remove('is-correct', 'is-incorrect');
+        }
+        if (!selected) {
+          unanswered += 1;
+          qEl.classList.add('is-incorrect');
+          if (feedbackEl) {
+            feedbackEl.classList.add('is-incorrect');
+            feedbackEl.textContent = 'No option selected. Correct answer: ' + correctAnswer.toUpperCase() + '. ' + explanation;
+          }
+        } else if (selected.value === correctAnswer) {
+          score += 1;
+          qEl.classList.add('is-correct');
+          if (feedbackEl) {
+            feedbackEl.classList.add('is-correct');
+            feedbackEl.textContent = 'Correct. ' + explanation;
+          }
+        } else {
+          qEl.classList.add('is-incorrect');
+          if (feedbackEl) {
+            feedbackEl.classList.add('is-incorrect');
+            feedbackEl.textContent = 'Incorrect. Correct answer: ' + correctAnswer.toUpperCase() + '. ' + explanation;
+          }
+        }
+      }
+      if (quizResultBanner) {
+        var pct = total > 0 ? Math.round((score / total) * 100) : 0;
+        var summary = 'Score: ' + score + ' / ' + total + ' (' + pct + '%)';
+        if (unanswered > 0) {
+          summary += ' — ' + unanswered + ' question(s) left unanswered.';
+        } else if (pct >= 80) {
+          summary += ' — Strong grasp of Day 16 CI/CD and deployment concepts.';
+        } else {
+          summary += ' — Review the explanations above and retry to reinforce weak areas.';
+        }
+        quizResultBanner.textContent = summary;
+        quizResultBanner.hidden = false;
+      }
+    });
+    if (quizRetryBtn) {
+      quizRetryBtn.addEventListener('click', function () {
+        var radios = quizForm.querySelectorAll('input[type="radio"]');
+        for (var i = 0; i < radios.length; i += 1) {
+          radios[i].checked = false;
+        }
+        for (var j = 0; j < questions.length; j += 1) {
+          questions[j].classList.remove('is-correct', 'is-incorrect');
+          var fb = questions[j].querySelector('.quiz-feedback');
+          if (fb) {
+            fb.classList.remove('is-correct', 'is-incorrect');
+            fb.textContent = '';
+          }
+        }
+        if (quizResultBanner) {
+          quizResultBanner.hidden = true;
+          quizResultBanner.textContent = '';
+        }
+      });
+    }
+  }
+
+  function initAccordions() {
+    var triggers = document.querySelectorAll('.accordion-trigger');
+    for (var i = 0; i < triggers.length; i += 1) {
+      triggers[i].addEventListener('click', function (event) {
+        var trigger = event.currentTarget;
+        var nextState = trigger.getAttribute('aria-expanded') !== 'true';
+        var panel = trigger.nextElementSibling;
+        var icon = trigger.querySelector('.accordion-icon');
+        trigger.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+        if (panel) {
+          panel.hidden = !nextState;
+        }
+        if (icon) {
+          icon.textContent = nextState ? '-' : '+';
+        }
+      });
+    }
+  }
+
+  function initFooterYear() {
+    if (footerYearEl) {
+      footerYearEl.textContent = String(new Date().getFullYear());
+    }
+  }
+
+  window.addEventListener('storage', function (event) {
+    if (event.key === THEME_STORAGE_KEY) {
+      loadTheme();
+    }
+    if (event.key === PROGRESS_STORAGE_KEY) {
+      renderLessonCompletion();
+    }
+  });
+
+  window.addEventListener('resize', syncHeaderHeights);
+  window.addEventListener('orientationchange', syncHeaderHeights);
+
+  syncHeaderHeights();
+  initThemeControls();
+  initScrollNavbar();
+  initMobileMenu();
+  initDaySelector();
+  initLessonCompletion();
+  initToc();
+  initCopyButtons();
+  initQuiz();
+  initAccordions();
+  initFooterYear();
+})();
+
+Day 16 (Day 16/index.html, Day 16/style.css, and Day 16/script.js) is complete.
+Let me know when you are ready for Day 17: Production Backend Architecture.
+Direct file/archive downloads are not supported in this chat interface, so here
+are all three separate complete files for Day 17: Production Backend
+Architecture—ready to copy and save into your Phase 6/Day 17/ folder.
+
+1. Phase 6/Day 17/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 17: Production Backend Architecture. Synthesize architecture, reliability, timeouts, retries, circuit breakers, backup recovery, caching and queue trade-offs, ADRs, and production readiness checklists.">
+  <title>Day 17: Production Backend Architecture | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="17">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="../index.html" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 17: Production Architecture</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html" selected>Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 16/index.html" class="nav-step-btn" title="Go to Day 16">Prev</a>
+            <a href="../Day 18/index.html" class="nav-step-btn" title="Go to Day 18">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 17 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 17</span>
+          <span class="category-pill">Systems Synthesis &amp; Reliability</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="17" aria-pressed="false">Mark Day 17 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Production Backend Architecture</h1>
+        <p class="lesson-intro">
+          In real systems, architecture, performance, security, observability, and deployment are never isolated silos—every design choice ripples across the whole stack. Today you will synthesize Days 1–16 into cohesive production systems: handling partial failures gracefully with timeouts, retries, and circuit breakers; planning database RPO/RTO recovery; balancing caching and queues; writing Architecture Decision Records; and applying a thorough production readiness checklist.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 1–16</span>
+            <p>Unifies modular layering, stateless scaling, Redis, queues, WebSockets, auth, DB optimization, storage, telemetry, testing, security, Docker, and CI/CD.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Assume dependencies will slow down or fail. Bound waits, isolate blast radii, degrade non-critical features gracefully, and document explicit trade-offs.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Implement a Circuit Breaker + bounded retry wrapper and design a complete production architecture with justified trade-offs and runbooks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Synthesis Concepts</a>
+            <a href="#how-it-works">Resilience Execution Flow</a>
+            <a href="#diagrams">Reference &amp; Breaker Diagrams</a>
+            <a href="#implementation">Circuit Breaker &amp; ADR Code</a>
+            <a href="#real-world">Trade-Offs &amp; Decisions</a>
+            <a href="#mistakes-security">Production Readiness Checklist</a>
+            <a href="#practical-task">Architecture Design Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Senior backend engineering is defined less by memorizing library syntax and more by making balanced system decisions under real constraints of cost, latency, reliability, and team velocity.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Synthesize All Backend Tiers</h3>
+              <p>Connect edge security, stateless APIs, caching, queues, storage, and telemetry into one blueprint.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design for Graceful Failure</h3>
+              <p>Prevent cascading outages with timeouts, jittered retries, circuit breakers, and fallbacks.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Plan Recovery &amp; Operations</h3>
+              <p>Define concrete RPO/RTO targets, backup restore drills, rollback plans, and operational runbooks.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Justify Technical Trade-Offs</h3>
+              <p>Author concise Architecture Decision Records (ADRs) and verify production readiness systematically.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Production Architecture Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Bringing Architecture, Performance, Security &amp; Observability Together</h3>
+            <p>
+              A production-ready backend aligns every layer cleanly: TLS + rate limiting at the edge (Day 14), stateless modular Express services (Days 1–2), Redis caching for hot reads (Day 4), persistent queues/brokers for slow or cross-domain side effects (Days 5–6), indexed pooled databases + object storage (Days 10–11), structured correlated telemetry (Day 12), and automated CI/CD container releases (Days 13, 15, 16).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Reliability and Graceful Failure</h3>
+            <p>
+              When a secondary dependency—such as a recommendations engine, analytics tracker, or Redis read cache—fails, the entire checkout or homepage should <strong>not</strong> return HTTP <code>500</code>! Graceful degradation isolates non-critical failures:
+            </p>
+            <ul>
+              <li>If Redis is unreachable, fall back to database reads with rate protection.</li>
+              <li>If a product-recommendations microservice times out, return an empty recommendations section and still render the main product page.</li>
+              <li>If an email provider is down, keep the job queued in BullMQ with exponential backoff while returning <code>201 Created</code> for the user's order.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Timeouts, Retries, and Circuit Breakers</h3>
+            <ul>
+              <li><strong>Timeouts Everywhere:</strong> Every outbound HTTP request, database query, and Redis command must have an explicit deadline (<code>AbortSignal.timeout(3000)</code>). Hanging forever exhausts sockets and memory.</li>
+              <li><strong>Bounded Retries + Jitter (Idempotent Only):</strong> Retry only transient errors (network resets, <code>429</code>, <code>502</code>/<code>503</code>/<code>504</code>) on <em>idempotent</em> operations (<code>GET</code>, or <code>POST</code> carrying an <code>Idempotency-Key</code>), capped at 2–3 attempts with exponential backoff + jitter. Never blindly retry <code>400</code>/<code>401</code>/<code>403</code>/<code>404</code>!</li>
+              <li><strong>Circuit Breaker:</strong> Monitors consecutive upstream failures. When failures cross a threshold (e.g., 5 failures), the breaker trips <strong>OPEN</strong> and rejects further calls immediately in 0ms for a cooldown window (preventing threads/sockets from piling up against a dead dependency). After cooldown, it enters <strong>HALF-OPEN</strong>, letting 1 test probe through: success resets to <strong>CLOSED</strong>; failure re-opens immediately.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Database Backup and Recovery Planning (RPO &amp; RTO)</h3>
+            <p>Every production data tier needs explicit disaster-recovery targets:</p>
+            <ul>
+              <li><strong>RPO (Recovery Point Objective):</strong> Maximum acceptable data loss measured in time (e.g., RPO = 5 minutes requires continuous WAL/oplog archiving for Point-in-Time Recovery, not just nightly 24-hour dumps).</li>
+              <li><strong>RTO (Recovery Time Objective):</strong> Maximum acceptable downtime to restore service (e.g., RTO = 30 minutes requires automated restore scripts and pre-tested staging recovery drills—not figuring out CLI flags during an outage).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Caching, Queue &amp; Deployment Trade-Off Decisions</h3>
+            <p>
+              Avoid adding infrastructure complexity without clear justification: start with a <strong>modular monolith</strong> + primary DB + Redis (covering cache, sessions, rate limits, and background jobs via BullMQ). Introduce dedicated message brokers (RabbitMQ/Kafka), read replicas, or extracted worker/microservice deployments only when measured bottlenecks, isolation needs, or team boundaries justify the extra operational surface area.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Documentation, ADRs &amp; Operational Handover</h3>
+            <p>
+              Code tells future engineers <em>what</em> the backend does; documentation explains <em>why</em> and <em>how to operate it at 3 AM</em>:
+            </p>
+            <ul>
+              <li><strong>Architecture Decision Records (ADRs):</strong> Short 1-page markdown notes recording Context, Decision, Alternatives Considered, and Consequences/Trade-offs (e.g., "Why we chose PostgreSQL + JSONB over separate MongoDB").</li>
+              <li><strong>Operational Runbooks:</strong> Concrete step-by-step instructions for alerts (high 5xx rate, queue backlog growing, DB pool exhausted, rolling back an image SHA, restoring a snapshot).</li>
+              <li><strong>OpenAPI Specs &amp; Architecture Diagrams:</strong> Kept in-repo alongside code so onboarding engineers get an accurate system map immediately.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>How Circuit Breakers &amp; Graceful Degradation Protect Systems</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Normal Operation (<code>CLOSED</code>):</strong> Outbound calls carry strict timeouts and bounded retries on transient faults; failures stay below threshold.
+            </li>
+            <li>
+              <strong>Fault Surge Trips Breaker (<code>OPEN</code>):</strong> When an upstream API fails repeatedly, the circuit opens—failing fast in 0ms instead of making 500 concurrent Express requests wait 5 seconds each to time out.
+            </li>
+            <li>
+              <strong>Graceful Fallback:</strong> Catching <code>CIRCUIT_OPEN</code> returns cached stale data or omits non-critical UI widgets while keeping core API endpoints fast and healthy.
+            </li>
+            <li>
+              <strong>Self-Healing Probe (<code>HALF_OPEN</code>):</strong> Once the cooldown expires, a single probe tests whether the upstream service recovered, smoothly closing the circuit again.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Production Reference &amp; Circuit Breaker Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Full Production Backend Reference Architecture</h3>
+            <p class="diagram-caption">
+              Integrating CDN/Edge security, stateless Express replicas, shared Redis, pooled primary + replica databases with PITR backups, object storage, workers, and observability.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 250" class="arch-svg" role="img" aria-label="Full production backend architecture from CDN and Load Balancer to stateless Express APIs, Redis, Primary DB plus Replica and Backups, Object Storage, BullMQ Workers, and Observability">
+                <defs>
+                  <marker id="arrow-prod" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="16" y="84" width="114" height="72" rx="10" class="svg-box-muted"></rect>
+                <text x="73" y="114" text-anchor="middle" class="svg-title">Edge / CDN</text>
+                <text x="73" y="133" text-anchor="middle" class="svg-sub">TLS + LB + WAF</text>
+
+                <line x1="130" y1="120" x2="170" y2="120" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+
+                <rect x="174" y="66" width="166" height="108" rx="10" class="svg-box-accent"></rect>
+                <text x="257" y="96" text-anchor="middle" class="svg-title">Stateless API Fleet</text>
+                <text x="257" y="116" text-anchor="middle" class="svg-sub">Helmet, Rate Limit, Auth</text>
+                <text x="257" y="134" text-anchor="middle" class="svg-sub">Circuit Breakers + /ready</text>
+                <text x="257" y="152" text-anchor="middle" class="svg-sub">JSON Logs + Metrics</text>
+
+                <line x1="340" y1="90" x2="404" y2="45" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+                <line x1="340" y1="120" x2="404" y2="120" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+                <line x1="340" y1="150" x2="404" y2="195" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+
+                <rect x="408" y="16" width="166" height="58" rx="8" class="svg-box-blue"></rect>
+                <text x="491" y="41" text-anchor="middle" class="svg-title">Redis Cluster</text>
+                <text x="491" y="59" text-anchor="middle" class="svg-sub">Cache, Limits, Queues</text>
+
+                <rect x="408" y="90" width="166" height="60" rx="8" class="svg-box-blue"></rect>
+                <text x="491" y="115" text-anchor="middle" class="svg-title">Primary DB + Replica</text>
+                <text x="491" y="133" text-anchor="middle" class="svg-sub">Pooled + PITR Backups</text>
+
+                <rect x="408" y="166" width="166" height="58" rx="8" class="svg-box-muted"></rect>
+                <text x="491" y="191" text-anchor="middle" class="svg-title">Object Storage</text>
+                <text x="491" y="209" text-anchor="middle" class="svg-sub">Private Bucket + Presigned</text>
+
+                <line x1="574" y1="45" x2="612" y2="45" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+                <rect x="616" y="16" width="128" height="58" rx="8" class="svg-box-muted"></rect>
+                <text x="680" y="41" text-anchor="middle" class="svg-title">Workers</text>
+                <text x="680" y="59" text-anchor="middle" class="svg-sub">Idempotent + DLQ</text>
+
+                <rect x="616" y="96" width="128" height="128" rx="8" class="svg-box-muted"></rect>
+                <text x="680" y="136" text-anchor="middle" class="svg-title">Observability</text>
+                <text x="680" y="158" text-anchor="middle" class="svg-sub">Logs + Traces</text>
+                <text x="680" y="176" text-anchor="middle" class="svg-sub">SLO Dashboards</text>
+                <text x="680" y="194" text-anchor="middle" class="svg-sub">Error Tracking</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Circuit Breaker State Machine</h3>
+            <p class="diagram-caption">
+              Transitions between <code>CLOSED</code>, <code>OPEN</code>, and <code>HALF_OPEN</code> prevent slow failing dependencies from exhausting API thread/socket pools.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 155" class="arch-svg" role="img" aria-label="Circuit breaker states transitioning from CLOSED to OPEN on failure threshold, OPEN to HALF_OPEN after cooldown, and HALF_OPEN back to CLOSED or OPEN">
+                <defs>
+                  <marker id="arrow-cb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="24" y="46" width="174" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="111" y="74" text-anchor="middle" class="svg-title">CLOSED</text>
+                <text x="111" y="93" text-anchor="middle" class="svg-sub">Requests pass normally</text>
+
+                <line x1="198" y1="68" x2="288" y2="68" class="svg-arrow" marker-end="url(#arrow-cb)"></line>
+                <text x="243" y="58" text-anchor="middle" class="svg-sub">N failures</text>
+
+                <rect x="292" y="46" width="184" height="64" rx="10" class="svg-box-accent"></rect>
+                <text x="384" y="74" text-anchor="middle" class="svg-title">OPEN (Fail Fast)</text>
+                <text x="384" y="93" text-anchor="middle" class="svg-sub">Reject in 0ms + Fallback</text>
+
+                <line x1="476" y1="68" x2="566" y2="68" class="svg-arrow" marker-end="url(#arrow-cb)"></line>
+                <text x="521" y="58" text-anchor="middle" class="svg-sub">Cooldown</text>
+
+                <rect x="570" y="46" width="168" height="64" rx="10" class="svg-box-muted"></rect>
+                <text x="654" y="74" text-anchor="middle" class="svg-title">HALF_OPEN</text>
+                <text x="654" y="93" text-anchor="middle" class="svg-sub">Allow 1 test probe</text>
+
+                <path d="M 654 110 L 654 138 L 111 138 L 111 114" fill="none" class="svg-arrow" marker-end="url(#arrow-cb)"></path>
+                <text x="384" y="132" text-anchor="middle" class="svg-sub">Probe succeeds -&gt; CLOSED | Probe fails -&gt; OPEN</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Implementing Timeouts, Jittered Retries &amp; Circuit Breakers</h2>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/resilience/resilientClient.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export class CircuitBreaker {
+  constructor({ failureThreshold = 5, cooldownMs = 15000 } = {}) {
+    this.failureThreshold = failureThreshold;
+    this.cooldownMs = cooldownMs;
+    this.state = 'CLOSED';
+    this.failureCount = 0;
+    this.openedAt = 0;
+  }
+
+  canAttempt() {
+    if (this.state === 'CLOSED') {
+      return true;
+    }
+    if (this.state === 'OPEN' &amp;&amp; Date.now() - this.openedAt &gt;= this.cooldownMs) {
+      this.state = 'HALF_OPEN';
+      return true;
+    }
+    return this.state === 'HALF_OPEN';
+  }
+
+  recordSuccess() {
+    this.failureCount = 0;
+    this.state = 'CLOSED';
+  }
+
+  recordFailure() {
+    this.failureCount += 1;
+    if (this.state === 'HALF_OPEN' || this.failureCount &gt;= this.failureThreshold) {
+      this.state = 'OPEN';
+      this.openedAt = Date.now();
+    }
+  }
+
+  async execute(fn) {
+    if (!this.canAttempt()) {
+      const err = new Error('Upstream circuit breaker is OPEN');
+      err.code = 'CIRCUIT_OPEN';
+      throw err;
+    }
+    try {
+      const result = await fn();
+      this.recordSuccess();
+      return result;
+    } catch (err) {
+      this.recordFailure();
+      throw err;
+    }
+  }
+}
+
+export async function fetchWithTimeoutAndRetry(
+  url,
+  { method = 'GET', timeoutMs = 2500, maxAttempts = 3, headers = {} } = {}
+) {
+  const isIdempotent = method === 'GET' || method === 'HEAD' || Boolean(headers['Idempotency-Key']);
+  const attempts = isIdempotent ? maxAttempts : 1;
+
+  let lastError;
+  for (let attempt = 1; attempt &lt;= attempts; attempt += 1) {
+    try {
+      const res = await fetch(url, {
+        method,
+        headers,
+        signal: AbortSignal.timeout(timeoutMs)
+      });
+      if (res.status &gt;= 500 || res.status === 429) {
+        throw new Error(`Transient upstream status ${res.status}`);
+      }
+      return res;
+    } catch (err) {
+      lastError = err;
+      if (attempt &lt; attempts) {
+        const base = 150 * Math.pow(2, attempt - 1);
+        const jitter = Math.floor(Math.random() * 100);
+        await new Promise((r) =&gt; setTimeout(r, base + jitter));
+      }
+    }
+  }
+  throw lastError;
+}</code></pre>
+          </div>
+
+          <h3>Graceful Degradation Example in a Product Service</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/catalog/productView.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export async function getProductPageData({
+  productId,
+  productService,
+  recommendationClient,
+  recommendationBreaker,
+  logger
+}) {
+  const { product } = await productService.getProductById(productId);
+
+  let recommendations = [];
+  try {
+    recommendations = await recommendationBreaker.execute(() =&gt;
+      recommendationClient.fetchRelated(productId)
+    );
+  } catch (err) {
+    logger.warn({ productId, code: err.code || 'REC_FALLBACK' }, 'degraded_recommendations_skipped');
+  }
+
+  return { product, recommendations };
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Idempotency Gate on Retries:</strong> <code>fetchWithTimeoutAndRetry</code> refuses to retry non-idempotent <code>POST</code> calls unless an <code>Idempotency-Key</code> is supplied, preventing duplicate charges.</li>
+              <li><strong>Fail-Fast <code>OPEN</code> State:</strong> Immediately stops waiting on dead dependencies while allowing non-critical sections (<code>recommendations</code>) to degrade cleanly to <code>[]</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Resilience Patterns &amp; Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Pattern</th>
+                  <th>Problem Solved</th>
+                  <th>Key Trade-Off</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Strict Timeout</strong></td>
+                  <td>Prevents slow sockets from hanging forever</td>
+                  <td>Too aggressive a timeout falsely aborts legitimate slow responses</td>
+                </tr>
+                <tr>
+                  <td><strong>Retry + Exponential Jitter</strong></td>
+                  <td>Absorbs brief network blips seamlessly</td>
+                  <td>Amplifies load on struggling servers if used without jitter or on non-idempotent writes</td>
+                </tr>
+                <tr>
+                  <td><strong>Circuit Breaker</strong></td>
+                  <td>Stops cascading waits when an upstream service is down</td>
+                  <td>Requires sensible thresholds and fallback UX so transient blips don't trip needlessly</td>
+                </tr>
+                <tr>
+                  <td><strong>Queue Offloading</strong></td>
+                  <td>Decouples HTTP response from slow downstream work</td>
+                  <td>Introduces eventual consistency and worker monitoring responsibilities</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Verification</span>
+          <h2>Production Readiness Checklist</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Architecture &amp; Scaling:</strong> Stateless API replicas, bounded connection pools, graceful <code>SIGTERM</code> shutdown, and no local disk/RAM assumptions.</li>
+              <li><strong>Resilience:</strong> Explicit timeouts on every DB/Redis/HTTP call, jittered idempotent retries, circuit breakers/fallbacks for secondary dependencies, and DLQs on queues.</li>
+              <li><strong>Data &amp; Recovery:</strong> ESR indexes verified via explain plans, automated PITR backups, documented RPO/RTO, and tested restore drills.</li>
+              <li><strong>Security:</strong> Rate limiting, strict schema validation, AuthN + RBAC + IDOR ownership checks, Helmet/CORS, SSRF guards, secret managers, and dependency audits.</li>
+              <li><strong>Observability &amp; Ops:</strong> Redacted JSON logs with correlation IDs, <code>/health</code> + <code>/ready</code> probes, symptom alerts, CI/CD SHA releases, ADRs, and incident runbooks.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Capstone Design Practice</span>
+          <h2>Practical System Architecture Design Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Architect a Production-Ready B2B Invoicing &amp; Webhook Platform</h3>
+            <p>
+              Design a complete production backend architecture for a platform where businesses create invoices, generate PDFs, accept Stripe webhook payments, and send real-time dashboard alerts to team members:
+            </p>
+            <ol>
+              <li>Draw or outline the component topology (Edge LB, Express API, PostgreSQL/MongoDB + replicas, Redis, S3 Object Storage, Worker Pool, Socket.IO + Redis Adapter).</li>
+              <li>Justify 3 key technical trade-offs using short ADR bullets (e.g., PostgreSQL vs MongoDB for ledger integrity, presigned S3 URLs for PDFs, separate priority queues for webhooks vs bulk reports).</li>
+              <li>Define RPO/RTO targets, timeout/retry/circuit-breaker rules for outbound customer webhooks (including SSRF checks), and a zero-downtime deployment + rollback plan.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 17 Quiz: Production Backend Architecture (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="A circuit breaker trips OPEN after repeated upstream failures so subsequent calls fail fast in 0ms instead of hanging sockets and exhausting worker capacity.">
+              <p class="quiz-prompt">1. What primary failure mode does the Circuit Breaker pattern prevent?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> SQL syntax errors in migrations</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Cascading latency and resource exhaustion caused by piling requests onto an already failing upstream service</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> XSS in user-uploaded SVGs</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> Missing Docker .dockerignore files</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="In HALF_OPEN, the breaker lets a limited probe request through after cooldown to verify whether the upstream service has recovered.">
+              <p class="quiz-prompt">2. What happens when a Circuit Breaker transitions from <code>OPEN</code> to <code>HALF_OPEN</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> It deletes all Redis cache keys.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> It restarts the database server.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> It allows a test probe request through to determine whether to close normally or re-open.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> It permanently disables the endpoint.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Retrying non-idempotent POST requests without an Idempotency-Key risks charging customers or creating records multiple times.">
+              <p class="quiz-prompt">3. Why should automatic HTTP client retries NEVER run on unkeyed non-idempotent <code>POST /payments</code> requests?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> If the first request succeeded on the server before a response timeout, retrying without an Idempotency-Key causes duplicate charges.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Node.js fetch() forbids retrying POST requests.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Retrying POST deletes CORS headers.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> TLS forbids sending POST bodies twice.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Graceful degradation keeps core user workflows functional when optional secondary features (like recommendations) fail.">
+              <p class="quiz-prompt">4. Which behavior best demonstrates graceful degradation?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Returning HTTP 500 on the entire product page when the optional recommendations API times out</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Crashing the Node.js process on every 404</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Disabling authentication checks when Redis is busy</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Logging a warning, skipping the optional recommendations widget, and still serving the primary product details</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="RPO (Recovery Point Objective) defines the maximum tolerable age of lost data (time window); RTO (Recovery Time Objective) defines max acceptable restore downtime.">
+              <p class="quiz-prompt">5. What is the difference between RPO and RTO in disaster recovery planning?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> RPO measures CPU speed; RTO measures RAM size.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> RPO is maximum acceptable data loss window; RTO is maximum acceptable downtime to restore service.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> RPO applies to Docker; RTO applies only to CSS.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> They are synonyms for rate-limit headers.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Point-in-Time Recovery archives continuous transaction logs (WAL/oplog) alongside snapshots so backups can restore to minutes before an incident rather than losing up to 24 hours.">
+              <p class="quiz-prompt">6. If a business sets an RPO of 5 minutes, why are once-a-day midnight database snapshots insufficient?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Snapshots take 5 days to upload.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Nightly backups erase indexes.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> An outage at 23:55 would lose nearly 24 hours of writes unless continuous Point-in-Time Recovery (WAL/oplog archiving) is enabled.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Snapshots cannot run on PostgreSQL or MongoDB.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="ADRs record context, alternatives considered, and consequences/trade-offs behind major architectural choices for future maintainers.">
+              <p class="quiz-prompt">7. What is the primary purpose of an Architecture Decision Record (ADR)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> To document the context, options evaluated, and trade-offs behind a key technical decision for future engineers.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> To replace OpenAPI endpoint schemas completely.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> To store encrypted production passwords inside Git.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> To auto-generate Dockerfile instructions.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Retrying a permanent 400 Bad Request or 403 Forbidden error wastes resources and delays reporting the real bug.">
+              <p class="quiz-prompt">8. Which HTTP status class from an upstream API should NOT trigger automatic retries?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> 503 Service Unavailable</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> 504 Gateway Timeout</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> 429 Too Many Requests (after Retry-After)</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> 400 Bad Request / 401 / 403 client/validation failures</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Premature microservices add network latency, distributed debugging, and deployment overhead before scale or team size requires them.">
+              <p class="quiz-prompt">9. When starting a new production SaaS backend with a 4-developer team, why is a well-structured modular monolith + Redis usually favored over 12 separate microservices?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Microservices cannot use Docker or Redis.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> A modular monolith delivers clean domain separation and horizontal stateless scaling without distributed network latency, partial failures, and multi-repo CI overhead.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Node.js does not support HTTP calls between services.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Monoliths never require backups.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="A tested restore drill proves backups are readable, encrypted keys work, and actual RTO targets can be met under pressure.">
+              <p class="quiz-prompt">10. Why is an untested database backup strategy considered incomplete for production readiness?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Untested backups delete themselves after 1 hour.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Testing restores skips authentication.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Corrupt archives, missing decryption keys, or slow restore speeds go unnoticed until an actual emergency unless restore drills run regularly.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> MongoDB disables replication unless backups are restored daily.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why is it dangerous to enable automatic retries WITHOUT timeouts on outbound HTTP requests?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Without strict timeouts, slow connections hold sockets and memory open for minutes; multiplying across retries keeps resources pinned even longer and worsens overload when the upstream service starts recovering.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Give an example where graceful degradation is appropriate and an example where failing closed is mandatory.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Graceful degradation:</strong> Omitting personalized "recommended items" or falling back from Redis cache to DB read. <strong>Fail closed (mandatory):</strong> Never bypass JWT signature checks, permission guards, or payment fraud verification if an auth store or validator fails—reject securely with <code>503</code>/<code>401</code>.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. What should a good incident runbook contain for an operational handover?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Alert trigger meaning, dashboard/log query links, immediate triage steps, safe mitigation actions (e.g., how to scale workers, pause a broken webhook queue, or roll back an image SHA), escalation contacts, and verification steps.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why do production systems separate high-priority queues from bulk batch queues?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Separating latency-sensitive queues (password reset emails, payment webhooks) from massive bulk queues (50,000 monthly reports) isolates blast radius so bulk spikes never delay critical user operations.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why does every architecture decision involve trade-offs rather than a "one-size-fits-all best tool"?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Every choice trades one dimension for another: caching trades freshness for speed, queues trade immediate feedback for resilience, microservices trade operational simplicity for team/scale isolation, and strict consistency trades availability under partitions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix a Dangerous Retry Storm</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A service wraps <code>POST /charge</code> in a 5-attempt immediate retry loop with zero timeout and catches all HTTP errors (including <code>400</code>). Identify 3 production flaws and fix them.</p>
+                <p><strong>Reference Fixes:</strong> (1) Attach a bounded timeout per attempt (`AbortSignal.timeout(3000)`); (2) Require an `Idempotency-Key` header before retrying any mutating `POST` charge; (3) Retry only transient network/5xx faults (never `4xx` validation/decline errors) using exponential backoff + jitter.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Add Fallback &amp; Timeout Wrapper for Cache-Aside</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a small helper <code>withTimeout(promise, ms, fallbackFn)</code> that returns <code>fallbackFn(err)</code> gracefully if a non-critical dependency exceeds <code>ms</code> milliseconds.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function withTimeoutFallback(promise, ms, fallbackFn) {
+  let timer;
+  const timeoutPromise = new Promise((_, reject) =&gt; {
+    timer = setTimeout(() =&gt; reject(new Error('DEPENDENCY_TIMEOUT')), ms);
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } catch (err) {
+    return fallbackFn(err);
+  } finally {
+    clearTimeout(timer);
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Writing a Production ADR for Notification Delivery</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a concise ADR choosing how an order platform delivers real-time dashboard updates + email receipts after checkout.</p>
+                <p><strong>Reference ADR:</strong> <em>Context:</em> Checkout must stay under 200ms and never fail if SMTP slows down. <em>Decision:</em> Commit Order + Outbox event atomically in DB; publish <code>order.placed</code> to queue/broker; Worker sends idempotent email with exponential backoff + DLQ, and emits <code>order:updated</code> via Socket.IO Redis Emitter to online users while persisting unread notification in DB. <em>Trade-off:</em> Adds Redis + Worker operational management and brief eventual consistency (~100ms), accepted for high checkout reliability.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 17 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Systems synthesis:</strong> Combine stateless modular services, Redis, async queues, indexed pooled DBs, security hardening, and CI/CD into one coherent design.</li>
+              <li><strong>Resilience patterns:</strong> Bound every external call with timeouts, idempotent jittered retries, circuit breakers, and graceful fallbacks for non-critical paths.</li>
+              <li><strong>Disaster recovery:</strong> Define RPO/RTO targets, enable automated PITR backups, and verify restores regularly.</li>
+              <li><strong>Operational excellence:</strong> Record ADRs, maintain incident runbooks, and validate every release against a concrete production readiness checklist.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 17 Production Architecture Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 17 Production Backend Architecture visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 17 local visual reference (<code>Day 17/image.webp</code>). Review end-to-end production topology, circuit breakers, and operational readiness.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 16/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 16: CI/CD and Deployment</span>
+          </a>
+          <a href="../Day 18/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 18: Complete Revision &amp; Final Assessment &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 16/index.html">Day 16: CI/CD</a></li>
+          <li><a href="../Day 17/index.html">Day 17: Prod Architecture</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

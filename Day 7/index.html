@@ -1,0 +1,1040 @@
+Direct file/archive downloads are not available in this chat interface, so here
+are the three separate complete files for Day 7: Real-Time Communication with
+WebSockets—ready to copy and save individually into your Phase 6/Day 7/ folder.
+
+1. Phase 6/Day 7/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 7: Real-Time Communication with WebSockets. Learn WebSocket handshakes, Socket.IO rooms and namespaces, real-time notifications, presence, authentication, reconnection, and horizontal scaling.">
+  <title>Day 7: Real-Time Communication with WebSockets | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="7">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 7: Real-Time WebSockets</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html" selected>Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 6/index.html" class="nav-step-btn" title="Go to Day 6">Prev</a>
+            <a href="../Day 8/index.html" class="nav-step-btn" title="Go to Day 8">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 7 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 07</span>
+          <span class="category-pill">Real-Time &amp; Persistent Connections</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="7" aria-pressed="false">Mark Day 7 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Real-Time Communication with WebSockets</h1>
+        <p class="lesson-intro">
+          Standard HTTP works great when the client initiates every request, but falls short for live notifications, collaborative workspaces, live order tracking, and chat. Today you will learn how persistent full-duplex WebSocket connections differ from HTTP, how Socket.IO rooms and namespaces organize traffic, how to authenticate and recover dropped connections safely, and how to scale real-time servers across multiple Node.js instances.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2 &amp; 6</span>
+            <p>WebSockets re-introduce stateful TCP connections on each server—requiring Redis Pub/Sub adapters so scaled instances can broadcast across nodes.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Keep real-time notifications ephemeral and pair them with durable database persistence so clients recovering from network drops never miss updates.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Build an authenticated Socket.IO real-time notification and live presence service with clean server-side rooms and browser-side reconnection handling.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Handshake &amp; Push Lifecycle</a>
+            <a href="#diagrams">WebSocket &amp; Scaling Diagrams</a>
+            <a href="#implementation">Server &amp; Client Implementation</a>
+            <a href="#real-world">Transport Options &amp; Trade-offs</a>
+            <a href="#mistakes-security">Security &amp; Scaling Pitfalls</a>
+            <a href="#practical-task">Practical Real-Time Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Unlike stateless HTTP APIs that close or reuse short-lived request cycles, real-time backends keep thousands of concurrent sockets open simultaneously. Designing them cleanly demands careful attention to authentication, memory limits, reconnection storms, and multi-instance fan-out.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Compare HTTP vs. WebSockets</h3>
+              <p>Contrast polling, Server-Sent Events (SSE), and persistent full-duplex WebSocket frames.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Use Socket.IO Rooms &amp; Namespaces</h3>
+              <p>Scope real-time events cleanly by domain namespace and authorized user or project rooms.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Authenticate &amp; Manage Presence</h3>
+              <p>Verify tokens during connection handshakes and track multi-device user online status accurately.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Scale Real-Time Backends</h3>
+              <p>Handle reconnections, missed-event catch-up, and cross-node broadcasting via Redis adapters.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Real-Time Communication Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. HTTP Request-Response vs. Persistent Connections</h3>
+            <p>
+              In classic HTTP, the client always speaks first: open/reuse connection, send headers + body, receive response, finish. If the server wants to push a new alert without WebSockets, the client must either <strong>short-poll</strong> (send <code>GET /notifications</code> every 5 seconds, wasting bandwidth and DB queries when nothing changed) or <strong>long-poll</strong> (hold an HTTP request open until data arrives, then reopen immediately).
+            </p>
+            <p>
+              A <strong>persistent WebSocket connection</strong> keeps a single TCP/TLS tunnel open after startup so <em>both</em> client and server can push lightweight frames asynchronously at any millisecond with minimal framing overhead.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. WebSocket Fundamentals</h3>
+            <p>
+              Every WebSocket connection begins as a standard HTTP/1.1 request carrying <code>Upgrade: websocket</code> and <code>Connection: Upgrade</code> headers. If the server accepts, it replies with <code>HTTP/1.1 101 Switching Protocols</code>. From that point onward, HTTP ends on that socket and raw binary/UTF-8 WebSocket frames flow bidirectionally over <code>ws://</code> (development) or TLS-encrypted <code>wss://</code> (production).
+            </p>
+            <p>
+              Periodic <strong>heartbeat (ping/pong)</strong> frames detect silent dead connections (such as a phone losing cellular signal without sending a TCP FIN packet) so servers can clean up stale socket memory.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Socket.IO Concepts and Practical Use</h3>
+            <p>
+              The native Node.js <code>ws</code> library provides raw WebSocket framing with tiny overhead. <strong>Socket.IO</strong> builds higher-level application features on top of WebSockets (plus HTTP long-polling fallback if a corporate proxy blocks upgrades):
+            </p>
+            <ul>
+              <li>Automatic reconnection with configurable exponential backoff and randomization.</li>
+              <li>Built-in named events (<code>socket.emit('order:updated', data)</code>) and optional message acknowledgments.</li>
+              <li>Built-in <strong>Rooms</strong>, <strong>Namespaces</strong>, and multi-server <strong>Redis Adapter</strong> support.</li>
+            </ul>
+            <p>
+              Note: Socket.IO adds a small custom protocol envelope, so a Socket.IO server must be paired with a Socket.IO client—not a plain browser <code>new WebSocket()</code> object.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Rooms and Namespaces</h3>
+            <ul>
+              <li><strong>Namespaces:</strong> Separate logical channels over the same underlying server port—for example, <code>/notifications</code> for user alerts and <code>/admin-live</code> for staff dashboards—each with its own authentication middleware and event handlers.</li>
+              <li><strong>Rooms:</strong> Arbitrary server-side groupings within a namespace that sockets can join or leave dynamically, such as <code>user:u_42</code> (all tabs/devices belonging to user 42) or <code>workspace:w_9</code>. Rooms exist purely on the server; clients cannot forcibly join rooms unless server code authorizes and calls <code>socket.join(room)</code>.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Real-Time Notifications</h3>
+            <p>
+              Do not treat WebSockets as a replacement for durable storage! When a background worker finishes a PDF report or another user posts a comment, persist the notification record in your primary database first, then emit the real-time event to <code>io.to(`user:${recipientId}`).emit('notification:new', payload)</code>. If the user is offline, the database still holds the unread notification for when they reconnect.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Presence and Connection Management</h3>
+            <p>
+              Tracking whether a user is "online" is trickier than setting <code>isOnline = true</code> on connect and <code>false</code> on disconnect. A single user often opens two browser tabs plus a mobile app simultaneously. If they close one tab, their other two sockets are still connected!
+            </p>
+            <p>
+              Correct presence tracks <strong>active socket IDs per user</strong> (e.g., a Redis Set <code>presence:user:42</code> holding active socket IDs with TTL renewal on heartbeat, or an in-memory map on a single node). A user transitions offline only when their active socket count drops to zero.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Authentication for Real-Time Connections</h3>
+            <p>
+              Browser <code>WebSocket</code> APIs cannot set arbitrary custom HTTP headers like <code>Authorization: Bearer ...</code> directly on raw upgrades. In Socket.IO, pass a short-lived access token via <code>auth: { token }</code> in the client handshake (or rely on secure <code>HttpOnly</code> cookies sent automatically on same-origin / credentialed handshakes) and verify it inside <code>io.use(...)</code> <strong>before</strong> allowing the connection.
+            </p>
+            <p>
+              Also validate the HTTP <code>Origin</code> header via strict CORS allowlists to prevent <strong>Cross-Site WebSocket Hijacking (CSWSH)</strong>, and re-verify token expiry or room permissions on sensitive actions.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Reconnection, Error Handling &amp; Conceptual Scaling</h3>
+            <p>
+              When a server restarts, 10,000 connected clients drop simultaneously. Without randomized jitter in client reconnection delays, all 10,000 reconnect at the exact same millisecond (a reconnection storm). On reconnect, clients should send their <code>lastReceivedAt</code> timestamp or cursor over REST/socket so they recover any notifications missed while offline.
+            </p>
+            <p>
+              When scaling horizontally to multiple Node.js instances (Day 2), User A may connect to Instance 1 while User B connects to Instance 2. Calling <code>io.to('room').emit(...)</code> on Instance 1 alone will not reach User B unless instances share events through a <strong>Redis Pub/Sub Adapter</strong> (<code>@socket.io/redis-adapter</code>). Additionally, if Socket.IO uses HTTP long-polling fallback during handshake, load balancers need sticky affinity during connection setup or WebSocket-only transport configuration.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Connection, Auth &amp; Cross-Node Notification Flow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Handshake &amp; Middleware Auth:</strong> Browser connects to <code>wss://api.example.com</code> passing an auth token. Server verifies signature/session in <code>io.use()</code> and attaches <code>socket.data.userId</code>.
+            </li>
+            <li>
+              <strong>Room Binding &amp; Presence:</strong> Server joins the socket to <code>user:${userId}</code>, adds <code>socket.id</code> to the user's presence set, and optionally joins authorized workspace rooms after DB permission checks.
+            </li>
+            <li>
+              <strong>Live Event Broadcast:</strong> When an HTTP API or background worker creates a notification, it saves the record to the database and publishes to <code>io.to(`user:${targetId}`).emit('notification:new', dto)</code>.
+            </li>
+            <li>
+              <strong>Cross-Instance Fan-Out:</strong> If running 3 API nodes, the Redis Adapter publishes the room event to Redis Pub/Sub so every instance holding a socket in <code>user:${targetId}</code> delivers it immediately.
+            </li>
+            <li>
+              <strong>Disconnect &amp; Catch-Up:</strong> On disconnect, the server removes <code>socket.id</code> from presence; on reconnect, the client fetches missed notifications via <code>GET /api/notifications?since=...</code>.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>WebSocket &amp; Real-Time Scaling Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: HTTP Request-Response vs. WebSocket Upgrade</h3>
+            <p class="diagram-caption">
+              WebSockets begin with an HTTP <code>101 Switching Protocols</code> handshake and upgrade into a persistent bidirectional frame stream.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 190" class="arch-svg" role="img" aria-label="Browser sending HTTP Upgrade websocket request, server responding 101 Switching Protocols, followed by bidirectional full-duplex push frames">
+                <defs>
+                  <marker id="arrow-ws" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="20" y="24" width="140" height="142" rx="10" class="svg-box-blue"></rect>
+                <text x="90" y="92" text-anchor="middle" class="svg-title">Browser Client</text>
+                <text x="90" y="112" text-anchor="middle" class="svg-sub">Socket.IO / wss://</text>
+
+                <rect x="600" y="24" width="140" height="142" rx="10" class="svg-box-accent"></rect>
+                <text x="670" y="92" text-anchor="middle" class="svg-title">Node.js Server</text>
+                <text x="670" y="112" text-anchor="middle" class="svg-sub">io.use() Auth</text>
+
+                <line x1="164" y1="46" x2="594" y2="46" class="svg-arrow" marker-end="url(#arrow-ws)"></line>
+                <text x="380" y="38" text-anchor="middle" class="svg-sub">1. GET /socket.io (Upgrade: websocket + auth token)</text>
+
+                <line x1="594" y1="78" x2="164" y2="78" class="svg-arrow" marker-end="url(#arrow-ws)"></line>
+                <text x="380" y="70" text-anchor="middle" class="svg-sub">2. HTTP/1.1 101 Switching Protocols (Verified)</text>
+
+                <line x1="164" y1="115" x2="594" y2="115" class="svg-arrow" marker-end="url(#arrow-ws)"></line>
+                <text x="380" y="107" text-anchor="middle" class="svg-sub">3. Client -&gt; Server: status:heartbeat / join:project</text>
+
+                <line x1="594" y1="148" x2="164" y2="148" class="svg-arrow" marker-end="url(#arrow-ws)"></line>
+                <text x="380" y="140" text-anchor="middle" class="svg-sub">4. Server -&gt; Client: notification:new / presence:update</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Scaling Socket.IO Across Multiple Instances with Redis Pub/Sub</h3>
+            <p class="diagram-caption">
+              When User A sends an event on Instance 1, the Redis Adapter broadcasts it to Instance 2 so User B receives it in real time.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 220" class="arch-svg" role="img" aria-label="User A connected to Node Instance 1 emitting a room message through Redis Pub/Sub Adapter so Node Instance 2 delivers it to User B">
+                <defs>
+                  <marker id="arrow-ws-scale" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="24" width="128" height="58" rx="10" class="svg-box-muted"></rect>
+                <text x="82" y="50" text-anchor="middle" class="svg-title">User A Socket</text>
+                <text x="82" y="68" text-anchor="middle" class="svg-sub">Room: project:9</text>
+
+                <rect x="18" y="134" width="128" height="58" rx="10" class="svg-box-muted"></rect>
+                <text x="82" y="160" text-anchor="middle" class="svg-title">User B Socket</text>
+                <text x="82" y="178" text-anchor="middle" class="svg-sub">Room: project:9</text>
+
+                <line x1="146" y1="53" x2="220" y2="53" class="svg-arrow" marker-end="url(#arrow-ws-scale)"></line>
+                <line x1="220" y1="163" x2="146" y2="163" class="svg-arrow" marker-end="url(#arrow-ws-scale)"></line>
+
+                <rect x="224" y="20" width="186" height="66" rx="10" class="svg-box-blue"></rect>
+                <text x="317" y="48" text-anchor="middle" class="svg-title">Node Instance 1</text>
+                <text x="317" y="66" text-anchor="middle" class="svg-sub">Socket.IO + Redis Adapter</text>
+
+                <rect x="224" y="130" width="186" height="66" rx="10" class="svg-box-blue"></rect>
+                <text x="317" y="158" text-anchor="middle" class="svg-title">Node Instance 2</text>
+                <text x="317" y="176" text-anchor="middle" class="svg-sub">Socket.IO + Redis Adapter</text>
+
+                <line x1="410" y1="53" x2="496" y2="95" class="svg-arrow" marker-end="url(#arrow-ws-scale)"></line>
+                <line x1="496" y1="125" x2="410" y2="163" class="svg-arrow" marker-end="url(#arrow-ws-scale)"></line>
+
+                <rect x="500" y="72" width="236" height="76" rx="10" class="svg-box-accent"></rect>
+                <text x="618" y="102" text-anchor="middle" class="svg-title">Redis Pub/Sub Broker</text>
+                <text x="618" y="121" text-anchor="middle" class="svg-sub">Broadcasts room events</text>
+                <text x="618" y="137" text-anchor="middle" class="svg-sub">across all Node instances</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Building an Authenticated Real-Time Notification &amp; Presence Service</h2>
+          <p>
+            Real-time systems involve two distinct environments: <strong>server-side Node.js code</strong> (managing authentication, room authorization, and presence) and <strong>browser-side JavaScript</strong> (initiating connections with tokens, handling reconnection, and updating UI state).
+          </p>
+
+          <h3>Part A — Server-Side Socket.IO Setup &amp; Auth Middleware (Node.js)</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Server-Side: src/realtime/socketServer.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
+
+export function attachSocketServer(httpServer, { projectRepository, presenceStore }) {
+  const io = new Server(httpServer, {
+    cors: {
+      origin: process.env.ALLOWED_ORIGIN,
+      credentials: true
+    },
+    pingInterval: 25000,
+    pingTimeout: 20000
+  });
+
+  const notificationsNs = io.of('/notifications');
+
+  notificationsNs.use((socket, next) =&gt; {
+    const token = socket.handshake.auth?.token;
+    if (!token) {
+      return next(new Error('AUTH_REQUIRED'));
+    }
+    try {
+      const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+      socket.data.userId = payload.sub;
+      next();
+    } catch (err) {
+      next(new Error('INVALID_TOKEN'));
+    }
+  });
+
+  notificationsNs.on('connection', async (socket) =&gt; {
+    const userId = socket.data.userId;
+    await socket.join(`user:${userId}`);
+
+    const activeCount = await presenceStore.addConnection(userId, socket.id);
+    if (activeCount === 1) {
+      notificationsNs.emit('presence:changed', { userId, status: 'online' });
+    }
+
+    socket.on('project:subscribe', async ({ projectId }, ack) =&gt; {
+      try {
+        const isMember = await projectRepository.userHasAccess(projectId, userId);
+        if (!isMember) {
+          if (typeof ack === 'function') {
+            ack({ ok: false, error: 'FORBIDDEN' });
+          }
+          return;
+        }
+        await socket.join(`project:${projectId}`);
+        if (typeof ack === 'function') {
+          ack({ ok: true, room: `project:${projectId}` });
+        }
+      } catch (err) {
+        if (typeof ack === 'function') {
+          ack({ ok: false, error: 'SERVER_ERROR' });
+        }
+      }
+    });
+
+    socket.on('disconnect', async () =&gt; {
+      const remaining = await presenceStore.removeConnection(userId, socket.id);
+      if (remaining === 0) {
+        notificationsNs.emit('presence:changed', { userId, status: 'offline' });
+      }
+    });
+  });
+
+  return {
+    notifyUser(userId, notification) {
+      notificationsNs.to(`user:${userId}`).emit('notification:new', notification);
+    },
+    notifyProject(projectId, eventName, payload) {
+      notificationsNs.to(`project:${projectId}`).emit(eventName, payload);
+    }
+  };
+}</code></pre>
+          </div>
+
+          <h3>Part B — Server-Side Multi-Tab Presence Store (Redis-Backed)</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Server-Side: src/realtime/presenceStore.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export class RedisPresenceStore {
+  constructor(redisClient) {
+    this.redis = redisClient;
+  }
+
+  key(userId) {
+    return `presence:sockets:${userId}`;
+  }
+
+  async addConnection(userId, socketId) {
+    const key = this.key(userId);
+    await this.redis.sAdd(key, socketId);
+    await this.redis.expire(key, 3600);
+    return this.redis.sCard(key);
+  }
+
+  async removeConnection(userId, socketId) {
+    const key = this.key(userId);
+    await this.redis.sRem(key, socketId);
+    return this.redis.sCard(key);
+  }
+
+  async isOnline(userId) {
+    const count = await this.redis.sCard(this.key(userId));
+    return count &gt; 0;
+  }
+}</code></pre>
+          </div>
+
+          <h3>Part C — Browser-Side Client Connection &amp; Reconnection Recovery</h3>
+          <p>
+            Unlike server code above, this code runs in the user's browser. It supplies the access token during connection, refreshes or handles auth rejection errors, uses randomized reconnection backoff, and catches up on missed notifications via REST upon reconnecting.
+          </p>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Browser-Side: client/notificationsSocket.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { io } from 'socket.io-client';
+
+export function connectNotificationClient({ apiBaseUrl, getAccessToken, onNotification, fetchMissedSince }) {
+  let lastSeenIso = new Date().toISOString();
+
+  const socket = io(`${apiBaseUrl}/notifications`, {
+    transports: ['websocket', 'polling'],
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 15000,
+    randomizationFactor: 0.5,
+    auth: (cb) =&gt; {
+      cb({ token: getAccessToken() });
+    }
+  });
+
+  socket.on('connect', async () =&gt; {
+    const missed = await fetchMissedSince(lastSeenIso);
+    for (const item of missed) {
+      onNotification(item);
+      lastSeenIso = item.createdAt;
+    }
+  });
+
+  socket.on('notification:new', (notification) =&gt; {
+    lastSeenIso = notification.createdAt;
+    onNotification(notification);
+  });
+
+  socket.on('connect_error', (err) =&gt; {
+    console.warn('Real-time connection error:', err.message);
+  });
+
+  return socket;
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Namespace <code>/notifications</code>:</strong> Keeps notification sockets and handlers separate from other features (like live support chat).</li>
+              <li><strong>Server-Authorized <code>project:subscribe</code>:</strong> Never blindly join <code>socket.join(roomFromClient)</code>; verify database membership for <code>socket.data.userId</code> first!</li>
+              <li><strong>Redis Set Presence (<code>sAdd</code> / <code>sRem</code> / <code>sCard</code>):</strong> Tracks individual socket IDs per user across devices and servers so closing one browser tab does not falsely mark a user offline.</li>
+              <li><strong>Client <code>auth: (cb) =&gt; cb({ token: getAccessToken() })</code>:</strong> Passing a callback function ensures each automatic reconnect attempt reads the newest refreshed access token rather than retrying with an expired token.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Real-Time Transport Comparison &amp; Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Mechanism</th>
+                  <th>Direction</th>
+                  <th>Pros</th>
+                  <th>Limitations</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Short Polling (HTTP)</strong></td>
+                  <td>Client requests periodically</td>
+                  <td>Zero persistent server state, trivial behind any proxy/CDN</td>
+                  <td>Wastes requests when idle; delayed updates up to poll interval</td>
+                </tr>
+                <tr>
+                  <td><strong>Server-Sent Events (SSE)</strong></td>
+                  <td>Server &rarr; Client (One-way over HTTP)</td>
+                  <td>Simple standard HTTP, built-in browser auto-reconnect, firewall friendly</td>
+                  <td>Server-to-client only; browser connection-per-domain limits on HTTP/1.1</td>
+                </tr>
+                <tr>
+                  <td><strong>Raw WebSockets (<code>ws</code>)</strong></td>
+                  <td>Full-duplex bidirectional</td>
+                  <td>Lowest framing overhead, standard protocol across any language</td>
+                  <td>No built-in rooms, reconnection, or fallback; you implement protocol features yourself</td>
+                </tr>
+                <tr>
+                  <td><strong>Socket.IO</strong></td>
+                  <td>Full-duplex + fallback</td>
+                  <td>Rooms, namespaces, ACKs, auto-backoff reconnect, Redis Adapter</td>
+                  <td>Requires Socket.IO client; slightly larger packet framing; sticky sessions needed if polling fallback enabled</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>When to Use WebSockets / Socket.IO</h3>
+              <ul>
+                <li>Chat, multiplayer/collaborative editing, live presence indicators.</li>
+                <li>Sub-second bidirectional telemetry or interactive dashboards.</li>
+                <li>Instant in-app notifications triggered by backend events.</li>
+              </ul>
+            </div>
+            <div class="decision-card">
+              <h3>When NOT to Use WebSockets</h3>
+              <ul>
+                <li>Standard CRUD fetching where occasional user refresh or 30s polling works fine.</li>
+                <li>One-way AI token streaming or live news tickers where lightweight HTTP <strong>SSE</strong> is simpler and stateless-friendly.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes, Security &amp; Scaling Pitfalls</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Trusting Client-Sent Room Names or <code>userId</code> Without Verification</h3>
+              <p><strong>Critical Security bug:</strong> Listening to <code>socket.on('join', ({ room }) =&gt; socket.join(room))</code> lets any logged-in user subscribe to <code>user:admin_1</code> or another tenant's private project notifications!</p>
+              <p><strong>Fix:</strong> Derive <code>userId</code> strictly from the verified JWT/session in <code>io.use()</code> and check database permissions before every room join.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Missing CORS Origin Checks (Cross-Site WebSocket Hijacking)</h3>
+              <p><strong>Security risk:</strong> If authentication uses cookies and the server accepts WebSocket handshakes from any origin, a malicious website visited by the user can open an authenticated WebSocket to your API.</p>
+              <p><strong>Fix:</strong> Restrict <code>cors.origin</code> to explicit trusted origins and validate origin headers on upgrade.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Forgetting Redis Adapter Across Multiple Instances</h3>
+              <p><strong>Scaling bug:</strong> Emitting an event on API Instance 1 delivers only to sockets currently connected to Instance 1, silently dropping users connected to Instance 2.</p>
+              <p><strong>Fix:</strong> Attach <code>@socket.io/redis-adapter</code> (or Redis Pub/Sub bridge) across all real-time server instances.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Passing JWTs in URL Query Strings</h3>
+              <p><strong>Security risk:</strong> Connecting to <code>wss://api.com?token=eyJ...</code> leaks sensitive tokens into reverse-proxy access logs, browser history, and monitoring tools.</p>
+              <p><strong>Fix:</strong> Pass tokens via Socket.IO's <code>auth</code> handshake payload (sent inside the WebSocket/Engine.IO handshake body) or secure <code>HttpOnly</code> cookies.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Real-Time Notification Milestone</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Live Order Status &amp; Notification Feature</h3>
+            <p>
+              Extend an Express API with a real-time notification feature using Socket.IO:
+            </p>
+            <ol>
+              <li>Attach a Socket.IO server sharing your Express HTTP server, restricted to a <code>/notifications</code> namespace with JWT verification in <code>io.use()</code>.</li>
+              <li>Auto-join each verified socket into <code>user:${userId}</code> and maintain multi-tab presence counts.</li>
+              <li>When an HTTP endpoint (e.g., <code>PATCH /api/orders/:id/ship</code>) updates an order in the database, persist a notification document first and then emit <code>notification:new</code> to that order owner's user room.</li>
+              <li>Add a minimal browser test script that logs received live notifications, displays online/reconnecting status, and calls <code>GET /api/notifications?since=...</code> upon reconnect.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 7 Quiz: Real-Time WebSockets (10 Questions)</h2>
+          <p>Select one option per question, then click <strong>Check Quiz Answers</strong> for feedback and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="A WebSocket connection starts as an HTTP Upgrade request and switches protocols via HTTP 101 Switching Protocols into a persistent full-duplex socket.">
+              <p class="quiz-prompt">1. Which HTTP status code confirms a successful upgrade from HTTP to a WebSocket connection?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> 202 Accepted</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> 101 Switching Protocols</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> 304 Not Modified</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> 204 No Content</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="A user often has multiple tabs or devices connected simultaneously; clearing online presence on the first tab disconnect falsely marks the user offline while other tabs stay open.">
+              <p class="quiz-prompt">2. Why does setting <code>user.isOnline = false</code> immediately inside <code>socket.on('disconnect')</code> produce buggy presence?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> WebSockets never fire disconnect events.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> JavaScript booleans cannot be stored in databases.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> A user may have multiple open browser tabs or devices; they are only offline when their active socket count reaches zero.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Socket.IO automatically logs the user out of REST APIs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Server-side authorization must check ownership/membership before calling socket.join(room); blindly trusting client-supplied room names creates an unauthorized access vulnerability.">
+              <p class="quiz-prompt">3. What is the security flaw in <code>socket.on('join', (room) =&gt; socket.join(room))</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Any connected user can join another user's or tenant's private room and eavesdrop on their live events.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Socket.IO does not allow strings as room names.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Calling socket.join() closes the TCP connection.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> It converts wss:// back into plain HTTP polling.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Putting JWTs in URL query strings exposes credentials in load-balancer access logs, browser histories, and monitoring dashboards.">
+              <p class="quiz-prompt">4. Why should authentication tokens be sent via Socket.IO's <code>auth</code> option or secure cookies rather than URL query strings?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Query strings are limited to 8 characters.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Node.js strips query parameters from all requests.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> JWTs cannot be URL-encoded.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> URL query strings are routinely logged in plaintext by proxies, web servers, and analytics tools.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="With multiple server instances, an emit on Instance 1 only reaches sockets on Instance 1 unless a Redis Pub/Sub adapter distributes the event to all instances.">
+              <p class="quiz-prompt">5. When scaling Socket.IO across 4 Node.js instances behind a load balancer, what solves delivering room events to sockets connected to other instances?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> Turning off TLS encryption</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> Using a shared Pub/Sub adapter such as <code>@socket.io/redis-adapter</code></label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Saving socket objects inside MongoDB</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Reducing pingInterval to 10ms</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Randomization spreads out client reconnect attempts over time so a server restart does not trigger a synchronized thundering herd of reconnects.">
+              <p class="quiz-prompt">6. Why is <code>randomizationFactor</code> (jitter) important in WebSocket client reconnection configuration?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> It randomizes event names for security.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> It distributes cookies across domains.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> It staggers reconnect timing across thousands of clients so a server restart does not trigger a reconnection storm.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> It compresses WebSocket frames with gzip.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Server-Sent Events (SSE) run over standard HTTP and are simpler when communication is strictly one-way from server to client.">
+              <p class="quiz-prompt">7. When is Server-Sent Events (SSE) often a simpler alternative to WebSockets?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> When updates flow only one way from server to client (such as live feeds or AI streaming responses).</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> When building low-latency binary multiplayer games.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> When clients must stream binary audio frames upstream continuously.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> When the server cannot speak HTTP.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Passing auth as a function evaluates on every connect and reconnect attempt, ensuring refreshed access tokens are sent instead of stale expired ones.">
+              <p class="quiz-prompt">8. In the Socket.IO browser client, why pass <code>auth: (cb) =&gt; cb({ token: getAccessToken() })</code> as a function instead of a static string?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Socket.IO rejects static objects in auth.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Functions automatically encrypt JWTs with AES.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> It disables HTTP long-polling.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Reconnect attempts invoke the function fresh so they send a newly refreshed access token instead of an expired one.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="WebSockets are ephemeral push channels; saving notifications in the DB first ensures offline or temporarily disconnected users recover missed alerts on reconnect.">
+              <p class="quiz-prompt">9. Why should real-time notifications be persisted in a database in addition to being emitted over WebSockets?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Socket.IO deletes JSON objects larger than 10 bytes.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Users who are offline or briefly disconnected miss ephemeral socket emits and need durable history to catch up.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Databases automatically open WebSocket connections to browsers.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Browsers clear JavaScript variables every 5 seconds.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Namespaces partition separate logical application endpoints/auth pipelines on one server, whereas rooms group sockets dynamically within a namespace.">
+              <p class="quiz-prompt">10. How do Socket.IO Namespaces differ from Rooms?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Namespaces require separate physical servers.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Rooms persist across server crashes automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Namespaces define separate logical endpoints with independent middleware/handlers; rooms group sockets dynamically inside a namespace.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> They are identical concepts.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What problem do WebSocket heartbeat (ping/pong) frames solve?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>When a mobile client loses network signal abruptly or a laptop lid closes, no clean TCP disconnect packet reaches the server. Periodic ping/pong heartbeats detect unresponsive dead sockets after <code>pingTimeout</code> so the server can disconnect them, reclaim memory, and update presence accurately.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Explain why sticky sessions are needed on a load balancer when Socket.IO allows HTTP long-polling fallback.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>During an Engine.IO HTTP long-polling handshake, the client makes multiple sequential HTTP requests carrying a server-generated session ID (<code>sid</code>). If Request 1 hits Instance A and Request 2 hits Instance B without sticky routing, Instance B does not recognize the <code>sid</code> and rejects the handshake with HTTP 400.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. How do you ensure a user recovering from a 30-second subway tunnel disconnect does not lose real-time alerts?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Persist every notification in the primary database with a timestamp/sequence cursor. On the client's Socket.IO <code>connect</code> event, track the timestamp of the last processed notification and request missed records via REST (or a catch-up socket event) since that timestamp.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. What is Cross-Site WebSocket Hijacking (CSWSH) and how do you prevent it?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>CSWSH occurs when a WebSocket server authenticates via browser cookies and fails to verify the <code>Origin</code> header, allowing a malicious third-party page to establish an authenticated WebSocket session on the user's behalf. Prevent it with strict <code>Origin</code> / CORS allowlist validation and token-based handshake auth.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why is the Socket.IO client incompatible with the browser's built-in <code>new WebSocket()</code> constructor?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="quiz-feedback" hidden></div>
+              <div class="accordion-panel" hidden>
+                <p>Socket.IO runs its own Engine.IO handshake, heartbeat packet codes, namespace multiplexing, and event serialization protocol on top of WebSockets. A raw <code>WebSocket</code> client lacks that framing protocol and expects plain raw WebSocket servers like Node's <code>ws</code> package.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Stale Presence &amp; Unauthorized Room Join</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A Socket.IO handler accepts <code>socket.on('join-user', (userId) =&gt; socket.join(userId))</code> without middleware verification, and marks users offline on any single disconnect. Fix both security and presence correctness.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>io.use((socket, next) =&gt; {
+  try {
+    const token = socket.handshake.auth?.token;
+    const decoded = verifyAccessToken(token);
+    socket.data.userId = decoded.sub;
+    next();
+  } catch (err) {
+    next(new Error('UNAUTHORIZED'));
+  }
+});
+
+io.on('connection', async (socket) =&gt; {
+  const userId = socket.data.userId;
+  await socket.join(`user:${userId}`);
+  const count = await presenceStore.addConnection(userId, socket.id);
+  if (count === 1) {
+    io.emit('presence:online', { userId });
+  }
+
+  socket.on('disconnect', async () =&gt; {
+    const remaining = await presenceStore.removeConnection(userId, socket.id);
+    if (remaining === 0) {
+      io.emit('presence:offline', { userId });
+    }
+  });
+});</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Bridge a Background Worker Event to Socket.IO via Redis Adapter Emitter</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> From Day 5, your background <code>report.worker.js</code> runs in a separate process that does NOT host an HTTP/Socket.IO server. When a report finishes, how can the worker push a live <code>report:ready</code> event to the user's connected browser socket?</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution (@socket.io/redis-emitter)</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>import { Emitter } from '@socket.io/redis-emitter';
+
+export function createRealtimeNotifier(redisClient) {
+  const emitter = new Emitter(redisClient);
+
+  return {
+    notifyReportReady({ userId, reportId, downloadUrl }) {
+      emitter
+        .of('/notifications')
+        .to(`user:${userId}`)
+        .emit('report:ready', { reportId, downloadUrl });
+    }
+  };
+}</code></pre>
+                </div>
+                <p><strong>Explanation:</strong> <code>@socket.io/redis-emitter</code> publishes directly into the exact Redis Pub/Sub channels watched by your Socket.IO API servers' <code>@socket.io/redis-adapter</code>, allowing standalone workers to notify live users cleanly.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Handling Token Expiration on Long-Lived Sockets</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A user connects with a 15-minute JWT access token, keeps the dashboard tab open for 4 hours, and gets revoked/logged out by an admin at minute 30. Because WebSocket handshakes only run once at connect time, how do you prevent revoked users from listening indefinitely?</p>
+                <p><strong>Reference Architecture:</strong> (1) On admin revocation or password reset, immediately disconnect active sockets for that user via <code>io.in(`user:${userId}`).disconnectSockets(true)</code> (which works across all nodes via Redis Adapter); (2) pair short-lived handshake JWTs with periodic token-refresh events over the socket or max socket lifetime re-auth so revoked accounts cannot stay connected silently.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 7 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Persistent WebSockets</strong> upgrade from HTTP via <code>101 Switching Protocols</code> to enable low-latency bidirectional messaging.</li>
+              <li><strong>Namespaces &amp; Rooms</strong> partition logical features and target authorized user/resource groups cleanly on the server.</li>
+              <li><strong>Security</strong> requires handshake authentication (never URL query tokens), strict CORS/origin validation, and server-side room authorization.</li>
+              <li><strong>Presence &amp; Durability</strong> track multi-tab socket sets in Redis and store notifications in the DB so reconnecting clients catch up reliably.</li>
+              <li><strong>Horizontal Scaling</strong> connects multiple Socket.IO server nodes (and standalone workers) through Redis Pub/Sub adapters.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 7 Real-Time Communication Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 7 Real-Time Communication with WebSockets visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 7 local visual reference (<code>Day 7/image.webp</code>). Review WebSocket handshakes, rooms, authentication, and multi-instance Redis Pub/Sub scaling.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 6/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 6: Message Queues &amp; Event-Driven Architecture</span>
+          </a>
+          <a href="../Day 8/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 8: Advanced Authentication &amp; Authorization &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 6/index.html">Day 6: Message Queues</a></li>
+          <li><a href="../Day 7/index.html">Day 7: WebSockets</a></li>
+          <li><a href="../Day 8/index.html">Day 8: Auth &amp; RBAC</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 14: Rate Limiting and API Security. Learn threat modeling, rate limiting strategies, brute-force defense, input validation, CORS, security headers, injection and SSRF defense, and security checklists.">
+  <title>Day 14: Rate Limiting and API Security | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="14">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 14: Rate Limiting &amp; Security</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html" selected>Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 13/index.html" class="nav-step-btn" title="Go to Day 13">Prev</a>
+            <a href="../Day 15/index.html" class="nav-step-btn" title="Go to Day 15">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 14 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 14</span>
+          <span class="category-pill">Defensive Security &amp; Hardening</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="14" aria-pressed="false">Mark Day 14 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Rate Limiting and API Security</h1>
+        <p class="lesson-intro">
+          Any public API on the internet receives automated traffic within minutes: credential-stuffing bots, abusive scrapers, malformed payloads, and dependency scanners. Today you will learn defensive threat modeling, distributed rate limiting strategies, strict input validation, CORS and security headers, secrets and dependency hygiene, SQL/NoSQL injection and SSRF defenses, and how to conduct a structured security review.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2, 4 &amp; 8</span>
+            <p>Distributed Redis rate limiters protect scaled clusters without single-instance memory drift, reinforcing Day 8's authentication and ownership gates.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Defense in depth: combine transport security, rate limits, schema validation, parameterized queries, least-privilege secrets, and safe error masking.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Review an exposed sample API for security flaws and implement Redis-backed rate limiting, Helmet/CORS hardening, Zod schema stripping, and an SSRF URL guard.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Security Concepts</a>
+            <a href="#how-it-works">Defense-in-Depth Pipeline</a>
+            <a href="#diagrams">Rate Limit &amp; Security Diagrams</a>
+            <a href="#implementation">Protective Middleware Code</a>
+            <a href="#real-world">Rate Limiter Algorithms</a>
+            <a href="#mistakes-security">Checklist &amp; Common Risks</a>
+            <a href="#practical-task">Practical Security Review</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Defensive backend security assumes every external input, header, query parameter, webhook URL, and dependency could be malformed or hostile. Rather than relying on a single firewall, layer independent controls across your Express pipeline.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Model Threats Systematically</h3>
+              <p>Identify entry points, trust boundaries, and high-value assets before writing defensive controls.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Implement Distributed Rate Limits</h3>
+              <p>Prevent brute-force and scraping abuse across scaled nodes using Redis-backed limiters.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Defend Against Injection &amp; SSRF</h3>
+              <p>Eliminate mass assignment, SQL/NoSQL operator injection, and internal-network SSRF risks.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Harden Headers, Cookies &amp; Secrets</h3>
+              <p>Configure Helmet, strict CORS, secure cookies, safe error output, and dependency audits.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core API Security &amp; Rate Limiting Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Threat Modeling Fundamentals</h3>
+            <p>
+              <strong>Threat modeling</strong> asks four practical questions before shipping a feature: (1) <em>What are we building?</em> (data flows, APIs, external fetches, DBs); (2) <em>What can go wrong?</em> (using frameworks like STRIDE: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege); (3) <em>What defenses mitigate each risk?</em>; and (4) <em>Did we verify those defenses with tests?</em>
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Rate Limiting Strategies &amp; Brute-Force Protection</h3>
+            <p>
+              Rate limiting caps how many requests a caller can make within a window, returning <code>429 Too Many Requests</code> along with standard <code>Retry-After</code> and <code>RateLimit-*</code> headers:
+            </p>
+            <ul>
+              <li><strong>Fixed Window Counter:</strong> Increments a counter per key (e.g., <code>rl:ip:1.2.3.4:170000</code>) with TTL. Very fast, though allows up to 2x burst right across a window boundary.</li>
+              <li><strong>Sliding Window (Log or Weighted Counter):</strong> Smooths boundary bursts by weighting the previous window or storing timestamps in a Redis Sorted Set (<code>ZSET</code>).</li>
+              <li><strong>Token Bucket:</strong> Refills tokens at a steady rate up to a burst capacity—great when short legitimate bursts (loading a page) should succeed while sustained abuse gets throttled.</li>
+              <li><strong>Brute-Force Protection:</strong> Apply stricter limits on <code>POST /auth/login</code>, <code>POST /auth/mfa</code>, and password resets—keyed by <em>both</em> IP and normalized account identifier (<code>ip+email</code>) so attackers using distributed IPs cannot brute-force one account, and one shared office IP does not lock out unrelated users.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Input Validation, Mass Assignment &amp; Payload Bounds</h3>
+            <p>
+              Validate every incoming body, param, and query against strict schemas (e.g., Zod or Joi) that enforce types, string lengths, numeric bounds, and <strong>strip unknown keys</strong>. Passing raw <code>req.body</code> into <code>User.create(req.body)</code> allows <strong>mass assignment</strong> (a caller sending <code>{ "role": "admin", "isVerified": true }</code>). Also cap JSON body sizes (`express.json({ limit: '100kb' })`) to block memory-exhaustion payloads.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. CORS, Security Headers &amp; Transport Security</h3>
+            <ul>
+              <li><strong>Security Headers (<code>helmet</code>):</strong> Sets <code>X-Content-Type-Options: nosniff</code>, <code>Strict-Transport-Security</code> (HSTS), <code>Referrer-Policy</code>, and restrictive <code>Content-Security-Policy</code> headers, while removing <code>X-Powered-By: Express</code>.</li>
+              <li><strong>Strict CORS:</strong> Browser Same-Origin Policy blocks cross-site JS reads by default. Never reflect arbitrary <code>Origin</code> headers or combine <code>origin: '*'</code> with <code>credentials: true</code>! Whitelist exact trusted frontend origins.</li>
+              <li><strong>Cookies &amp; HTTPS:</strong> Serve APIs strictly over HTTPS/TLS in production and flag auth cookies <code>HttpOnly; Secure; SameSite=Lax</code> (or <code>Strict</code>).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Secrets &amp; Dependency Vulnerability Management</h3>
+            <p>
+              Keep API keys, JWT secrets, and DB URIs strictly in environment variables or secret managers—never hardcoded in source files or committed `.env` files. Validate required secrets at startup so apps fail fast if misconfigured. Lock dependency versions via `package-lock.json`, run `npm audit` in CI, and remove unused packages to shrink your supply-chain attack surface.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. SQL / NoSQL Injection Prevention</h3>
+            <ul>
+              <li><strong>SQL Injection Defense:</strong> Always use parameterized queries/prepared statements (<code>pool.query('SELECT * FROM users WHERE email = $1', [email])</code>)—never concatenate user strings into SQL templates!</li>
+              <li><strong>NoSQL Injection Defense:</strong> When Express parses JSON or query strings, attackers can send objects like <code>{ "email": { "$ne": "" } }</code>. Strict Zod schema validation rejecting non-string values where strings are expected completely prevents operator injection.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Server-Side Request Forgery (SSRF) Defenses</h3>
+            <p>
+              Whenever a backend fetches a user-supplied URL (for example, webhook delivery URLs, link-preview scrapers, or remote avatar imports), an attacker could submit internal URLs like <code>http://127.0.0.1:6379</code> or cloud metadata endpoints like <code>http://169.254.169.254/latest/meta-data/</code>!
+            </p>
+            <p>
+              Defend against SSRF strictly: allow only <code>https:</code> (or explicit domain allowlists), resolve DNS to an IP address and reject all loopback, private RFC1918, link-local, and multicast IPs, disable automatic HTTP redirects (which could bounce from a public host to an internal IP), and enforce tight timeouts and response size caps.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Defense-in-Depth Request Ordering</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Network &amp; Headers:</strong> Reverse proxy terminates TLS; Express applies <code>trust proxy</code> accurately, <code>helmet()</code> security headers, and strict <code>cors()</code> origin checks.
+            </li>
+            <li>
+              <strong>Abuse &amp; Size Gates:</strong> Redis rate limiter rejects abusive traffic early (<code>429</code> + <code>Retry-After</code>) before expensive bcrypt hashing or DB queries run; <code>express.json({ limit: '100kb' })</code> rejects oversized bodies.
+            </li>
+            <li>
+              <strong>Schema &amp; Auth Gates:</strong> Strict Zod schema parses and strips unknown keys; AuthN/AuthZ middleware verifies identity, permissions, and ownership.
+            </li>
+            <li>
+              <strong>Safe Data &amp; Error Boundary:</strong> Parameterized queries / typed filters interact with DB safely, and centralized error middleware suppresses internal stack traces in production responses.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Defensive Security &amp; Rate Limiting Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Defense-in-Depth Express Security Pipeline</h3>
+            <p class="diagram-caption">
+              Blocking oversized, unauthenticated, or rate-abusing requests at outer middleware layers shields database and CPU capacity underneath.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 155" class="arch-svg" role="img" aria-label="Incoming request passing through Helmet and CORS, Size Limit, Redis Rate Limiter, Zod Validation, Auth and Ownership, to Safe Handler">
+                <defs>
+                  <marker id="arrow-sec" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="14" y="42" width="128" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="78" y="71" text-anchor="middle" class="svg-title">1. Helmet + CORS</text>
+                <text x="78" y="89" text-anchor="middle" class="svg-sub">Headers &amp; Origins</text>
+
+                <line x1="142" y1="76" x2="164" y2="76" class="svg-arrow" marker-end="url(#arrow-sec)"></line>
+
+                <rect x="168" y="42" width="136" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="236" y="71" text-anchor="middle" class="svg-title">2. Rate Limiter</text>
+                <text x="236" y="89" text-anchor="middle" class="svg-sub">Redis 429 + Body Cap</text>
+
+                <line x1="304" y1="76" x2="326" y2="76" class="svg-arrow" marker-end="url(#arrow-sec)"></line>
+
+                <rect x="330" y="42" width="136" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="398" y="71" text-anchor="middle" class="svg-title">3. Schema Valid.</text>
+                <text x="398" y="89" text-anchor="middle" class="svg-sub">Type + Strip Extra</text>
+
+                <line x1="466" y1="76" x2="488" y2="76" class="svg-arrow" marker-end="url(#arrow-sec)"></line>
+
+                <rect x="492" y="42" width="136" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="560" y="71" text-anchor="middle" class="svg-title">4. Auth + IDOR</text>
+                <text x="560" y="89" text-anchor="middle" class="svg-sub">401 / 403 Gates</text>
+
+                <line x1="628" y1="76" x2="650" y2="76" class="svg-arrow" marker-end="url(#arrow-sec)"></line>
+
+                <rect x="654" y="42" width="92" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="700" y="71" text-anchor="middle" class="svg-title">5. Safe DB</text>
+                <text x="700" y="89" text-anchor="middle" class="svg-sub">Param + Errors</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Defensive SSRF Outbound URL Guard</h3>
+            <p class="diagram-caption">
+              Before fetching any user-provided webhook or remote URL, validate scheme, resolve DNS to concrete IP addresses, reject private/metadata ranges, and disable redirects.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 150" class="arch-svg" role="img" aria-label="User-supplied webhook URL checked for HTTPS scheme, DNS resolved IP checked against private loopback and metadata ranges, then fetched with redirect manual">
+                <defs>
+                  <marker id="arrow-ssrf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="38" width="142" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="89" y="68" text-anchor="middle" class="svg-title">User URL Input</text>
+                <text x="89" y="86" text-anchor="middle" class="svg-sub">Scheme === https:</text>
+
+                <line x1="160" y1="72" x2="196" y2="72" class="svg-arrow" marker-end="url(#arrow-ssrf)"></line>
+
+                <rect x="200" y="38" width="176" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="288" y="68" text-anchor="middle" class="svg-title">DNS Lookup &rarr; IP</text>
+                <text x="288" y="86" text-anchor="middle" class="svg-sub">Resolve before connect</text>
+
+                <line x1="376" y1="72" x2="412" y2="72" class="svg-arrow" marker-end="url(#arrow-ssrf)"></line>
+
+                <rect x="416" y="38" width="176" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="504" y="68" text-anchor="middle" class="svg-title">Block Private CIDRs</text>
+                <text x="504" y="86" text-anchor="middle" class="svg-sub">127/8, 10/8, 169.254/16</text>
+
+                <line x1="592" y1="72" x2="624" y2="72" class="svg-arrow" marker-end="url(#arrow-ssrf)"></line>
+
+                <rect x="628" y="38" width="114" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="685" y="68" text-anchor="middle" class="svg-title">Safe Fetch</text>
+                <text x="685" y="86" text-anchor="middle" class="svg-sub">redirect: 'error'</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Implementing Protective Middleware in Express</h2>
+
+          <h3>Step 1: Distributed Redis Sliding-Window Rate Limiter</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/middlewares/rateLimiter.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import crypto from 'node:crypto';
+
+export function createRedisSlidingLimiter({
+  redisClient,
+  prefix = 'rl',
+  windowMs = 60000,
+  maxRequests = 60,
+  keyGenerator = (req) =&gt; req.ip
+}) {
+  return async (req, res, next) =&gt; {
+    if (!redisClient || !redisClient.isReady) {
+      return next();
+    }
+
+    const identifier = String(keyGenerator(req) || req.ip || 'unknown');
+    const key = `${prefix}:${identifier}`;
+    const now = Date.now();
+    const windowStart = now - windowMs;
+    const member = `${now}:${crypto.randomUUID()}`;
+
+    try {
+      const results = await redisClient
+        .multi()
+        .zRemRangeByScore(key, 0, windowStart)
+        .zAdd(key, { score: now, value: member })
+        .zCard(key)
+        .pExpire(key, windowMs)
+        .exec();
+
+      const currentCount = Number(results[2] || 0);
+      const remaining = Math.max(0, maxRequests - currentCount);
+
+      res.setHeader('RateLimit-Limit', String(maxRequests));
+      res.setHeader('RateLimit-Remaining', String(remaining));
+
+      if (currentCount &gt; maxRequests) {
+        const retrySeconds = Math.ceil(windowMs / 1000);
+        res.setHeader('Retry-After', String(retrySeconds));
+        return res.status(429).json({
+          status: 'error',
+          code: 'RATE_LIMITED',
+          message: 'Too many requests. Please try again later.'
+        });
+      }
+
+      next();
+    } catch (err) {
+      next();
+    }
+  };
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Security Headers, Strict CORS &amp; Strict Zod Schema Validation</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/middlewares/securityBaseline.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+import { z } from 'zod';
+import { AppError } from '../errors/AppError.js';
+
+export function applySecurityBaseline(app, allowedOrigins = []) {
+  app.disable('x-powered-by');
+  app.set('trust proxy', 1);
+
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          objectSrc: ["'none'"],
+          frameAncestors: ["'none'"]
+        }
+      },
+      hsts: { maxAge: 31536000, includeSubDomains: true }
+    })
+  );
+
+  app.use(
+    cors({
+      origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        callback(new AppError('Origin not allowed by CORS', 403, 'CORS_BLOCKED'));
+      },
+      credentials: true,
+      methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key']
+    })
+  );
+
+  app.use(express.json({ limit: '100kb' }));
+}
+
+export function validateBody(zodSchema) {
+  return (req, res, next) =&gt; {
+    const parsed = zodSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+    }
+    req.body = parsed.data;
+    next();
+  };
+}
+
+export const registerUserSchema = z
+  .object({
+    name: z.string().trim().min(2).max(80),
+    email: z.string().trim().email().max(120),
+    password: z.string().min(12).max(128)
+  })
+  .strict();</code></pre>
+          </div>
+
+          <h3>Step 3: Defensive SSRF Outbound URL Guard</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/security/safeUrlGuard.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import dns from 'node:dns/promises';
+import net from 'node:net';
+
+function isPrivateOrReservedIpv4(ip) {
+  const parts = ip.split('.').map(Number);
+  if (parts.length !== 4 || parts.some((n) =&gt; !Number.isInteger(n) || n &lt; 0 || n &gt; 255)) {
+    return true;
+  }
+  const [a, b] = parts;
+  if (a === 0 || a === 10 || a === 127) return true;
+  if (a === 169 &amp;&amp; b === 254) return true;
+  if (a === 172 &amp;&amp; b &gt;= 16 &amp;&amp; b &lt;= 31) return true;
+  if (a === 192 &amp;&amp; b === 168) return true;
+  if (a === 100 &amp;&amp; b &gt;= 64 &amp;&amp; b &lt;= 127) return true;
+  return false;
+}
+
+function isBlockedIp(ip) {
+  if (net.isIPv4(ip)) {
+    return isPrivateOrReservedIpv4(ip);
+  }
+  if (net.isIPv6(ip)) {
+    const lower = ip.toLowerCase();
+    return lower === '::1' || lower.startsWith('fc') || lower.startsWith('fd') || lower.startsWith('fe80');
+  }
+  return true;
+}
+
+export async function assertSafeOutboundHttpsUrl(rawUrl) {
+  const parsed = new URL(rawUrl);
+  if (parsed.protocol !== 'https:') {
+    throw new Error('ONLY_HTTPS_ALLOWED');
+  }
+  if (parsed.username || parsed.password) {
+    throw new Error('CREDENTIALS_IN_URL_FORBIDDEN');
+  }
+
+  const records = await dns.lookup(parsed.hostname, { all: true });
+  if (!records.length) {
+    throw new Error('DNS_RESOLUTION_FAILED');
+  }
+  for (const record of records) {
+    if (isBlockedIp(record.address)) {
+      throw new Error('RESTRICTED_DESTINATION_IP');
+    }
+  }
+  return parsed.toString();
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Redis <code>multi()</code> Sliding Window:</strong> Executes range pruning, insertion, cardinality count, and expiry atomically across all scaled Express instances.</li>
+              <li><strong><code>z.object(...).strict()</code> + <code>req.body = parsed.data</code>:</strong> Rejects unexpected fields like <code>role: 'admin'</code> and ensures nested `$gt`/`$ne` injection objects fail type validation cleanly.</li>
+              <li><strong><code>dns.lookup(..., { all: true })</code> in SSRF Guard:</strong> Checking hostname strings alone misses domains like <code>local.example.com</code> resolving to <code>127.0.0.1</code> or <code>169.254.169.254</code>. Always inspect resolved IPs and pair with <code>fetch(url, { redirect: 'error', signal: AbortSignal.timeout(3000) })</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Rate Limiting Algorithm Comparison</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Memory Cost</th>
+                  <th>Burst Behavior</th>
+                  <th>Best Use Case</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Fixed Window Counter</strong></td>
+                  <td>Ultra-low (1 counter key)</td>
+                  <td>Allows up to 2x burst across window boundary</td>
+                  <td>Coarse high-volume API quota protection</td>
+                </tr>
+                <tr>
+                  <td><strong>Sliding Window (ZSET)</strong></td>
+                  <td>Moderate (stores timestamp entries)</td>
+                  <td>Strict smooth enforcement with zero boundary spike</td>
+                  <td>Login/MFA brute-force protection, strict per-user quotas</td>
+                </tr>
+                <tr>
+                  <td><strong>Token Bucket</strong></td>
+                  <td>Low (tokens + timestamp)</td>
+                  <td>Allows controlled short burst up to bucket size, refills smoothly</td>
+                  <td>Interactive UI/API traffic where bursts are normal</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Security Review</span>
+          <h2>Production API Security Review Checklist</h2>
+          <div class="summary-box">
+            <ul>
+              <li>All auth, login, MFA, and expensive routes enforce distributed Redis rate limiting keyed appropriately (IP + account identifier for login).</li>
+              <li>Every request body, query, and path param passes strict schema validation rejecting unknown keys and injection objects.</li>
+              <li><code>helmet()</code>, strict CORS origin allowlists, bounded JSON body limits, and <code>HttpOnly; Secure; SameSite</code> cookies are configured.</li>
+              <li>Parameterized SQL queries and typed NoSQL queries are used everywhere; user uploads use magic-byte checks and safe isolation (Day 11).</li>
+              <li>Outbound URL fetches validate HTTPS + resolved non-private IPs + disabled redirects against SSRF.</li>
+              <li>Secrets reside only in env/secret stores, <code>package-lock.json</code> + <code>npm audit</code> run in CI, and production errors never leak stack traces.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Defensive Security Review Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Audit &amp; Harden an Insecure Express API</h3>
+            <p>
+              Suppose you inherit an Express app containing: (1) <code>app.use(cors({ origin: '*', credentials: true }))</code>, (2) <code>User.create(req.body)</code> on signup, (3) unlimited <code>POST /auth/login</code>, (4) raw <code>fetch(req.body.webhookUrl)</code>, and (5) an error handler returning <code>res.status(500).json({ error: err.stack })</code>.
+            </p>
+            <ol>
+              <li>Document all five vulnerabilities clearly using threat-modeling terms (Information Disclosure, Elevation of Privilege, SSRF, Brute-Force).</li>
+              <li>Implement <code>applySecurityBaseline</code> with Helmet, explicit CORS allowlist, and 100 KB JSON body cap.</li>
+              <li>Add Zod validation rejecting extra keys on signup, tiered Redis rate limiting on <code>POST /auth/login</code>, and <code>assertSafeOutboundHttpsUrl</code> on webhook saves/deliveries.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 14 Quiz: Rate Limiting &amp; API Security (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="c" data-explanation="Fixed window counters reset on window boundaries, allowing a caller to send N requests at 00:59 and N more at 01:01 (2N requests in 2 seconds).">
+              <p class="quiz-prompt">1. What edge weakness does the Fixed Window rate-limiting algorithm exhibit compared to a Sliding Window?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> It blocks 100% of GET requests.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> It cannot work with Redis.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Traffic concentrated right before and right after a window reset can burst up to 2x the intended limit.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> It disables TLS on Express.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="b" data-explanation="Keying login rate limits by both IP and target account (or tracking separate tiered counters) prevents distributed brute-force attacks without letting one attacker lock out unrelated users behind a shared office IP.">
+              <p class="quiz-prompt">2. Why is combining IP-based and account-identifier rate limits better for <code>POST /auth/login</code> than relying on IP alone?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> It eliminates password hashing.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> It limits distributed attacks targeting one specific account across many IPs without needlessly blocking a whole shared office/NAT IP.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Express forbids reading req.ip on POST routes.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> It bypasses HTTPS handshakes.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Mass assignment happens when raw req.body is passed straight into database creates/updates, allowing callers to inject unintended properties like role='admin'.">
+              <p class="quiz-prompt">3. How does strict schema validation with unknown-key stripping (e.g., Zod <code>.strict()</code>) prevent mass assignment?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> It rejects or strips unexpected properties such as <code>role: 'admin'</code> before data reaches the service or database.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> It encrypts all MongoDB collections.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> It converts POST requests into GET requests.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> It turns 429 responses into 200 OK.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="An attacker can register a public domain whose DNS A-record resolves to 127.0.0.1 or 169.254.169.254; resolving DNS and validating IP ranges before fetching stops this.">
+              <p class="quiz-prompt">4. Why is checking <code>url.startsWith('https://')</code> alone insufficient to prevent SSRF on user-supplied webhook URLs?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> JavaScript strings do not have startsWith().</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> HTTPS cannot connect to domains.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> DNS queries are blocked by Helmet.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> A hostname can resolve via DNS to private/loopback/metadata IPs or return an HTTP 302 redirect toward internal services.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="c" data-explanation="Parameterized queries bind user input strictly as data values rather than executable SQL syntax, defeating SQL injection.">
+              <p class="quiz-prompt">5. What is the primary defense against SQL injection in Node.js database queries?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> Removing the X-Powered-By header</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> Compressing responses with gzip</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Using parameterized queries / prepared statements rather than string interpolation</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Adding more indexes</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="b" data-explanation="Strict string-type Zod schemas reject JSON objects like { '$ne': '' } outright, preventing NoSQL query operator injection.">
+              <p class="quiz-prompt">6. How do strict typed schemas defeat NoSQL operator injection like <code>{ "email": { "$ne": "" } }</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> They convert every object into SQL JOINs.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Because <code>z.string().email()</code> rejects nested objects immediately before any query filter is built.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> They store passwords inside cookies.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> They disable MongoDB connection pooling.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Browsers reject wildcard Access-Control-Allow-Origin: * alongside Access-Control-Allow-Credentials: true; worse, reflecting arbitrary req.headers.origin exposes authenticated APIs to any website.">
+              <p class="quiz-prompt">7. Why is reflecting any incoming <code>Origin</code> header in CORS alongside <code>credentials: true</code> dangerous?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Any malicious third-party website visited by a logged-in user could make credentialed cross-origin requests and read private API responses.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Express crashes if CORS is enabled on GET routes.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> It deletes Redis rate-limit keys.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> It prevents HTTPS certificates from renewing.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="429 Too Many Requests with a Retry-After header signals clients and SDKs cleanly to back off until the window resets.">
+              <p class="quiz-prompt">8. Which HTTP status code and header should a rate limiter return when throttling a caller?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> 200 OK with X-Cache: HIT</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> 301 Moved Permanently</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> 404 Not Found</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> 429 Too Many Requests with a <code>Retry-After</code> header</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Capping express.json({ limit: '100kb' }) prevents huge multi-megabyte JSON bodies from exhausting server RAM and blocking the event loop during JSON.parse.">
+              <p class="quiz-prompt">9. Why should <code>express.json()</code> always specify a sensible <code>limit</code> such as <code>100kb</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Express refuses to start without a limit option.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> To prevent oversized JSON payloads from saturating memory and freezing the event loop during parsing.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> To enable WebSocket upgrades automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> To hash passwords with SHA-256.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Reproducible builds using package-lock.json plus automated npm audit / vulnerability scanning catch compromised or vulnerable transitive packages early.">
+              <p class="quiz-prompt">10. Which pair of practices strengthens dependency and supply-chain security in Node.js backends?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Deleting package-lock.json and installing random unmaintained packages</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Committing .env files to public Git repositories</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Committing <code>package-lock.json</code>, minimizing unnecessary packages, and running automated <code>npm audit</code> / dependency alerts in CI</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> Disabling HTTPS on npm registries</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why does an in-memory Express rate limiter fail in a horizontally scaled deployment?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Each Node.js replica keeps an isolated counter in local RAM, multiplying the effective rate limit by the number of replicas and resetting all limits on every restart. Backing the limiter with shared Redis enforces one consistent limit cluster-wide.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. What does the <code>Strict-Transport-Security</code> (HSTS) header protect against?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>HSTS tells browsers to remember that a domain must <em>only</em> be contacted over HTTPS for a configured duration (e.g., 1 year), preventing protocol-downgrade attacks and accidental plaintext HTTP requests.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should a webhook delivery client set <code>redirect: 'error'</code> (or re-validate redirect targets) after passing an SSRF check?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>An attacker-controlled public HTTPS server can pass initial DNS/IP validation, then reply with <code>302 Found</code> pointing to <code>http://169.254.169.254/...</code> or <code>http://127.0.0.1:8080</code>. Disabling automatic redirects prevents HTTP clients from following unsafe redirects internally.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why is failing fast at startup when environment secrets are missing better than defaulting to fallback strings?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Fallback strings like <code>process.env.JWT_SECRET || 'secret123'</code> are often visible in codebases and let an API start silently in production with a trivial guessable signing key. Failing fast during startup catches configuration mistakes immediately before serving traffic.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why should rate-limiting middleware run BEFORE expensive password hashing (<code>bcrypt</code>/<code>argon2</code>) on login routes?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Password hashing is intentionally CPU- and memory-intensive. Rejecting abusive request bursts at the Redis rate-limiting layer prevents attackers from exhausting worker threads and CPU via repeated login floods.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Identify &amp; Fix 4 Vulnerabilities in a Profile Update Route</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A route executes <code>await UserModel.findByIdAndUpdate(req.params.id, req.body)</code> with no schema filter, no ownership check, and returns <code>res.status(500).json({ message: err.message })</code> on error. Fix it defensively.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>const updateProfileSchema = z.object({
+  name: z.string().trim().min(2).max(80).optional(),
+  bio: z.string().trim().max(300).optional()
+}).strict();
+
+export async function updateProfileHandler(req, res, next) {
+  try {
+    if (String(req.params.id) !== String(req.user.id)) {
+      return next(new AppError('Forbidden', 403, 'FORBIDDEN'));
+    }
+    const parsed = updateProfileSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return next(new AppError('Invalid profile fields', 400, 'VALIDATION_ERROR'));
+    }
+    const updated = await userRepo.updateSafeFields(req.user.id, parsed.data);
+    res.status(200).json({ status: 'success', data: updated });
+  } catch (err) {
+    next(err);
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Startup Environment Secret Validator</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a Zod-based startup configuration loader <code>loadEnvConfig(env)</code> that requires strong minimum-length secrets (<code>JWT_ACCESS_SECRET</code> min 32 chars, <code>MONGO_URI</code>, <code>ALLOWED_ORIGINS</code>) and throws immediately if invalid.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>import { z } from 'zod';
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+  MONGO_URI: z.string().min(10),
+  REDIS_URL: z.string().min(8),
+  JWT_ACCESS_SECRET: z.string().min(32),
+  ALLOWED_ORIGINS: z.string().transform((s) =&gt; s.split(',').map((o) =&gt; o.trim()).filter(Boolean))
+});
+
+export function loadEnvConfig(env = process.env) {
+  return envSchema.parse(env);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Threat Modeling a Public "Forgot Password" Flow</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Threat-model <code>POST /auth/forgot-password</code> and <code>POST /auth/reset-password</code> and specify 5 concrete defensive controls.</p>
+                <p><strong>Reference Controls:</strong> (1) Strict rate limits per IP + per email to prevent email-bombing abuse; (2) Identical generic <code>200</code> response regardless of whether the email exists (anti-enumeration); (3) Cryptographically random 32+ byte reset token stored as a SHA-256 hash with short 15-minute TTL and single-use consumption; (4) Invalidate all active refresh token families and increment <code>tokenVersion</code> upon reset completion; (5) Log attempt metadata without logging the reset token itself.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 14 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Threat modeling</strong> identifies assets, trust boundaries, and prioritized mitigations before incidents occur.</li>
+              <li><strong>Distributed rate limiting</strong> via Redis enforces consistent abuse and brute-force caps across horizontally scaled servers.</li>
+              <li><strong>Input hygiene</strong> combines strict Zod validation, unknown-key stripping, bounded JSON limits, and parameterized queries.</li>
+              <li><strong>Transport &amp; browser headers</strong> pair Helmet, strict CORS allowlists, HTTPS, and <code>HttpOnly; Secure; SameSite</code> cookies.</li>
+              <li><strong>SSRF &amp; secrets safety</strong> validate resolved non-private IPs on outbound fetches, fail fast on missing env secrets, and keep error responses safe.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 14 API Security Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 14 Rate Limiting and API Security visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 14 local visual reference (<code>Day 14/image.webp</code>). Review defense-in-depth middleware ordering, Redis rate limiting, and SSRF protection.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 13/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 13: Advanced Backend Testing</span>
+          </a>
+          <a href="../Day 15/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 15: Docker and Containerization &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 13/index.html">Day 13: Backend Testing</a></li>
+          <li><a href="../Day 14/index.html">Day 14: API Security</a></li>
+          <li><a href="../Day 15/index.html">Day 15: Docker</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

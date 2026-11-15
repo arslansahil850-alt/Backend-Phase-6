@@ -1,0 +1,1900 @@
+Here is the first file for Day 18: Phase 6/Day 18/index.html (delivered on its
+own first because Day 18 includes full Days 1–17 summaries, 40 MCQs, 20
+short-answer drills, 12 challenges, 3 case studies, the final assessment, and
+the interactive revision tracker). Reply next when you are ready for
+Phase 6/Day 18/style.css and Phase 6/Day 18/script.js.
+
+Phase 6/Day 18/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Day 18: Complete Revision and Advanced Practical Assessment for Phase 6 Advanced Backend Development. Summaries of Days 1-17, glossary, diagrams, comparison tables, 40 MCQs, 20 short answers, 12 challenges, 3 case studies, and final assessment.">
+    <title>Day 18: Complete Revision &amp; Final Assessment | Phase 6 | Arslan Weblab</title>
+    <link rel="icon" type="image/webp" href="../logo.webp">
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+                var resolved = saved;
+                if (saved === 'system') {
+                    resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', resolved);
+                document.documentElement.setAttribute('data-theme-mode', saved);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-day="18">
+    <a class="skip-link" href="#main-content">Skip to assessment content</a>
+
+    <header class="site-header" id="site-header">
+        <div class="top-navbar" id="top-navbar">
+            <div class="container top-navbar-inner">
+                <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+                    <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+                    <span class="brand-name">Arslan Weblab</span>
+                </a>
+                <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+                    <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+                    <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects
+                        Hub</a>
+                    <a href="https://github.com/arslansahil850-alt/" target="_blank"
+                        rel="noopener noreferrer">GitHub</a>
+                    <a href="mailto:arslansahil850@gmail.com">Contact</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="main-navbar" id="main-navbar">
+            <div class="container main-navbar-inner">
+                <div class="course-nav-left">
+                    <a href="../index.html" class="course-identity">
+                        <span class="phase-pill">Phase 6</span>
+                        <span class="course-nav-title">Day 18: Revision &amp; Assessment</span>
+                    </a>
+                </div>
+
+                <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false"
+                    aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+
+                <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+                    <a href="../index.html" class="nav-home-link">Home</a>
+
+                    <div class="nav-control-group">
+                        <label for="day-selector" class="sr-only">Jump to lesson</label>
+                        <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+                            <option value="../index.html">Home Page</option>
+                            <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+                            <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+                            <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+                            <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+                            <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+                            <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+                            <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+                            <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+                            <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+                            <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+                            <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+                            <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+                            <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+                            <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+                            <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+                            <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+                            <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+                            <option value="../Day 18/index.html" selected>Day 18: Revision &amp; Final Assessment
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="nav-prev-next">
+                        <a href="../Day 17/index.html" class="nav-step-btn" title="Go to Day 17">Prev</a>
+                        <button type="button" class="nav-step-btn" disabled aria-disabled="true"
+                            title="Final day of Phase 6">Next</button>
+                    </div>
+
+                    <div class="nav-control-group">
+                        <label for="theme-selector" class="sr-only">Color theme</label>
+                        <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+                            <option value="system">Theme: System</option>
+                            <option value="dark">Theme: Dark</option>
+                            <option value="light">Theme: Light</option>
+                        </select>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="lesson-hero">
+            <div class="lesson-hero-ambient" aria-hidden="true"></div>
+            <div class="container lesson-hero-inner">
+                <div class="lesson-breadcrumb">
+                    <a href="../index.html">Phase 6 Home</a>
+                    <span aria-hidden="true">/</span>
+                    <span>Day 18 of 18 (Capstone Review)</span>
+                </div>
+
+                <div class="lesson-badge-row">
+                    <span class="day-pill">Day 18</span>
+                    <span class="category-pill">Complete Revision &amp; Final Assessment</span>
+                    <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="18"
+                        aria-pressed="false">Mark Day 18 Complete</button>
+                </div>
+
+                <h1 class="lesson-title">Complete Revision and Advanced Practical Assessment</h1>
+                <p class="lesson-intro">
+                    Welcome to the final consolidation day of Phase 6. No new topic is introduced today—everything here
+                    exists to test, connect, and cement the 17 advanced backend engineering domains you studied. Review
+                    every daily summary, glossary term, system diagram, comparison table, and troubleshooting pattern,
+                    then challenge yourself with 40 MCQs, 20 short-answer drills, 12 coding/design challenges, 3
+                    integrated case studies, and the Final Assessment.
+                </p>
+
+                <div class="lesson-meta-grid">
+                    <div class="meta-card">
+                        <span class="meta-label">Assessment Scope</span>
+                        <p>40 MCQs, 20 short-answer questions, 12 practical challenges, 3 full-system case studies, and
+                            a capstone architecture exam.</p>
+                    </div>
+                    <div class="meta-card">
+                        <span class="meta-label">Recommended Target</span>
+                        <p>Aim for 85%+ (34/40) on the MCQ exam and complete all 3 case studies without checking
+                            solutions first.</p>
+                    </div>
+                    <div class="meta-card">
+                        <span class="meta-label">Course Progress</span>
+                        <p id="course-tracker-summary">Loading Phase 6 completion tracker...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container lesson-layout">
+            <aside class="lesson-sidebar" aria-label="Revision section navigation">
+                <div class="sidebar-card">
+                    <div class="sidebar-header">
+                        <h2>Revision Index</h2>
+                        <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true"
+                            aria-controls="toc-list">Hide</button>
+                    </div>
+                    <nav id="toc-list" class="toc-list">
+                        <a href="#summaries">Days 1–17 Summaries</a>
+                        <a href="#glossary">Key Terms &amp; Definitions</a>
+                        <a href="#diagrams">Master System Diagrams</a>
+                        <a href="#comparisons">Comparison Tables</a>
+                        <a href="#troubleshooting">Mistakes &amp; Troubleshooting</a>
+                        <a href="#quiz">40-Question MCQ Exam</a>
+                        <a href="#short-answers">20 Short-Answer Drills</a>
+                        <a href="#challenges">12 Practical Challenges</a>
+                        <a href="#case-studies">3 Integrated Case Studies</a>
+                        <a href="#final-assessment">Final Advanced Assessment</a>
+                        <a href="#checklist">Personal Revision Tracker</a>
+                        <a href="#visual-recap">Lesson Diagram Asset</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lesson-content">
+                <section id="summaries" class="lesson-section">
+                    <span class="section-tag">01. Curriculum Synthesis</span>
+                    <h2>Complete Summaries of Days 1–17</h2>
+                    <div class="summaries-grid">
+                        <div class="summary-card">
+                            <h3>Day 1: Architecture &amp; Design Patterns</h3>
+                            <p>Separate routes/controllers (HTTP), services (business rules), and repositories (data
+                                queries) using constructor Dependency Injection and SOLID boundaries inside a modular
+                                monolith.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 2: Scalable Backend Systems</h3>
+                            <p>Scale horizontally with stateless instances behind L4/L7 load balancers, move
+                                sessions/limits/files to shared Redis and object storage, size DB pools across replicas,
+                                and handle <code>SIGTERM</code> cleanly.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 3: Performance Optimization</h3>
+                            <p>Measure p95/p99 and event-loop lag first; eliminate sync blocking, ReDoS regexes, and N+1
+                                waterfalls; project fields with <code>.lean()</code>, clamp cursor pagination, and
+                                compress payloads.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 4: Caching with Redis</h3>
+                            <p>Apply Cache-Aside with canonical versioned keys, user scoping for private data, jittered
+                                TTLs, fail-open fallbacks, and write-then-delete invalidation without blocking
+                                <code>KEYS *</code> scans.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 5: Background Jobs &amp; Scheduling</h3>
+                            <p>Offload slow work via BullMQ queues returning <code>202 Accepted</code>, separate worker
+                                processes, centralize cron schedules, configure exponential backoff, and guard side
+                                effects with idempotency.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 6: Message Queues &amp; Events</h3>
+                            <p>Decouple services via brokers, topic pub/sub fan-out, and competing consumers; combine
+                                at-least-once delivery with idempotent consumers, <code>prefetch</code> backpressure,
+                                DLQs, and Transactional Outbox.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 7: Real-Time WebSockets</h3>
+                            <p>Upgrade HTTP to persistent <code>wss://</code> via <code>101</code>, authenticate
+                                handshakes securely, authorize room joins server-side, track multi-tab presence in
+                                Redis, and scale nodes with Redis Pub/Sub adapters.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 8: Advanced Auth &amp; Authorization</h3>
+                            <p>Pair short-lived JWT access tokens with rotated SHA-256-hashed <code>HttpOnly</code>
+                                refresh cookies and reuse detection; combine RBAC permissions with strict resource
+                                ownership checks to stop IDOR.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 9: API Design &amp; Versioning</h3>
+                            <p>Keep REST contracts predictable, allowlist filters/sorts, document via OpenAPI, isolate
+                                breaking changes behind versioned DTO adapters with
+                                <code>Deprecation</code>/<code>Sunset</code> headers, and weigh GraphQL trade-offs.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 10: Database Optimization</h3>
+                            <p>Build compound indexes using the ESR rule (Equality, Sort, Range), verify
+                                <code>IXSCAN</code> with <code>explain</code> plans, use atomic single-doc ops or short
+                                ACID transactions, keep arrays bounded, and choose SQL when relational integrity
+                                dominates.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 11: Cloud File Storage</h3>
+                            <p>Use private object storage buckets, server-generated UUID keys, direct presigned
+                                upload/download URLs, magic-byte validation, isolated domains/headers against SVG XSS,
+                                CDNs, and lifecycle rules.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 12: Logging, Monitoring &amp; Errors</h3>
+                            <p>Emit redacted JSON logs to <code>stdout</code> with <code>AsyncLocalStorage</code>
+                                correlation IDs, separate <code>/health</code> liveness from timeout-bounded
+                                <code>/ready</code> probes, track Golden Signals, and alert on SLO symptoms.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 13: Advanced Backend Testing</h3>
+                            <p>Combine fast DI unit tests with Supertest + isolated real test DB integration tests, stub
+                                external third-party gateways, assert <code>401</code>/<code>403</code>/IDOR/concurrency
+                                cases, and close handles cleanly.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 14: Rate Limiting &amp; API Security</h3>
+                            <p>Apply threat modeling, distributed Redis sliding/token-bucket limiters, strict Zod
+                                schemas against mass assignment/injection, Helmet + CORS allowlists, parameterized
+                                queries, and DNS-checked SSRF guards.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 15: Docker &amp; Containerization</h3>
+                            <p>Build minimal multi-stage non-root images with <code>.dockerignore</code>, cached
+                                <code>npm ci --omit=dev</code>, exec-form <code>CMD</code>, runtime-injected secrets,
+                                and Compose healthchecked networks + named volumes.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 16: CI/CD &amp; Deployment</h3>
+                            <p>Gate merges with ephemeral-DB CI tests and audits, build immutable SHA-tagged images,
+                                isolate staging/prod secrets, run Expand-and-Contract migrations, and deploy with
+                                rolling/blue-green/canary readiness checks.</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Day 17: Production Architecture</h3>
+                            <p>Unify all layers with timeouts, idempotent jittered retries, circuit breakers, graceful
+                                degradation, PITR RPO/RTO recovery drills, ADRs, incident runbooks, and readiness
+                                checklists.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="glossary" class="lesson-section">
+                    <span class="section-tag">02. Reference Glossary</span>
+                    <h2>Key Backend Terms &amp; Definitions</h2>
+                    <div class="glossary-grid">
+                        <div class="glossary-item"><strong>Modular Monolith</strong><span>Single deployable application
+                                partitioned into strict domain modules communicating via explicit interfaces.</span>
+                        </div>
+                        <div class="glossary-item"><strong>Stateless Service</strong><span>Compute instance holding zero
+                                per-client state in local RAM or disk between requests.</span></div>
+                        <div class="glossary-item"><strong>Little's
+                                Law</strong><span><code>Concurrency = Arrival Rate &times; Average Latency</code>;
+                                cutting latency directly lowers concurrent resource load.</span></div>
+                        <div class="glossary-item"><strong>Cache-Aside</strong><span>App checks Redis first, queries DB
+                                on miss, caches with TTL, and deletes cache key on writes.</span></div>
+                        <div class="glossary-item"><strong>Cache Stampede</strong><span>Burst of concurrent cache misses
+                                hitting the DB simultaneously when a hot key expires.</span></div>
+                        <div class="glossary-item"><strong>Idempotency</strong><span>Property ensuring executing an
+                                operation repeatedly produces the same server state as executing it once.</span></div>
+                        <div class="glossary-item"><strong>Dead-Letter Queue (DLQ)</strong><span>Isolation queue holding
+                                poison-pill or retry-exhausted messages without blocking healthy traffic.</span></div>
+                        <div class="glossary-item"><strong>Transactional Outbox</strong><span>Persisting domain changes
+                                and outgoing event records inside the same atomic DB transaction.</span></div>
+                        <div class="glossary-item"><strong>BOLA / IDOR</strong><span>Authorization flaw allowing
+                                authenticated users to access other users' records by altering object IDs.</span></div>
+                        <div class="glossary-item"><strong>Refresh Token Rotation</strong><span>Invalidating each
+                                refresh token on use and revoking the entire session family if reuse is detected.</span>
+                        </div>
+                        <div class="glossary-item"><strong>ESR Rule</strong><span>Compound index ordering rule: Equality
+                                filters first, Sort fields second, Range predicates last.</span></div>
+                        <div class="glossary-item"><strong>Presigned URL</strong><span>Time-limited cryptographically
+                                signed URL granting direct upload or download access to one private object.</span></div>
+                        <div class="glossary-item"><strong>Correlation ID</strong><span>Trace identifier propagated
+                                across HTTP requests, background workers, and event consumers.</span></div>
+                        <div class="glossary-item"><strong>SSRF</strong><span>Vulnerability where an attacker tricks the
+                                server into making HTTP requests to internal or metadata IPs.</span></div>
+                        <div class="glossary-item"><strong>Expand-and-Contract</strong><span>Multi-step zero-downtime
+                                schema migration adding new fields compatibly before dropping legacy ones.</span></div>
+                        <div class="glossary-item"><strong>Circuit Breaker</strong><span>Resilience state machine
+                                (Closed/Open/Half-Open) failing fast when an upstream dependency stays unhealthy.</span>
+                        </div>
+                        <div class="glossary-item"><strong>RPO / RTO</strong><span>Maximum tolerable data loss window
+                                (RPO) and maximum acceptable recovery downtime (RTO).</span></div>
+                        <div class="glossary-item"><strong>ADR</strong><span>Architecture Decision Record capturing
+                                context, alternatives, and trade-offs behind a system choice.</span></div>
+                    </div>
+                </section>
+
+                <section id="diagrams" class="lesson-section">
+                    <span class="section-tag">03. Visual Synthesis</span>
+                    <h2>Master Architecture &amp; Delivery Diagrams</h2>
+
+                    <div class="diagram-card">
+                        <h3>Master Diagram 1: End-to-End Request, Async &amp; Data Flow</h3>
+                        <p class="diagram-caption">
+                            Tracing how synchronous HTTP security/caching, asynchronous workers/events, and real-time
+                            push collaborate in one coherent production backend.
+                        </p>
+                        <div class="diagram-scroll">
+                            <svg viewBox="0 0 760 220" class="arch-svg" role="img"
+                                aria-label="Master architecture diagram connecting Edge Security, Stateless Express APIs, Redis Cache and Queues, Primary DB and Object Storage, Workers, and WebSockets">
+                                <defs>
+                                    <marker id="arrow-m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6"
+                                        markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                                    </marker>
+                                </defs>
+                                <rect x="16" y="74" width="122" height="72" rx="10" class="svg-box-muted"></rect>
+                                <text x="77" y="103" text-anchor="middle" class="svg-title">Edge / LB</text>
+                                <text x="77" y="122" text-anchor="middle" class="svg-sub">TLS + CDN + WAF</text>
+
+                                <line x1="138" y1="110" x2="174" y2="110" class="svg-arrow" marker-end="url(#arrow-m1)">
+                                </line>
+
+                                <rect x="178" y="58" width="174" height="104" rx="10" class="svg-box-accent"></rect>
+                                <text x="265" y="87" text-anchor="middle" class="svg-title">Express API Cluster</text>
+                                <text x="265" y="106" text-anchor="middle" class="svg-sub">RateLimit + Auth + Zod</text>
+                                <text x="265" y="124" text-anchor="middle" class="svg-sub">Services + Repos + ALS</text>
+                                <text x="265" y="142" text-anchor="middle" class="svg-sub">Breakers + Socket.IO</text>
+
+                                <line x1="352" y1="84" x2="412" y2="42" class="svg-arrow" marker-end="url(#arrow-m1)">
+                                </line>
+                                <line x1="352" y1="110" x2="412" y2="110" class="svg-arrow" marker-end="url(#arrow-m1)">
+                                </line>
+                                <line x1="352" y1="136" x2="412" y2="178" class="svg-arrow" marker-end="url(#arrow-m1)">
+                                </line>
+
+                                <rect x="416" y="16" width="160" height="52" rx="8" class="svg-box-blue"></rect>
+                                <text x="496" y="39" text-anchor="middle" class="svg-title">Redis Tier</text>
+                                <text x="496" y="56" text-anchor="middle" class="svg-sub">Cache / Limits / PubSub</text>
+
+                                <rect x="416" y="84" width="160" height="52" rx="8" class="svg-box-blue"></rect>
+                                <text x="496" y="107" text-anchor="middle" class="svg-title">Primary DB + Replica</text>
+                                <text x="496" y="124" text-anchor="middle" class="svg-sub">ESR Indexes + PITR</text>
+
+                                <rect x="416" y="152" width="160" height="52" rx="8" class="svg-box-muted"></rect>
+                                <text x="496" y="175" text-anchor="middle" class="svg-title">Object Storage</text>
+                                <text x="496" y="192" text-anchor="middle" class="svg-sub">Private + Presigned</text>
+
+                                <line x1="576" y1="42" x2="612" y2="42" class="svg-arrow" marker-end="url(#arrow-m1)">
+                                </line>
+                                <rect x="616" y="16" width="128" height="106" rx="8" class="svg-box-muted"></rect>
+                                <text x="680" y="48" text-anchor="middle" class="svg-title">Workers + Broker</text>
+                                <text x="680" y="70" text-anchor="middle" class="svg-sub">Idempotent + DLQ</text>
+                                <text x="680" y="92" text-anchor="middle" class="svg-sub">Socket Emitter</text>
+
+                                <rect x="616" y="136" width="128" height="68" rx="8" class="svg-box-muted"></rect>
+                                <text x="680" y="164" text-anchor="middle" class="svg-title">Observability</text>
+                                <text x="680" y="184" text-anchor="middle" class="svg-sub">Logs + SLO Alerts</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="diagram-card">
+                        <h3>Master Diagram 2: Code-to-Production Safety Lifecycle</h3>
+                        <p class="diagram-caption">
+                            Automated tests, container immutability, zero-downtime migrations, and telemetry feedback
+                            keep production changes low-risk and reversible.
+                        </p>
+                        <div class="diagram-scroll">
+                            <svg viewBox="0 0 760 135" class="arch-svg" role="img"
+                                aria-label="Continuous flow from PR Unit and Supertest CI to Docker SHA build, Staging Expand-Contract Migration, Production Canary or Rolling /ready cutover, and Telemetry Rollback guard">
+                                <defs>
+                                    <marker id="arrow-m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6"
+                                        markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                                    </marker>
+                                </defs>
+                                <rect x="16" y="34" width="162" height="66" rx="10" class="svg-box-blue"></rect>
+                                <text x="97" y="63" text-anchor="middle" class="svg-title">1. CI Tests + Audit</text>
+                                <text x="97" y="81" text-anchor="middle" class="svg-sub">Unit + Supertest DB</text>
+                                <line x1="178" y1="67" x2="204" y2="67" class="svg-arrow" marker-end="url(#arrow-m2)">
+                                </line>
+
+                                <rect x="208" y="34" width="162" height="66" rx="10" class="svg-box-accent"></rect>
+                                <text x="289" y="63" text-anchor="middle" class="svg-title">2. Docker Image</text>
+                                <text x="289" y="81" text-anchor="middle" class="svg-sub">Non-root :sha-tag</text>
+                                <line x1="370" y1="67" x2="396" y2="67" class="svg-arrow" marker-end="url(#arrow-m2)">
+                                </line>
+
+                                <rect x="400" y="34" width="162" height="66" rx="10" class="svg-box-blue"></rect>
+                                <text x="481" y="63" text-anchor="middle" class="svg-title">3. Safe Migration</text>
+                                <text x="481" y="81" text-anchor="middle" class="svg-sub">Expand + /ready Gate</text>
+                                <line x1="562" y1="67" x2="588" y2="67" class="svg-arrow" marker-end="url(#arrow-m2)">
+                                </line>
+
+                                <rect x="592" y="34" width="152" height="66" rx="10" class="svg-box-muted"></rect>
+                                <text x="668" y="63" text-anchor="middle" class="svg-title">4. Monitor / Roll</text>
+                                <text x="668" y="81" text-anchor="middle" class="svg-sub">SLO + SHA Rollback</text>
+                            </svg>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="comparisons" class="lesson-section">
+                    <span class="section-tag">04. Trade-Off Matrices</span>
+                    <h2>Key Concept Comparison Tables</h2>
+
+                    <h3>1. Communication &amp; Async Patterns</h3>
+                    <div class="table-wrap">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Mechanism</th>
+                                    <th>Best For</th>
+                                    <th>Guarantee / Ordering</th>
+                                    <th>Key Limitation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Synchronous REST</strong></td>
+                                    <td>Immediate validation, CRUD, login</td>
+                                    <td>Caller receives immediate result/error</td>
+                                    <td>Coupled to slowest downstream call</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Background Job Queue (BullMQ)</strong></td>
+                                    <td>Offloading slow tasks (email, PDF)</td>
+                                    <td>At-least-once + retries/backoff</td>
+                                    <td>Eventual completion; requires worker fleet</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Event Broker (RabbitMQ / Kafka)</strong></td>
+                                    <td>Multi-service pub/sub fan-out</td>
+                                    <td>Broker-routed durable streams/queues</td>
+                                    <td>Eventual consistency + broker operations</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>WebSockets / SSE</strong></td>
+                                    <td>Live client push &amp; presence</td>
+                                    <td>Real-time low-latency delivery</td>
+                                    <td>Requires Redis Pub/Sub adapter to scale</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>2. Persistence &amp; Storage Choices</h3>
+                    <div class="table-wrap">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Primary Strength</th>
+                                    <th>Ideal Workload</th>
+                                    <th>Anti-Pattern</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>PostgreSQL (SQL)</strong></td>
+                                    <td>ACID transactions, foreign keys, joins</td>
+                                    <td>Financial ledgers, billing, complex relations</td>
+                                    <td>Massive binary file blobs</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MongoDB</strong></td>
+                                    <td>Flexible documents, fast nested reads</td>
+                                    <td>Catalogs, CMS, bounded sub-documents</td>
+                                    <td>Unbounded growing arrays (&gt;16 MB)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Redis</strong></td>
+                                    <td>Sub-ms in-memory structures &amp; TTL</td>
+                                    <td>Caching, rate limits, sessions, queues</td>
+                                    <td>Irreplaceable durable source of truth with eviction</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Object Storage (S3/R2)</strong></td>
+                                    <td>Cheap durable blob storage + CDN</td>
+                                    <td>Images, PDFs, videos via presigned URLs</td>
+                                    <td>Searching/filtering file metadata without a DB</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>3. Auth &amp; Deployment Trade-Offs</h3>
+                    <div class="table-wrap">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Option A</th>
+                                    <th>Option B</th>
+                                    <th>Decision Rule</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Auth Tokens</strong></td>
+                                    <td>Stateful Redis Session Cookie</td>
+                                    <td>Short JWT + Rotated Refresh Cookie</td>
+                                    <td>Use Redis sessions for pure browser dashboards; JWT + refresh for multi-client
+                                        APIs</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>API Evolution</strong></td>
+                                    <td>Additive changes in <code>v1</code></td>
+                                    <td>New <code>/api/v2</code> DTO adapter</td>
+                                    <td>Keep optional additions in <code>v1</code>; version breaking renames/removals
+                                        behind <code>v2</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Deployment</strong></td>
+                                    <td>Rolling Update</td>
+                                    <td>Blue-Green / Canary</td>
+                                    <td>Rolling for standard stateless updates; Blue-Green/Canary when fast cutover or
+                                        low blast radius is critical</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="troubleshooting" class="lesson-section">
+                    <span class="section-tag">05. Diagnostics</span>
+                    <h2>Common Mistakes &amp; Production Troubleshooting Notes</h2>
+                    <div class="table-wrap">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Symptom</th>
+                                    <th>Likely Root Cause</th>
+                                    <th>Verified Fix</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Users randomly logged out or avatars 404 after scaling to 3 containers</td>
+                                    <td>In-memory sessions or local disk uploads on single instance</td>
+                                    <td>Move sessions to Redis, files to S3 object storage</td>
+                                </tr>
+                                <tr>
+                                    <td>High p99 latency with low CPU (&lt;20%)</td>
+                                    <td>DB pool saturation, missing timeout, or slow external API</td>
+                                    <td>Add timeouts, check <code>explain</code> plans, size pools across replicas</td>
+                                </tr>
+                                <tr>
+                                    <td>All API routes freeze for 300ms simultaneously</td>
+                                    <td>Event-loop blocked (<code>*Sync</code> call, ReDoS, huge JSON)</td>
+                                    <td>Profile with <code>monitorEventLoopDelay</code>, move CPU work to workers</td>
+                                </tr>
+                                <tr>
+                                    <td>Rate limiter blocks every user simultaneously behind proxy</td>
+                                    <td>Missing <code>trust proxy</code>; all users share LB IP</td>
+                                    <td>Configure <code>app.set('trust proxy', 1)</code> + Redis limiter</td>
+                                </tr>
+                                <tr>
+                                    <td>DB errors surge during rolling deployment</td>
+                                    <td>Destructive migration broke live v1 containers</td>
+                                    <td>Use Expand-and-Contract migrations across two releases</td>
+                                </tr>
+                                <tr>
+                                    <td>Worker duplicates emails or charges on crash</td>
+                                    <td>Missing idempotency under at-least-once delivery</td>
+                                    <td>Use deterministic <code>jobId</code> + atomic DB status claim</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="quiz" class="lesson-section">
+                    <span class="section-tag">06. Comprehensive Exam</span>
+                    <h2>Final 40-Question Multiple-Choice Assessment</h2>
+                    <p>Covers all 17 topics. Select one answer per question and click <strong>Grade 40-Question
+                            Exam</strong> for detailed feedback and scoring.</p>
+
+                    <form id="day-quiz-form" class="quiz-form" novalidate>
+                        <div class="quiz-question" data-q="1" data-answer="b"
+                            data-explanation="Day 1: Services stay independent of HTTP req/res so workers, CLIs, and unit tests can reuse them directly.">
+                            <p class="quiz-prompt">1. (Day 1) Why should a Service class accept plain DTOs instead of
+                                Express <code>req</code> and <code>res</code>?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q1" value="a"> Express forbids
+                                    passing req to classes.</label>
+                                <label class="quiz-option"><input type="radio" name="q1" value="b"> It decouples
+                                    business rules from HTTP transport, enabling reuse in workers and isolated unit
+                                    tests.</label>
+                                <label class="quiz-option"><input type="radio" name="q1" value="c"> Services cannot use
+                                    async/await with req.</label>
+                                <label class="quiz-option"><input type="radio" name="q1" value="d"> It eliminates
+                                    database indexes.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="2" data-answer="c"
+                            data-explanation="Day 1: Dependency Inversion means high-level services depend on injected repository contracts rather than concrete ORM imports.">
+                            <p class="quiz-prompt">2. (Day 1) Injecting an <code>orderRepository</code> interface into
+                                <code>OrderService</code> demonstrates which SOLID principle?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q2" value="a"> Open/Closed
+                                    only</label>
+                                <label class="quiz-option"><input type="radio" name="q2" value="b"> Interface
+                                    Segregation only</label>
+                                <label class="quiz-option"><input type="radio" name="q2" value="c"> Dependency Inversion
+                                    Principle</label>
+                                <label class="quiz-option"><input type="radio" name="q2" value="d"> Cache-Aside
+                                    Principle</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="3" data-answer="a"
+                            data-explanation="Day 1: A modular monolith keeps single-process deployment while separating domains cleanly behind module service boundaries.">
+                            <p class="quiz-prompt">3. (Day 1) When is a modular monolith usually preferable to
+                                microservices for a small backend team?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q3" value="a"> When you want clear
+                                    domain separation and atomic transactions without distributed network latency and
+                                    multi-repo ops overhead.</label>
+                                <label class="quiz-option"><input type="radio" name="q3" value="b"> When every endpoint
+                                    must be written in a different language.</label>
+                                <label class="quiz-option"><input type="radio" name="q3" value="c"> When you want to
+                                    avoid writing tests.</label>
+                                <label class="quiz-option"><input type="radio" name="q3" value="d"> Never; microservices
+                                    are always simpler.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="4" data-answer="d"
+                            data-explanation="Day 2: 10 instances * 40 pool size = 400 potential connections, exceeding the DB limit of 150.">
+                            <p class="quiz-prompt">4. (Day 2) A PostgreSQL server allows 150 max connections. Scaling
+                                from 2 to 10 Express replicas each with <code>maxPoolSize: 40</code> causes what issue?
+                            </p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q4" value="a"> Redis deletes all
+                                    session keys.</label>
+                                <label class="quiz-option"><input type="radio" name="q4" value="b"> Node.js becomes
+                                    multi-threaded automatically.</label>
+                                <label class="quiz-option"><input type="radio" name="q4" value="c"> Load balancer drops
+                                    TLS.</label>
+                                <label class="quiz-option"><input type="radio" name="q4" value="d"> Potential pool
+                                    connections (400) exceed the 150 DB limit, causing connection rejections under
+                                    load.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="5" data-answer="b"
+                            data-explanation="Day 2: Little's Law L = λ * W gives 300 req/s * 0.2s = 60 concurrent in-flight requests.">
+                            <p class="quiz-prompt">5. (Day 2) At 300 req/s with 200ms (0.2s) average latency, how many
+                                requests are concurrently in flight via Little's Law?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q5" value="a"> 15</label>
+                                <label class="quiz-option"><input type="radio" name="q5" value="b"> 60</label>
+                                <label class="quiz-option"><input type="radio" name="q5" value="c"> 150</label>
+                                <label class="quiz-option"><input type="radio" name="q5" value="d"> 1,500</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="6" data-answer="c"
+                            data-explanation="Day 2: Without shared state, sticky sessions skew load and drop user state whenever an instance restarts or scales in.">
+                            <p class="quiz-prompt">6. (Day 2) Why should REST APIs store sessions in Redis instead of
+                                relying on load-balancer sticky sessions + local RAM?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q6" value="a"> Load balancers
+                                    cannot read HTTP cookies.</label>
+                                <label class="quiz-option"><input type="radio" name="q6" value="b"> Redis is slower than
+                                    disk.</label>
+                                <label class="quiz-option"><input type="radio" name="q6" value="c"> Sticky sessions lose
+                                    user state on instance restarts/scale-in and distribute traffic unevenly.</label>
+                                <label class="quiz-option"><input type="radio" name="q6" value="d"> Express forbids Map
+                                    objects.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="7" data-answer="a"
+                            data-explanation="Day 3: Synchronous APIs block the single main JavaScript thread, stalling every concurrent request and health check.">
+                            <p class="quiz-prompt">7. (Day 3) Why does calling <code>fs.readFileSync</code> inside an
+                                Express route hurt overall API throughput?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q7" value="a"> It blocks the
+                                    single-threaded Node.js event loop, delaying all other concurrent requests until
+                                    disk I/O finishes.</label>
+                                <label class="quiz-option"><input type="radio" name="q7" value="b"> It disables gzip
+                                    compression.</label>
+                                <label class="quiz-option"><input type="radio" name="q7" value="c"> It clears Mongoose
+                                    indexes.</label>
+                                <label class="quiz-option"><input type="radio" name="q7" value="d"> It forces HTTP 304
+                                    responses.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="8" data-answer="d"
+                            data-explanation="Day 3: Cursor pagination seeks via an index directly without scanning and discarding large offsets.">
+                            <p class="quiz-prompt">8. (Day 3) Why does cursor pagination outperform
+                                <code>skip(100000).limit(20)</code> on large feeds?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q8" value="a"> Cursor pagination
+                                    disables sorting.</label>
+                                <label class="quiz-option"><input type="radio" name="q8" value="b"> Offset pagination
+                                    stores records in cookies.</label>
+                                <label class="quiz-option"><input type="radio" name="q8" value="c"> Cursor pagination
+                                    caches the whole table in browser RAM.</label>
+                                <label class="quiz-option"><input type="radio" name="q8" value="d"> Cursor pagination
+                                    seeks directly to the boundary via an index instead of scanning and discarding
+                                    100,000 rows.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="9" data-answer="b"
+                            data-explanation="Day 3: Batching related lookups with $in / JOIN eliminates N+1 sequential round-trips.">
+                            <p class="quiz-prompt">9. (Day 3) What fixes an N+1 query loop fetching the author for each
+                                of 30 posts?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q9" value="a"> Adding gzip
+                                    compression</label>
+                                <label class="quiz-option"><input type="radio" name="q9" value="b"> Collecting unique
+                                    author IDs and fetching them in a single batched <code>$in</code> or SQL
+                                    <code>JOIN</code> query</label>
+                                <label class="quiz-option"><input type="radio" name="q9" value="c"> Using
+                                    fs.readFileSync</label>
+                                <label class="quiz-option"><input type="radio" name="q9" value="d"> Removing pagination
+                                    limits</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="10" data-answer="c"
+                            data-explanation="Day 4: KEYS * blocks Redis's single command thread while scanning the entire keyspace.">
+                            <p class="quiz-prompt">10. (Day 4) Why must <code>KEYS pattern*</code> NEVER be run in
+                                production Redis?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q10" value="a"> It resets Redis
+                                    TTLs to zero.</label>
+                                <label class="quiz-option"><input type="radio" name="q10" value="b"> It disables TLS
+                                    sockets.</label>
+                                <label class="quiz-option"><input type="radio" name="q10" value="c"> It blocks Redis's
+                                    single-threaded event loop while scanning every key in memory.</label>
+                                <label class="quiz-option"><input type="radio" name="q10" value="d"> It converts Hashes
+                                    into Lists.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="11" data-answer="d"
+                            data-explanation="Day 4: User-private data cached without a userId/tenantId in the key leaks private responses across users.">
+                            <p class="quiz-prompt">11. (Day 4) What critical bug occurs if <code>GET /api/orders</code>
+                                caches responses under <code>v1:orders:page=1</code>?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q11" value="a"> Redis rejects
+                                    colons in key names.</label>
+                                <label class="quiz-option"><input type="radio" name="q11" value="b"> TTL jitter stops
+                                    working.</label>
+                                <label class="quiz-option"><input type="radio" name="q11" value="c"> MongoDB drops
+                                    indexes.</label>
+                                <label class="quiz-option"><input type="radio" name="q11" value="d"> Cross-user data
+                                    leak: User B receives User A's private cached orders.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="12" data-answer="a"
+                            data-explanation="Day 4: Sorted Sets (ZSET) store members with numeric scores, ideal for leaderboards and sliding-window rate limits.">
+                            <p class="quiz-prompt">12. (Day 4) Which Redis data structure naturally supports
+                                timestamp-scored sliding windows and leaderboards?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q12" value="a"> Sorted Set
+                                    (ZSET)</label>
+                                <label class="quiz-option"><input type="radio" name="q12" value="b"> Plain
+                                    String</label>
+                                <label class="quiz-option"><input type="radio" name="q12" value="c"> Unordered
+                                    Set</label>
+                                <label class="quiz-option"><input type="radio" name="q12" value="d"> Local Node
+                                    Map</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="13" data-answer="b"
+                            data-explanation="Day 5: 202 Accepted signals that a request was validated and queued for asynchronous background completion.">
+                            <p class="quiz-prompt">13. (Day 5) Which HTTP status code best fits an endpoint that
+                                validates a slow CSV export and enqueues it to BullMQ?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q13" value="a"> 204 No
+                                    Content</label>
+                                <label class="quiz-option"><input type="radio" name="q13" value="b"> 202
+                                    Accepted</label>
+                                <label class="quiz-option"><input type="radio" name="q13" value="c"> 302 Found</label>
+                                <label class="quiz-option"><input type="radio" name="q13" value="d"> 503 Service
+                                    Unavailable</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="14" data-answer="c"
+                            data-explanation="Day 5: Queue Redis must use noeviction so memory pressure never silently drops queued jobs.">
+                            <p class="quiz-prompt">14. (Day 5) Why must a Redis instance running BullMQ queues use
+                                <code>noeviction</code> instead of <code>allkeys-lru</code>?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q14" value="a"> noeviction doubles
+                                    RAM automatically.</label>
+                                <label class="quiz-option"><input type="radio" name="q14" value="b"> BullMQ requires
+                                    TTLs to be 1 second.</label>
+                                <label class="quiz-option"><input type="radio" name="q14" value="c"> Under memory
+                                    pressure, LRU policies silently delete queued background jobs.</label>
+                                <label class="quiz-option"><input type="radio" name="q14" value="d"> Redis refuses
+                                    connections without allkeys-lru.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="15" data-answer="a"
+                            data-explanation="Day 6: At-least-once broker delivery + idempotent deduplication by eventId yields effectively-once processing.">
+                            <p class="quiz-prompt">15. (Day 6) How do event-driven consumers avoid duplicate side
+                                effects under at-least-once broker delivery?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q15" value="a"> Deduplicate by
+                                    storing processed <code>eventId</code>s or checking atomic domain state transitions
+                                    before applying work.</label>
+                                <label class="quiz-option"><input type="radio" name="q15" value="b"> Call nack(msg,
+                                    false, true) on every error infinitely.</label>
+                                <label class="quiz-option"><input type="radio" name="q15" value="c"> Auto-ack before
+                                    processing starts.</label>
+                                <label class="quiz-option"><input type="radio" name="q15" value="d"> Omit eventId from
+                                    payloads.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="16" data-answer="d"
+                            data-explanation="Day 6: The Transactional Outbox Pattern records domain changes and outgoing events in one atomic DB transaction.">
+                            <p class="quiz-prompt">16. (Day 6) What problem does the Transactional Outbox Pattern solve?
+                            </p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q16" value="a"> Compressing Docker
+                                    images</label>
+                                <label class="quiz-option"><input type="radio" name="q16" value="b"> Blocking SVG XSS
+                                    uploads</label>
+                                <label class="quiz-option"><input type="radio" name="q16" value="c"> Terminating TLS on
+                                    load balancers</label>
+                                <label class="quiz-option"><input type="radio" name="q16" value="d"> Dual-write
+                                    inconsistency where a database write commits but publishing to the message broker
+                                    fails</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="17" data-answer="b"
+                            data-explanation="Day 6: DLQs isolate unprocessable or retry-exhausted messages so healthy queue traffic is not blocked.">
+                            <p class="quiz-prompt">17. (Day 6) What is the purpose of a Dead-Letter Queue (DLQ)?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q17" value="a"> Speeding up static
+                                    asset CDN caching</label>
+                                <label class="quiz-option"><input type="radio" name="q17" value="b"> Isolating
+                                    poison-pill or retry-exhausted messages for inspection and replay without clogging
+                                    the main queue</label>
+                                <label class="quiz-option"><input type="radio" name="q17" value="c"> Storing JWT refresh
+                                    cookies</label>
+                                <label class="quiz-option"><input type="radio" name="q17" value="d"> Running database
+                                    backups</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="18" data-answer="c"
+                            data-explanation="Day 7: Scaling Socket.IO across multiple Node nodes requires a Redis Pub/Sub adapter to broadcast room emits across instances.">
+                            <p class="quiz-prompt">18. (Day 7) Why does <code>io.to('project:9').emit(...)</code> miss
+                                users connected to other API instances unless a Redis adapter is attached?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q18" value="a"> WebSockets cannot
+                                    send JSON strings.</label>
+                                <label class="quiz-option"><input type="radio" name="q18" value="b"> Browsers close
+                                    WebSockets every 5 seconds.</label>
+                                <label class="quiz-option"><input type="radio" name="q18" value="c"> Each Node instance
+                                    only holds its own local TCP sockets in RAM unless Redis Pub/Sub relays room events
+                                    cluster-wide.</label>
+                                <label class="quiz-option"><input type="radio" name="q18" value="d"> HTTP 101 upgrades
+                                    work only on localhost.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="19" data-answer="a"
+                            data-explanation="Day 7: Tracking active socket IDs per user in Redis handles multiple open tabs/devices accurately.">
+                            <p class="quiz-prompt">19. (Day 7) How should real-time presence determine when a user with
+                                3 open browser tabs goes offline?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q19" value="a"> Remove the closed
+                                    <code>socket.id</code> from a shared Redis Set and mark offline only when active
+                                    socket count reaches 0.</label>
+                                <label class="quiz-option"><input type="radio" name="q19" value="b"> Mark offline on the
+                                    very first disconnect event.</label>
+                                <label class="quiz-option"><input type="radio" name="q19" value="c"> Store socket
+                                    objects in localStorage.</label>
+                                <label class="quiz-option"><input type="radio" name="q19" value="d"> Poll the database
+                                    every 10ms.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="20" data-answer="d"
+                            data-explanation="Day 8: Missing auth returns 401; authenticated users lacking permission or ownership receive 403.">
+                            <p class="quiz-prompt">20. (Day 8) User A is logged in (valid JWT) and tries to edit User
+                                B's invoice. Which status code applies?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q20" value="a"> 202
+                                    Accepted</label>
+                                <label class="quiz-option"><input type="radio" name="q20" value="b"> 401
+                                    Unauthorized</label>
+                                <label class="quiz-option"><input type="radio" name="q20" value="c"> 304 Not
+                                    Modified</label>
+                                <label class="quiz-option"><input type="radio" name="q20" value="d"> 403 Forbidden
+                                    (enforcing resource ownership against IDOR)</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="21" data-answer="b"
+                            data-explanation="Day 8: Reusing an already-rotated refresh token indicates replay theft and triggers revoking the entire session family.">
+                            <p class="quiz-prompt">21. (Day 8) What should happen if a client presents an already-used
+                                refresh token under refresh token rotation?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q21" value="a"> Issue a longer
+                                    90-day refresh token.</label>
+                                <label class="quiz-option"><input type="radio" name="q21" value="b"> Revoke the entire
+                                    token family immediately and reject with 401.</label>
+                                <label class="quiz-option"><input type="radio" name="q21" value="c"> Skip signature
+                                    verification.</label>
+                                <label class="quiz-option"><input type="radio" name="q21" value="d"> Return the
+                                    plaintext token hash.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="22" data-answer="c"
+                            data-explanation="Day 8: HttpOnly cookies cannot be read by browser JS (protecting against XSS), whereas standard JWTs are base64-encoded and readable by anyone.">
+                            <p class="quiz-prompt">22. (Day 8) Which statement about browser token security is accurate?
+                            </p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q22" value="a"> Standard signed JWT
+                                    payloads are encrypted and unreadable by clients.</label>
+                                <label class="quiz-option"><input type="radio" name="q22" value="b"> localStorage is
+                                    immune to XSS scripts.</label>
+                                <label class="quiz-option"><input type="radio" name="q22" value="c">
+                                    <code>HttpOnly; Secure</code> cookies protect refresh tokens from XSS JS reads,
+                                    while CSRF defenses protect cookie writes.</label>
+                                <label class="quiz-option"><input type="radio" name="q22" value="d"> Passwords should be
+                                    stored inside JWT claims.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="23" data-answer="a"
+                            data-explanation="Day 9: Breaking changes require a new version; thin DTO adapters share one core service so logic does not drift.">
+                            <p class="quiz-prompt">23. (Day 9) How should an API support breaking JSON field renames
+                                between <code>/api/v1</code> and <code>/api/v2</code> cleanly?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q23" value="a"> Share one core
+                                    service/repository and translate fields in thin v1/v2 DTO controller adapters,
+                                    adding Deprecation/Sunset headers to v1.</label>
+                                <label class="quiz-option"><input type="radio" name="q23" value="b"> Rename the field
+                                    directly inside v1 without notice.</label>
+                                <label class="quiz-option"><input type="radio" name="q23" value="c"> Return HTTP 200 for
+                                    all validation errors.</label>
+                                <label class="quiz-option"><input type="radio" name="q23" value="d"> Forward raw
+                                    req.query straight into Model.find().</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="24" data-answer="d"
+                            data-explanation="Day 9: DataLoader batches per-tick nested lookups into single batched DB queries to prevent N+1 in GraphQL.">
+                            <p class="quiz-prompt">24. (Day 9) What common backend pitfall does <code>DataLoader</code>
+                                mitigate in GraphQL APIs?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q24" value="a"> Docker image layer
+                                    bloat</label>
+                                <label class="quiz-option"><input type="radio" name="q24" value="b"> SSRF
+                                    redirects</label>
+                                <label class="quiz-option"><input type="radio" name="q24" value="c"> TLS
+                                    termination</label>
+                                <label class="quiz-option"><input type="radio" name="q24" value="d"> N+1 database
+                                    queries triggered by nested field resolvers</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="25" data-answer="b"
+                            data-explanation="Day 10: ESR rule places Equality first, Sort second, Range last.">
+                            <p class="quiz-prompt">25. (Day 10) Using the ESR rule, which compound index best fits
+                                <code>find({ orgId, status: 'open', amountCents: { $gt: 500 } }).sort({ createdAt: -1 })</code>?
+                            </p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q25" value="a">
+                                    <code>{ amountCents: 1, createdAt: -1, orgId: 1, status: 1 }</code></label>
+                                <label class="quiz-option"><input type="radio" name="q25" value="b">
+                                    <code>{ orgId: 1, status: 1, createdAt: -1, amountCents: 1 }</code></label>
+                                <label class="quiz-option"><input type="radio" name="q25" value="c">
+                                    <code>{ createdAt: -1, amountCents: 1, status: 1, orgId: 1 }</code></label>
+                                <label class="quiz-option"><input type="radio" name="q25" value="d">
+                                    <code>{ status: 1, amountCents: 1, orgId: 1, createdAt: -1 }</code></label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="26" data-answer="c"
+                            data-explanation="Day 10: Leading $match/$sort/$limit stages leverage indexes early before $group or $lookup runs.">
+                            <p class="quiz-prompt">26. (Day 10) Why should <code>$match</code> and <code>$limit</code>
+                                precede <code>$lookup</code> in a paginated MongoDB aggregation pipeline?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q26" value="a"> MongoDB forbids
+                                    $match after $lookup.</label>
+                                <label class="quiz-option"><input type="radio" name="q26" value="b"> $lookup deletes
+                                    documents unless limited first.</label>
+                                <label class="quiz-option"><input type="radio" name="q26" value="c"> Filtering and
+                                    limiting via index first ensures expensive joins only run on the small final page of
+                                    documents.</label>
+                                <label class="quiz-option"><input type="radio" name="q26" value="d"> It avoids creating
+                                    indexes.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="27" data-answer="a"
+                            data-explanation="Day 10: Single-document atomic updates outperform multi-document transactions when only one record changes; never hold transactions open during external HTTP calls.">
+                            <p class="quiz-prompt">27. (Day 10) When should you prefer a single atomic
+                                <code>findOneAndUpdate</code> over a multi-document transaction?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q27" value="a"> Whenever the
+                                    conditional check and update occur within a single document, avoiding distributed
+                                    transaction overhead.</label>
+                                <label class="quiz-option"><input type="radio" name="q27" value="b"> When debiting one
+                                    wallet and crediting a different wallet document simultaneously.</label>
+                                <label class="quiz-option"><input type="radio" name="q27" value="c"> When calling Stripe
+                                    over HTTP mid-query.</label>
+                                <label class="quiz-option"><input type="radio" name="q27" value="d"> Only when SQL
+                                    foreign keys are required.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="28" data-answer="d"
+                            data-explanation="Day 11: Magic-byte checking inspects real binary file signatures rather than trusting spoofable names or Content-Type headers.">
+                            <p class="quiz-prompt">28. (Day 11) How does a backend verify that an uploaded file claiming
+                                to be <code>image/png</code> is genuinely a PNG?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q28" value="a"> Check that
+                                    originalname ends with .png</label>
+                                <label class="quiz-option"><input type="radio" name="q28" value="b"> Trust
+                                    req.headers['content-type'] blindly</label>
+                                <label class="quiz-option"><input type="radio" name="q28" value="c"> Store the file on
+                                    local Express disk</label>
+                                <label class="quiz-option"><input type="radio" name="q28" value="d"> Inspect the leading
+                                    magic-byte signature of the uploaded object</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="29" data-answer="b"
+                            data-explanation="Day 11: Presigned URLs let browsers upload/download directly to private object storage after backend authorization without streaming MBs through Node.">
+                            <p class="quiz-prompt">29. (Day 11) What is the key benefit of direct presigned PUT/GET URLs
+                                for cloud file storage?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q29" value="a"> The bucket becomes
+                                    publicly writable by anyone forever.</label>
+                                <label class="quiz-option"><input type="radio" name="q29" value="b"> API servers stay
+                                    authorized gatekeepers while large file bytes transfer directly between client and
+                                    object storage.</label>
+                                <label class="quiz-option"><input type="radio" name="q29" value="c"> Uploaded SVGs
+                                    automatically execute safe scripts.</label>
+                                <label class="quiz-option"><input type="radio" name="q29" value="d"> Database metadata
+                                    is no longer needed.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="30" data-answer="c"
+                            data-explanation="Day 12: Liveness (/health) checks process responsiveness only; Readiness (/ready) checks dependencies with bounded timeouts.">
+                            <p class="quiz-prompt">30. (Day 12) Why should <code>GET /health</code> (liveness) avoid
+                                querying MongoDB or Redis while <code>GET /ready</code> checks them?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q30" value="a"> Databases reject
+                                    HTTP GET requests.</label>
+                                <label class="quiz-option"><input type="radio" name="q30" value="b"> Liveness endpoints
+                                    must always return 503.</label>
+                                <label class="quiz-option"><input type="radio" name="q30" value="c"> A transient DB blip
+                                    should temporarily stop LB traffic (/ready=503) rather than restarting healthy
+                                    containers (/health fail).</label>
+                                <label class="quiz-option"><input type="radio" name="q30" value="d"> Pino redacts
+                                    /health responses.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="31" data-answer="a"
+                            data-explanation="Day 12: AsyncLocalStorage propagates requestId/correlationId across async calls while logger redaction strips passwords, tokens, and cookies.">
+                            <p class="quiz-prompt">31. (Day 12) Which combination ensures logs are traceable across
+                                async calls WITHOUT leaking JWTs or passwords?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q31" value="a">
+                                    <code>AsyncLocalStorage</code> correlation context + structured JSON logger
+                                    configured with explicit <code>redact</code> paths</label>
+                                <label class="quiz-option"><input type="radio" name="q31" value="b"> Logging full
+                                    req.headers and req.body via console.log</label>
+                                <label class="quiz-option"><input type="radio" name="q31" value="c"> Putting user
+                                    passwords into metric labels</label>
+                                <label class="quiz-option"><input type="radio" name="q31" value="d"> Returning err.stack
+                                    in production 500 responses</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="32" data-answer="d"
+                            data-explanation="Day 13: Supertest tests real Express routing, auth, validation, and queries against a real isolated test database while stubbing external SaaS APIs.">
+                            <p class="quiz-prompt">32. (Day 13) Which strategy gives the highest confidence in an API
+                                integration test suite?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q32" value="a"> Mocking
+                                    Mongoose/SQL queries so no real database is exercised</label>
+                                <label class="quiz-option"><input type="radio" name="q32" value="b"> Sharing state
+                                    sequentially across tests without cleanup</label>
+                                <label class="quiz-option"><input type="radio" name="q32" value="c"> Running tests
+                                    directly against production</label>
+                                <label class="quiz-option"><input type="radio" name="q32" value="d"> Running Supertest
+                                    against a real isolated test DB (cleaned in beforeEach) while stubbing external SaaS
+                                    gateways</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="33" data-answer="b"
+                            data-explanation="Day 13: High line coverage only proves lines executed; it cannot guarantee assertions tested security, concurrency, or edge cases.">
+                            <p class="quiz-prompt">33. (Day 13) What is the key limitation of relying solely on a 90%+
+                                line coverage metric?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q33" value="a"> Coverage tools slow
+                                    down production traffic.</label>
+                                <label class="quiz-option"><input type="radio" name="q33" value="b"> Line execution does
+                                    not prove assertions verified IDOR checks, boundary values, or concurrent failure
+                                    paths.</label>
+                                <label class="quiz-option"><input type="radio" name="q33" value="c"> Node.js does not
+                                    support assertions on async code.</label>
+                                <label class="quiz-option"><input type="radio" name="q33" value="d"> Coverage cannot run
+                                    in CI.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="34" data-answer="c"
+                            data-explanation="Day 14: Defending webhook URLs against SSRF requires verifying HTTPS, resolving DNS IPs, blocking private/loopback/metadata ranges, and disabling unsafe redirects.">
+                            <p class="quiz-prompt">34. (Day 14) Which complete check defends outbound webhook delivery
+                                against SSRF?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q34" value="a"> Checking only that
+                                    the URL string contains ".com"</label>
+                                <label class="quiz-option"><input type="radio" name="q34" value="b"> Allowing
+                                    http://localhost URLs in production</label>
+                                <label class="quiz-option"><input type="radio" name="q34" value="c"> Requiring
+                                    <code>https:</code>, resolving DNS IPs, rejecting private/loopback/link-local CIDRs,
+                                    and disabling redirects</label>
+                                <label class="quiz-option"><input type="radio" name="q34" value="d"> Setting CORS origin
+                                    to '*'</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="35" data-answer="a"
+                            data-explanation="Day 14: Zod strict schemas reject unknown properties (mass assignment) and object operators ($ne) while parameterized SQL blocks SQLi.">
+                            <p class="quiz-prompt">35. (Day 14) Which combination prevents mass assignment, SQL
+                                injection, and NoSQL operator injection?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q35" value="a"> Strict schema
+                                    validation stripping/rejecting extra keys &amp; non-primitive types + parameterized
+                                    SQL queries</label>
+                                <label class="quiz-option"><input type="radio" name="q35" value="b"> Disabling Helmet
+                                    headers</label>
+                                <label class="quiz-option"><input type="radio" name="q35" value="c"> Passing req.body
+                                    straight into Model.create()</label>
+                                <label class="quiz-option"><input type="radio" name="q35" value="d"> Storing secrets
+                                    inside Dockerfile ENV</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="36" data-answer="d"
+                            data-explanation="Day 15: Exec-form CMD runs node directly as PID 1 for SIGTERM shutdown; USER node drops root; named volumes persist DB files.">
+                            <p class="quiz-prompt">36. (Day 15) Which set of Dockerfile + Compose practices ensures
+                                secure privilege, fast rebuilds, and persistent local DB state?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q36" value="a"> FROM node:latest,
+                                    COPY . . before npm install, root user, no volumes</label>
+                                <label class="quiz-option"><input type="radio" name="q36" value="b"> Baking .env into
+                                    the image and connecting via localhost</label>
+                                <label class="quiz-option"><input type="radio" name="q36" value="c"> Running CMD npm
+                                    start without .dockerignore</label>
+                                <label class="quiz-option"><input type="radio" name="q36" value="d">
+                                    <code>.dockerignore</code>, cached <code>npm ci --omit=dev</code>,
+                                    <code>USER node</code>, exec-form <code>CMD</code>, and Compose named DB
+                                    volumes</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="37" data-answer="b"
+                            data-explanation="Day 16: Expand-and-Contract keeps old and new schemas compatible across rolling deploys and enables safe rollbacks.">
+                            <p class="quiz-prompt">37. (Day 16) Why is the Expand-and-Contract pattern used for database
+                                migrations during rolling deployments?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q37" value="a"> To drop production
+                                    tables faster</label>
+                                <label class="quiz-option"><input type="radio" name="q37" value="b"> So old v1 and new
+                                    v2 containers can coexist safely against one database without downtime or data loss
+                                    on rollback</label>
+                                <label class="quiz-option"><input type="radio" name="q37" value="c"> To bypass CI test
+                                    gates</label>
+                                <label class="quiz-option"><input type="radio" name="q37" value="d"> To share staging
+                                    and production secrets</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="38" data-answer="c"
+                            data-explanation="Day 16: Immutable SHA tags ensure repeatable deploys and exact instant rollbacks.">
+                            <p class="quiz-prompt">38. (Day 16) Why do production CD pipelines deploy
+                                <code>:sha-&lt;commit&gt;</code> images instead of overwriting <code>:latest</code>?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q38" value="a"> Docker forbids
+                                    :latest in Compose.</label>
+                                <label class="quiz-option"><input type="radio" name="q38" value="b"> SHA tags reduce RAM
+                                    by 50%.</label>
+                                <label class="quiz-option"><input type="radio" name="q38" value="c"> Every autoscaled
+                                    node pulls the exact tested commit artifact, and rolling back simply redeploys the
+                                    previous SHA tag.</label>
+                                <label class="quiz-option"><input type="radio" name="q38" value="d"> It eliminates
+                                    readiness checks.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="39" data-answer="a"
+                            data-explanation="Day 17: Timeouts + idempotent jittered retries + circuit breakers prevent dead upstream services from cascading into total API outages.">
+                            <p class="quiz-prompt">39. (Day 17) How do timeouts, bounded idempotent retries, and circuit
+                                breakers protect a production backend?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q39" value="a"> Timeouts cap socket
+                                    waits, jittered idempotent retries survive brief blips, and circuit breakers fail
+                                    fast when upstream stays down.</label>
+                                <label class="quiz-option"><input type="radio" name="q39" value="b"> They replace
+                                    database indexes.</label>
+                                <label class="quiz-option"><input type="radio" name="q39" value="c"> They bypass
+                                    authentication during high load.</label>
+                                <label class="quiz-option"><input type="radio" name="q39" value="d"> They retry 400 Bad
+                                    Request errors infinitely.</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-question" data-q="40" data-answer="d"
+                            data-explanation="Day 17: RPO=5m requires continuous PITR archiving; tested restore drills verify RTO can actually be met.">
+                            <p class="quiz-prompt">40. (Day 17) Which database recovery plan satisfies an RPO of 5
+                                minutes and an RTO of 30 minutes?</p>
+                            <div class="quiz-options">
+                                <label class="quiz-option"><input type="radio" name="q40" value="a"> Replication without
+                                    backups</label>
+                                <label class="quiz-option"><input type="radio" name="q40" value="b"> Weekly manual zip
+                                    exports stored on one developer's laptop</label>
+                                <label class="quiz-option"><input type="radio" name="q40" value="c"> Nightly snapshots
+                                    that have never been tested</label>
+                                <label class="quiz-option"><input type="radio" name="q40" value="d"> Automated snapshots
+                                    + continuous Point-in-Time Recovery (WAL/oplog) archiving + regularly timed staging
+                                    restore drills</label>
+                            </div>
+                            <div class="quiz-feedback" aria-live="polite"></div>
+                        </div>
+
+                        <div class="quiz-actions">
+                            <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Grade 40-Question
+                                Exam</button>
+                            <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Reset Exam</button>
+                        </div>
+
+                        <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+                    </form>
+                </section>
+
+                <section id="short-answers" class="lesson-section">
+                    <span class="section-tag">07. Active Recall</span>
+                    <h2>20 Short-Answer Review Questions</h2>
+
+                    <div class="accordion-list">
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>1. (Day 1) Why keep HTTP <code>req</code>/<code>res</code>
+                                    out of Services and Mongoose models out of Controllers?</span><span
+                                    class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Keeping services transport-agnostic lets workers, CLIs, and unit tests reuse them;
+                                    keeping queries in repositories isolates persistence changes and allows swapping
+                                    in-memory fakes during tests.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>2. (Day 2) What breaks when a rate limiter or session store
+                                    uses in-process Node RAM across 4 replicas?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Each replica maintains isolated memory, breaking user sessions when load balancers
+                                    rotate instances and multiplying allowed rate limits by 4x until shared Redis is
+                                    used.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>3. (Day 3) Why check p95 and p99 latency alongside average
+                                    latency?</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Averages mask severe tail spikes experienced by the slowest 1–5% of requests caused
+                                    by GC pauses, lock contention, or pool queuing.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>4. (Day 3) What is the advantage of fetching
+                                    <code>limit + 1</code> records in cursor pagination?</span><span
+                                    class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Seeing whether an extra item exists proves <code>hasMore</code> accurately without
+                                    executing a costly separate total count scan.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>5. (Day 4) How do TTL jitter and negative caching protect
+                                    databases?</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>TTL jitter prevents synchronized mass key expirations (cache stampede); short-TTL
+                                    negative sentinels absorb repeated misses for non-existent IDs (cache penetration).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>6. (Day 5) Why is an unawaited async function inside an
+                                    Express route NOT a durable background job?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Process crashes, container restarts, or deploys kill in-memory promises silently with
+                                    zero persistence, retries, or backoff.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>7. (Day 6) Contrast competing-consumer queues with pub/sub
+                                    topic fan-out.</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Competing consumers share one queue so each message runs once across scaled workers;
+                                    pub/sub routes copies to separate queues so multiple independent domains react to
+                                    one event.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>8. (Day 7) Why must Socket.IO browser clients use a dynamic
+                                    auth callback plus a REST catch-up query on reconnect?</span><span
+                                    class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Dynamic auth callbacks read the freshest refreshed access token on reconnect, and
+                                    REST catch-up fetches persisted notifications missed while offline.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>9. (Day 8) Explain the difference between RBAC, permission
+                                    checks, and resource ownership checks.</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>RBAC assigns user roles; permission checks verify capabilities (e.g.,
+                                    <code>orders:edit</code>); ownership checks confirm the caller owns or belongs to
+                                    that specific target record (stopping IDOR).</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>10. (Day 8) Why hash refresh tokens with SHA-256 instead of
+                                    storing them in plaintext?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>High-entropy refresh tokens resist brute force, and storing SHA-256 hashes ensures
+                                    read-only DB leaks do not grant attackers live impersonation tokens.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>11. (Day 9) Which API changes are safe inside
+                                    <code>v1</code> and which require <code>v2</code>?</span><span
+                                    class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Adding optional fields or new endpoints is backward-compatible in <code>v1</code>;
+                                    renaming/removing fields, changing types, or adding mandatory inputs breaks clients
+                                    and requires <code>v2</code>.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>12. (Day 10) What does examining 100,000 docs to return 10
+                                    docs in <code>explain('executionStats')</code> reveal?</span><span
+                                    class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>The query lacks a selective matching index (likely doing a <code>COLLSCAN</code> or
+                                    poorly ordered compound scan) and needs an ESR-aligned index.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>13. (Day 10) Why should unbounded arrays NOT be embedded
+                                    inside MongoDB documents?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Unbounded growth causes expensive disk document reallocation, bloats network reads,
+                                    and eventually fails at MongoDB's 16 MB limit.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>14. (Day 11) Why serve user-uploaded files with
+                                    <code>Content-Disposition: attachment</code> and <code>nosniff</code> (or an
+                                    isolated domain)?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>It prevents browsers from executing malicious inline HTML/SVG scripts inside your
+                                    main application origin (Stored XSS).</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>15. (Day 12) Why normalize Express route templates
+                                    (<code>/users/:id</code>) in metric labels?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Raw IDs create unbounded cardinality metric series that exhaust monitoring memory and
+                                    fragment latency dashboards.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>16. (Day 13) Why guard test database truncation helpers with
+                                    <code>NODE_ENV === 'test'</code>?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>A misconfigured environment variable could otherwise run <code>deleteMany({})</code>
+                                    against a shared development or production database.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>17. (Day 14) Why run rate-limiting middleware BEFORE
+                                    password verification on login routes?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Password hashing (Argon2/bcrypt) is CPU/memory-heavy; rate limiting first rejects
+                                    brute-force floods cheaply before exhausting worker threads.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>18. (Day 15) Why does <code>localhost</code> inside an API
+                                    container fail to reach a sibling Compose Postgres/Mongo container?</span><span
+                                    class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Each container has its own loopback network namespace; use the Compose service name
+                                    (e.g., <code>mongo</code> or <code>postgres</code>) over the bridge network.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>19. (Day 16) Why are OIDC short-lived CI credentials safer
+                                    than static long-lived IAM keys?</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>OIDC mints ephemeral workflow-scoped credentials per run, eliminating permanent
+                                    static keys stored inside CI secrets.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>20. (Day 17) When should a backend degrade gracefully vs.
+                                    fail closed?</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p>Degrade gracefully on optional enrichments (recommendations, read cache fallback);
+                                    always fail closed on authentication, authorization, and payment integrity gates.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="challenges" class="lesson-section">
+                    <span class="section-tag">08. Applied Mastery</span>
+                    <h2>12 Practical Coding, Debugging &amp; Design Challenges</h2>
+
+                    <div class="accordion-list">
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 1 (Architecture): Refactor a Coupled Express Route
+                                    with Constructor DI</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Separate a route handler mixing Joi/Zod check,
+                                    <code>CouponModel.findOne</code>, discount math, and <code>res.json</code> into
+                                    Controller + Service + Repository.</p>
+                                <p><strong>Reference Solution:</strong> Validate body via route middleware; Controller
+                                    extracts DTO and calls <code>couponService.applyCoupon({ code, totalCents })</code>;
+                                    Service calls injected <code>couponRepo.findActiveByCode(code)</code>, throws
+                                    <code>AppError(404/409)</code> on invalid state, and returns integer discounted
+                                    cents.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 2 (Scalability): Audit &amp; Fix a Stateful
+                                    Multi-Instance Express App</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Spot and fix 4 scaling blockers: local
+                                    <code>const rateMap = new Map()</code>, <code>fs.writeFile('./uploads/...')</code>,
+                                    unpooled DB connect per request, and <code>setInterval</code> invoice cleanup inside
+                                    <code>app.js</code>.</p>
+                                <p><strong>Reference Solution:</strong> Replace local rate map with Redis sliding
+                                    limiter + <code>trust proxy: 1</code>; move uploads to presigned S3 object storage;
+                                    create one shared pooled DB client at startup; extract <code>setInterval</code> to a
+                                    centralized BullMQ repeatable scheduler.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 3 (Performance): Rewrite an N+1 + Unbounded Feed
+                                    Endpoint</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Fix <code>const posts = await Post.find();</code> followed by
+                                    <code>for (const p of posts) p.author = await User.findById(p.authorId);</code>.</p>
+                                <div class="code-card">
+                                    <div class="code-header"><span class="code-title">Reference Fix</span><button
+                                            type="button" class="copy-code-btn">Copy</button></div>
+                                    <pre><code>const limit = Math.min(Number(req.query.limit) || 20, 50);
+const posts = await Post.find(cursor ? { _id: { $lt: cursor } } : {})
+  .select('_id title authorId createdAt')
+  .sort({ _id: -1 })
+  .limit(limit + 1)
+  .lean();
+const ids = [...new Set(posts.slice(0, limit).map((p) =&gt; String(p.authorId)))];
+const users = await User.find({ _id: { $in: ids } }).select('_id name').lean();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 4 (Caching): Design Epoch-Based List Invalidation
+                                    in Redis</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Invalidate dozens of filtered catalog list cache keys cleanly
+                                    on product edit without <code>KEYS *</code>.</p>
+                                <p><strong>Reference Solution:</strong> Read integer
+                                    <code>epoch = await redis.get('epoch:catalog') || 1</code>, embed it into list keys
+                                    (<code>v1:catalog:e${epoch}:cat=...</code>), and execute atomic
+                                    <code>await redis.incr('epoch:catalog')</code> whenever any product mutates. Old
+                                    keys expire naturally via TTL.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 5 (Background Jobs): Idempotent Worker + Permanent
+                                    Error Handling</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Prevent a BullMQ email job from retrying 4 times when the user
+                                    record was deleted, and prevent duplicate sends on retry.</p>
+                                <p><strong>Reference Solution:</strong> Throw <code>UnrecoverableError</code> if
+                                    user/record is missing; perform an atomic conditional DB claim
+                                    (<code>status: 'pending' &rarr; 'sending'</code> or check <code>sentAt</code>) and
+                                    pass provider idempotency keys.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 6 (Event-Driven): Prevent Out-of-Order Event State
+                                    Regression</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> An <code>order.cancelled</code> (v2) event arrives before
+                                    delayed <code>order.confirmed</code> (v1). Write an atomic update guard.</p>
+                                <p><strong>Reference Solution:</strong> Store <code>lastEventVersion</code> on the
+                                    projection and run
+                                    <code>findOneAndUpdate({ _id: orderId, lastEventVersion: { $lt: event.version } }, { $set: { status: event.status, lastEventVersion: event.version } })</code>.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 7 (WebSockets): Secure Socket.IO Room Join &amp;
+                                    Multi-Instance Broadcast</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Fix
+                                    <code>socket.on('join', (room) =&gt; socket.join(room))</code> on a 3-node cluster.
+                                </p>
+                                <p><strong>Reference Solution:</strong> Verify JWT inside <code>io.use()</code> to set
+                                    <code>socket.data.userId</code>, verify DB workspace membership inside
+                                    <code>project:subscribe</code> before calling <code>socket.join()</code>, and attach
+                                    <code>@socket.io/redis-adapter</code> across all 3 instances.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 8 (Auth &amp; IDOR): Close a Multi-Tenant
+                                    Authorization Hole</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> An endpoint checks
+                                    <code>requirePermission('reports:read')</code> and runs
+                                    <code>Report.findById(req.params.id)</code>. Explain the flaw and patch it.</p>
+                                <p><strong>Reference Solution:</strong> Add tenant and ownership scoping directly in the
+                                    query/policy:
+                                    <code>Report.findOne({ _id: req.params.id, tenantId: req.user.tenantId })</code>
+                                    plus verifying owner or elevated <code>reports:read:any</code> permission.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 9 (Database): Optimize a Slow MongoDB Aggregation
+                                    + SQL Injection Fix</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Fix
+                                    <code>pool.query("SELECT * FROM orders WHERE status = '" + req.query.status + "'")</code>
+                                    and an aggregation putting <code>$lookup</code> before <code>$match</code>.</p>
+                                <p><strong>Reference Solution:</strong> Replace SQL string concatenation with
+                                    parameterized
+                                    <code>pool.query('SELECT id, total_cents FROM orders WHERE status = $1 LIMIT 50', [validatedStatus])</code>;
+                                    move <code>$match</code> + <code>$sort</code> + <code>$limit</code> to the start of
+                                    the aggregation pipeline ahead of <code>$lookup</code>.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 10 (Storage &amp; Security): Guard File Upload +
+                                    SSRF Webhook</span><span class="accordion-icon" aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Outline defensive checks for user avatar upload + user webhook
+                                    URL registration.</p>
+                                <p><strong>Reference Solution:</strong> Upload via presigned URL with UUID keys, verify
+                                    size via <code>HeadObject</code> and binary magic bytes (rejecting SVG/HTML), serve
+                                    via isolated CDN; validate webhook URLs as <code>https:</code>, resolve DNS blocking
+                                    RFC1918/loopback/<code>169.254.169.254</code>, and set
+                                    <code>redirect: 'error'</code>.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 11 (Testing &amp; Observability): Write a Negative
+                                    Security Supertest + Redacted Log</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Ensure tests assert <code>401</code>/<code>403</code> IDOR
+                                    failures and logs never print Bearer tokens.</p>
+                                <p><strong>Reference Solution:</strong> Configure Pino
+                                    <code>redact: ['req.headers.authorization', 'req.headers.cookie', '*.password']</code>
+                                    with <code>AsyncLocalStorage</code> <code>requestId</code>; write Supertest cases
+                                    asserting missing token returns <code>401</code> and cross-user mutation returns
+                                    <code>403</code> against an isolated test DB.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item"><button type="button" class="accordion-trigger"
+                                aria-expanded="false"><span>Challenge 12 (Docker, CI/CD &amp; Resilience): Zero-Downtime
+                                    Release Blueprint</span><span class="accordion-icon"
+                                    aria-hidden="true">+</span></button>
+                            <div class="accordion-panel" hidden>
+                                <p><strong>Task:</strong> Combine Dockerfile, Expand-Contract, and Circuit Breaker for a
+                                    reliable release.</p>
+                                <p><strong>Reference Solution:</strong> Multi-stage non-root Dockerfile with exec-form
+                                    <code>CMD</code> + <code>SIGTERM</code> drain; CI runs <code>npm ci</code> +
+                                    ephemeral DB/Redis tests and tags <code>:sha-...</code>; schema changes use
+                                    Expand-and-Contract; deploy gates traffic on <code>/ready</code> while circuit
+                                    breakers + timeouts guard external HTTP dependencies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="case-studies" class="lesson-section">
+                    <span class="section-tag">09. Systems Integration</span>
+                    <h2>3 Integrated Backend Case Studies</h2>
+
+                    <div class="case-study-card">
+                        <h3>Case Study 1: Multi-Tenant SaaS Invoicing &amp; Real-Time Workspace Platform</h3>
+                        <p><strong>Scenario:</strong> Organizations create invoices, generate downloadable PDF receipts,
+                            receive payment gateway webhooks, and see instant dashboard status updates across multiple
+                            open team tabs.</p>
+                        <p><strong>Integrated Architecture:</strong> Modular monolith Express API behind TLS load
+                            balancer &rarr; PostgreSQL (relational ledger ACID transactions + tenant-scoped queries +
+                            PITR backups) &rarr; Redis (Cache-Aside permissions, sliding rate limits, BullMQ queues,
+                            Socket.IO Redis Adapter) &rarr; Private S3 bucket (PDF receipts accessed via 120s presigned
+                            GET URLs with <code>Content-Disposition: attachment</code>) &rarr; Dedicated worker fleet
+                            generating PDFs idempotently and emitting <code>invoice:paid</code> via
+                            <code>@socket.io/redis-emitter</code>. Security enforces strict tenant ownership on every
+                            query and HMAC signature verification on webhooks.</p>
+                    </div>
+
+                    <div class="case-study-card">
+                        <h3>Case Study 2: High-Traffic Flash-Sale E-Commerce Checkout</h3>
+                        <p><strong>Scenario:</strong> Product pages receive 5,000 read req/sec while 400 concurrent
+                            buyers compete for limited inventory during a 10-minute flash sale.</p>
+                        <p><strong>Integrated Architecture:</strong> CDN + Redis Cache-Aside (with TTL jitter +
+                            single-flight coalescing) absorbs 95% of catalog reads, keeping DB load low. Checkout
+                            bypasses cache and executes atomic conditional inventory deduction
+                            (<code>WHERE id = $1 AND stock &gt;= $2</code>) inside a short DB transaction alongside an
+                            Outbox <code>OrderPlaced</code> row, protected by client <code>Idempotency-Key</code>
+                            headers. Outbox relay publishes to RabbitMQ/Redis Streams so Email, Loyalty, and Analytics
+                            consumers process asynchronously with DLQs—keeping checkout p99 latency under 120ms without
+                            overselling.</p>
+                    </div>
+
+                    <div class="case-study-card">
+                        <h3>Case Study 3: Secure Document Upload &amp; Webhook Automation Service</h3>
+                        <p><strong>Scenario:</strong> Users upload 20 MB compliance PDFs/images and configure HTTPS
+                            webhooks to notify external partners whenever document processing finishes.</p>
+                        <p><strong>Integrated Architecture:</strong> Express issues short-lived presigned PUT URLs into
+                            a <code>quarantine/</code> bucket prefix (saving Node RAM). Confirmation/storage event
+                            triggers a BullMQ worker that verifies size via <code>HeadObject</code>, validates binary
+                            magic bytes, strips image EXIF via re-encoding, and moves approved assets to
+                            <code>ready/</code>. Outbound webhook delivery runs in an isolated worker queue enforcing
+                            HTTPS + DNS-resolved non-private IP SSRF checks, <code>redirect: 'error'</code>, 3s
+                            timeouts, circuit breakers per customer endpoint, and exponential retries before DLQ
+                            isolation.</p>
+                    </div>
+                </section>
+
+                <section id="final-assessment" class="lesson-section">
+                    <span class="section-tag">10. Capstone Evaluation</span>
+                    <h2>Final Advanced Backend Practical Assessment</h2>
+                    <div class="task-card">
+                        <h3>Capstone Prompt: Design &amp; Defend a Production Event-Ticketing Backend</h3>
+                        <p>Complete all four deliverables on paper or in a markdown design document, then self-evaluate
+                            against the rubric:</p>
+                        <ol>
+                            <li><strong>Part A (Architecture &amp; Data):</strong> Choose SQL vs. MongoDB for ticket
+                                inventory and order ledgers, write your ESR/composite indexes, and show how atomic seat
+                                reservation prevents double-booking under concurrency.</li>
+                            <li><strong>Part B (Caching, Queues &amp; Real-Time):</strong> Explain how Redis caches
+                                event listings without serving stale seat availability at checkout, how PDF ticket
+                                generation + emails run asynchronously with idempotency, and how live seat-map updates
+                                scale via WebSockets + Redis Adapter.</li>
+                            <li><strong>Part C (Security &amp; Testing):</strong> Specify token lifecycle
+                                (access/refresh rotation), RBAC + IDOR ownership rules, tiered rate limits on ticket
+                                reservation, Helmet/CORS, and 6 Supertest + concurrency test cases.</li>
+                            <li><strong>Part D (Observability, Docker &amp; CI/CD):</strong> Provide a non-root
+                                Dockerfile, CI test pipeline with ephemeral services, <code>/health</code> vs.
+                                <code>/ready</code> design, redacted correlation logging, RPO/RTO backup strategy, and
+                                Expand-and-Contract migration + rollback plan.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section id="checklist" class="lesson-section">
+                    <span class="section-tag">11. Self-Tracking</span>
+                    <h2>Personal Revision Checklist &amp; Completion Tracker</h2>
+                    <p id="revision-progress-text">0 of 10 mastery milestones checked</p>
+                    <div class="checklist-grid" id="revision-checklist">
+                        <label class="checklist-item"><input type="checkbox" data-check-id="arch"> Explain &amp;
+                            implement Controller / Service / Repository + DI</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="scale"> Design stateless
+                            multi-instance APIs with shared Redis &amp; LB</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="perf"> Diagnose event-loop
+                            lag, N+1 loops, cursor pagination &amp; gzip</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="cache"> Implement Redis
+                            Cache-Aside, TTL jitter &amp; safe invalidation</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="async"> Separate BullMQ
+                            jobs, event brokers, idempotency &amp; DLQs</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="ws"> Authenticate
+                            WebSockets, rooms, presence &amp; Redis Adapter</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="auth"> Enforce refresh
+                            rotation, RBAC permissions &amp; IDOR checks</label>
+                        <label class="checklist-item"><input type="radio" class="sr-only" hidden><input type="checkbox"
+                                data-check-id="data"> Design ESR indexes, read explain plans &amp; presigned S3
+                            flows</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="sec"> Apply Redacted Pino
+                            logs, Supertest DB suites, Rate Limits &amp; SSRF guards</label>
+                        <label class="checklist-item"><input type="checkbox" data-check-id="ops"> Author non-root
+                            Dockerfiles, CI/CD SHA releases, ADRs &amp; circuit breakers</label>
+                    </div>
+                </section>
+
+                <section id="visual-recap" class="lesson-section">
+                    <span class="section-tag">12. Visual Reference</span>
+                    <h2>Day 18 Phase 6 Mastery Visual Reference</h2>
+                    <figure class="lesson-image-figure">
+                        <img src="image.webp"
+                            alt="Day 18 Complete Revision and Advanced Practical Assessment visual summary"
+                            class="lesson-local-image" loading="lazy">
+                        <figcaption>Day 18 local visual reference (<code>Day 18/image.webp</code>). Congratulations on
+                            reaching the final revision and assessment milestone of Phase 6.</figcaption>
+                    </figure>
+                </section>
+
+                <nav class="lesson-pagination" aria-label="Lesson day navigation">
+                    <a href="../Day 17/index.html" class="pagination-btn">
+                        <span class="pagination-label">Previous Day</span>
+                        <span class="pagination-title">&larr; Day 17: Production Backend Architecture</span>
+                    </a>
+                    <button type="button" class="pagination-btn pagination-next is-disabled" disabled
+                        aria-disabled="true">
+                        <span class="pagination-label">End of Curriculum</span>
+                        <span class="pagination-title">Phase 6 Complete</span>
+                    </button>
+                </nav>
+            </article>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+                    <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+                    <span class="brand-name">Arslan Weblab</span>
+                </a>
+                <p class="footer-description">
+                    Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture,
+                    scalability, security, testing, and production engineering.
+                </p>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>Course Navigation</h4>
+                <ul>
+                    <li><a href="../index.html">Course Homepage</a></li>
+                    <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+                    <li><a href="../Day 8/index.html">Day 8: Auth &amp; RBAC</a></li>
+                    <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+                    <li><a href="../Day 17/index.html">Day 17: Prod Architecture</a></li>
+                    <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>Arslan Weblab</h4>
+                <ul>
+                    <li><a href="https://arslan-weblab.netlify.app/" target="_blank"
+                            rel="noopener noreferrer">Portfolio</a></li>
+                    <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects
+                            Hub</a></li>
+                    <li><a href="https://github.com/arslansahil850-alt/" target="_blank"
+                            rel="noopener noreferrer">GitHub</a></li>
+                    <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container footer-bottom">
+            <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

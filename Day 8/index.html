@@ -1,0 +1,1104 @@
+Here are the three separate complete files for Day 8: Advanced Authentication
+and Authorization, ready to copy and save into your Phase 6/Day 8/ folder.
+
+1. Phase 6/Day 8/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 8: Advanced Authentication and Authorization. Learn access and refresh token lifecycles, RBAC, permission-based authorization, resource ownership checks, session revocation, and MFA concepts.">
+  <title>Day 8: Advanced Authentication and Authorization | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="8">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 8: Auth &amp; Authorization</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html" selected>Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 7/index.html" class="nav-step-btn" title="Go to Day 7">Prev</a>
+            <a href="../Day 9/index.html" class="nav-step-btn" title="Go to Day 9">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 8 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 08</span>
+          <span class="category-pill">Identity, Access &amp; Security</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="8" aria-pressed="false">Mark Day 8 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Advanced Authentication and Authorization</h1>
+        <p class="lesson-intro">
+          Checking whether a JWT is valid only proves who sent a request—it says nothing about whether that user is allowed to edit an invoice, delete another customer's project, or impersonate an administrator. Today you will learn production-grade access and refresh token lifecycles, secure token storage, RBAC, fine-grained permissions, resource ownership enforcement, session revocation, and multi-factor authentication design.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2 &amp; 4</span>
+            <p>Stateless short-lived access tokens work across scaled nodes, while Redis-backed session/revocation stores keep logout and compromised-token invalidation immediate.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Authentication establishes identity (<code>401</code>); authorization verifies permissions and resource ownership on every protected action (<code>403</code>).</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Extend an Express API with rotating refresh tokens, role-to-permission mapping, and service-level resource ownership policies.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Token &amp; Policy Flow</a>
+            <a href="#diagrams">Auth &amp; RBAC Diagrams</a>
+            <a href="#implementation">Express Implementation</a>
+            <a href="#real-world">Sessions vs. Tokens &amp; Trade-offs</a>
+            <a href="#mistakes-security">Common Auth Mistakes</a>
+            <a href="#practical-task">Practical Auth Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Broken access control consistently ranks as the top web application security risk. Building secure backends requires pairing strong authentication lifecycles with explicit, fail-closed authorization checks at both route and resource levels.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Manage Token Lifecycles</h3>
+              <p>Combine short-lived access tokens with rotated, hashed refresh tokens and theft reuse detection.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design RBAC &amp; Permissions</h3>
+              <p>Separate user roles from fine-grained capability strings for maintainable policy growth.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Prevent IDOR / Ownership Bugs</h3>
+              <p>Verify resource ownership and tenant boundaries before returning or mutating records.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Revoke Sessions &amp; Plan MFA</h3>
+              <p>Implement reliable logout, password-reset invalidation, and multi-factor authentication flows.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Authentication &amp; Authorization Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Authentication vs. Authorization</h3>
+            <ul>
+              <li><strong>Authentication (AuthN — "Who are you?"):</strong> Verifying identity via password, OAuth provider, passkey, or cryptographic token. Missing or invalid credentials return <code>401 Unauthorized</code>.</li>
+              <li><strong>Authorization (AuthZ — "What can you do?"):</strong> Checking whether an authenticated principal has permission to perform a specific action on a specific target resource. Insufficient privileges return <code>403 Forbidden</code>.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Access and Refresh Token Lifecycle</h3>
+            <p>
+              Issuing a single 30-day JWT with no server check means stolen tokens stay valid for a month. Production token systems split responsibilities into two tokens:
+            </p>
+            <ul>
+              <li><strong>Access Token:</strong> Short-lived (5–15 minutes), signed JWT carrying minimal claims (<code>sub</code> user ID, <code>roles</code> or <code>scope</code>, <code>jti</code> token ID, <code>exp</code>, <code>iss</code>, <code>aud</code>). Sent on API requests.</li>
+              <li><strong>Refresh Token:</strong> Longer-lived (7–30 days), high-entropy opaque random string (or signed token) stored hashed on the server. Used solely at <code>POST /auth/refresh</code> to mint a fresh access token.</li>
+            </ul>
+            <p>
+              <strong>Refresh Token Rotation:</strong> Every time a refresh token is used, the server invalidates the old refresh token and issues a brand-new refresh + access pair. If an already-used refresh token is presented again (indicating either a stolen token was replayed or a victim's token was stolen), the server detects reuse and revokes the entire session family immediately.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Secure Token Handling (Browser vs. Server)</h3>
+            <p>
+              Understanding browser-side versus server-side boundaries is vital:
+            </p>
+            <ul>
+              <li><strong>Browser Storage Risk:</strong> Any JavaScript running on your page—including a third-party script or XSS payload—can read <code>localStorage</code> or <code>sessionStorage</code>. Keep refresh tokens out of <code>localStorage</code>; deliver refresh tokens in <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Lax</code> (or <code>Strict</code>) cookies scoped to <code>/api/auth</code> so browser scripts cannot read them.</li>
+              <li><strong>CSRF Awareness with Cookies:</strong> Because browsers automatically attach cookies on cross-site requests, cookie-authenticated mutating endpoints need <code>SameSite</code> attributes, origin/CORS validation, or explicit CSRF token defenses.</li>
+              <li><strong>JWT Payload Transparency:</strong> Standard signed JWTs (JWS) are Base64URL-encoded, <em>not encrypted</em>. Anyone holding a JWT can decode its claims—never store passwords, secrets, or sensitive personal data inside JWT claims.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Role-Based Access Control (RBAC)</h3>
+            <p>
+              <strong>RBAC</strong> assigns users coarse roles such as <code>customer</code>, <code>support</code>, <code>editor</code>, or <code>admin</code>. Route middleware verifies whether the caller's role is permitted. RBAC is intuitive, fast to understand, and maps naturally to organization hierarchies.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Permission-Based Authorization</h3>
+            <p>
+              Hardcoding role names directly inside 80 route handlers (<code>if (user.role === 'editor' || user.role === 'manager' || user.role === 'admin')</code>) becomes brittle when requirements change ("Let support agents view invoices, but not issue refunds").
+            </p>
+            <p>
+              <strong>Permission-based authorization</strong> checks explicit action capabilities—such as <code>invoices:read</code>, <code>invoices:refund</code>, or <code>users:manage</code>—while maintaining a centralized role-to-permissions map (or database permission table). Handlers ask <em>"Can the user perform <code>invoices:refund</code>?"</em> rather than hardcoding every role name everywhere.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Resource Ownership Checks (Preventing IDOR / BOLA)</h3>
+            <p>
+              Checking that a user has the <code>orders:read</code> permission is <em>not enough</em> if <code>GET /api/orders/9876</code> lets User A read User B's order simply by guessing ID <code>9876</code>. This flaw is called <strong>Broken Object Level Authorization (BOLA)</strong> or <strong>Insecure Direct Object Reference (IDOR)</strong>.
+            </p>
+            <p>
+              Always enforce ownership or tenant scope inside your service/repository queries (e.g., querying <code>{ _id: orderId, ownerId: user.id }</code> or checking <code>resource.ownerId === user.id || hasPermission(user, 'orders:read:any')</code>).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Session Management, Revocation &amp; Logout Strategies</h3>
+            <p>
+              A user expects clicking "Log out" or "Reset Password" to actually stop access:
+            </p>
+            <ul>
+              <li><strong>Logout (Single Device):</strong> Delete or mark the current refresh token family revoked in Redis/DB and clear the <code>HttpOnly</code> refresh cookie.</li>
+              <li><strong>Global Revocation (Password Change / Compromise):</strong> Increment a <code>tokenVersion</code> integer on the user record (cached briefly in Redis) or store a <code>revokedBefore</code> timestamp. Middleware rejects any access token issued prior to that version/timestamp, and revokes all active refresh families.</li>
+              <li><strong>Immediate Access-Token Denylist:</strong> For high-security endpoints, store revoked access token <code>jti</code> IDs in Redis with a TTL matching the remaining token lifetime (e.g., 10 minutes), keeping the Redis set tiny.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Multi-Factor Authentication (MFA) Concepts</h3>
+            <p>
+              Passwords alone fail against credential stuffing and phishing. <strong>MFA</strong> combines independent factors: something you know (password), something you have (authenticator app TOTP code or hardware WebAuthn/passkey), or something you are (biometrics verifying a device passkey).
+            </p>
+            <p>
+              Architecturally, when a user passes primary password login and has MFA enabled, <em>do not issue a full API access token yet</em>. Issue a short-lived, single-purpose <code>mfa_pending</code> token valid only for <code>POST /auth/mfa/verify</code>, rate-limit attempts strictly, hash single-use recovery backup codes just like passwords, and upgrade to full access/refresh tokens only after factor 2 succeeds.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>9. Common Authentication Design Mistakes</h3>
+            <ul>
+              <li>Verifying JWTs without pinning <code>algorithms: ['HS256']</code> (or <code>['RS256']</code>), <code>issuer</code>, and <code>audience</code>.</li>
+              <li>Storing raw unhashed refresh tokens in the database (if DB read access leaks, attackers can mint unlimited access tokens).</li>
+              <li>Trusting client-supplied <code>req.body.userId</code> or <code>req.body.role</code> instead of reading verified <code>req.user.id</code>.</li>
+              <li>Returning different error messages ("User not found" vs "Wrong password") that allow email enumeration.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>End-to-End Request Authorization &amp; Refresh Flow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Authenticate Principal:</strong> Middleware extracts Bearer access token, verifies cryptographic signature, pinned algorithm, expiry, and optional revocation version, setting <code>req.user</code> (or failing with <code>401</code>).
+            </li>
+            <li>
+              <strong>Authorize Capability:</strong> Route policy checks whether <code>req.user</code> holds the required permission (e.g., <code>documents:update</code>), failing with <code>403</code> if absent.
+            </li>
+            <li>
+              <strong>Authorize Specific Resource:</strong> Service fetches target resource and verifies <code>doc.ownerId === req.user.id</code> (or elevated <code>documents:update:any</code> permission), failing with <code>403</code> or safe <code>404</code> if unauthorized.
+            </li>
+            <li>
+              <strong>Silent Token Refresh:</strong> When the short access token expires, the client calls <code>POST /auth/refresh</code> (sending the <code>HttpOnly</code> cookie); server verifies the SHA-256 token hash, rotates to a new token pair, and rejects replayed tokens by revoking the whole family.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Token Lifecycle &amp; Authorization Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Refresh Token Rotation &amp; Reuse Detection</h3>
+            <p class="diagram-caption">
+              Each refresh exchange invalidates the previous token hash and issues a successor. Presenting a previously rotated token signals theft and revokes the entire session family.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 220" class="arch-svg" role="img" aria-label="Refresh token rotation flow showing valid token rotation issuing new pair versus reused rotated token revoking entire session family">
+                <defs>
+                  <marker id="arrow-auth" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="20" y="76" width="136" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="88" y="104" text-anchor="middle" class="svg-title">POST /auth/refresh</text>
+                <text x="88" y="123" text-anchor="middle" class="svg-sub">HttpOnly Cookie (RT1)</text>
+
+                <line x1="156" y1="110" x2="210" y2="110" class="svg-arrow" marker-end="url(#arrow-auth)"></line>
+
+                <rect x="214" y="68" width="174" height="84" rx="10" class="svg-box-accent"></rect>
+                <text x="301" y="96" text-anchor="middle" class="svg-title">Hash Lookup (SHA-256)</text>
+                <text x="301" y="115" text-anchor="middle" class="svg-sub">Check Session Store:</text>
+                <text x="301" y="133" text-anchor="middle" class="svg-sub">Active vs Already Used?</text>
+
+                <line x1="388" y1="90" x2="454" y2="52" class="svg-arrow" marker-end="url(#arrow-auth)"></line>
+                <rect x="458" y="18" width="280" height="72" rx="10" class="svg-box-blue"></rect>
+                <text x="598" y="45" text-anchor="middle" class="svg-title">Valid Active Token (RT1)</text>
+                <text x="598" y="65" text-anchor="middle" class="svg-sub">Mark RT1 used -&gt; Issue Access + RT2</text>
+
+                <line x1="388" y1="130" x2="454" y2="168" class="svg-arrow" marker-end="url(#arrow-auth)"></line>
+                <rect x="458" y="130" width="280" height="72" rx="10" class="svg-box-muted"></rect>
+                <text x="598" y="157" text-anchor="middle" class="svg-title">Already-Used Token Replayed!</text>
+                <text x="598" y="177" text-anchor="middle" class="svg-sub">Revoke entire family -&gt; Return 401</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Three-Gate Access Control Pipeline</h3>
+            <p class="diagram-caption">
+              Identity, capability permissions, and resource ownership work together sequentially before any business mutation runs.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 155" class="arch-svg" role="img" aria-label="Request passing through Authentication 401 gate, Permission RBAC 403 gate, and Resource Ownership 403 gate before reaching Service Execution">
+                <defs>
+                  <marker id="arrow-gate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="42" width="160" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="98" y="70" text-anchor="middle" class="svg-title">1. AuthN Gate</text>
+                <text x="98" y="88" text-anchor="middle" class="svg-sub">Verify JWT + Version</text>
+                <text x="98" y="102" text-anchor="middle" class="svg-sub">Fail -&gt; 401</text>
+
+                <line x1="178" y1="76" x2="210" y2="76" class="svg-arrow" marker-end="url(#arrow-gate)"></line>
+
+                <rect x="214" y="42" width="174" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="301" y="70" text-anchor="middle" class="svg-title">2. Permission Gate</text>
+                <text x="301" y="88" text-anchor="middle" class="svg-sub">Has 'docs:edit'?</text>
+                <text x="301" y="102" text-anchor="middle" class="svg-sub">Fail -&gt; 403</text>
+
+                <line x1="388" y1="76" x2="420" y2="76" class="svg-arrow" marker-end="url(#arrow-gate)"></line>
+
+                <rect x="424" y="42" width="174" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="511" y="70" text-anchor="middle" class="svg-title">3. Ownership Gate</text>
+                <text x="511" y="88" text-anchor="middle" class="svg-sub">ownerId === userId?</text>
+                <text x="511" y="102" text-anchor="middle" class="svg-sub">Fail -&gt; 403 / 404</text>
+
+                <line x1="598" y1="76" x2="630" y2="76" class="svg-arrow" marker-end="url(#arrow-gate)"></line>
+
+                <rect x="634" y="42" width="108" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="688" y="74" text-anchor="middle" class="svg-title">Execute</text>
+                <text x="688" y="92" text-anchor="middle" class="svg-sub">200 OK</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Implementing RBAC, Permissions, Ownership &amp; Token Rotation</h2>
+          <p>
+            Notice how clean separation from Day 1 lets us keep route middleware concise while enforcing resource ownership inside the service and policy layer.
+          </p>
+
+          <h3>Step 1: Role-to-Permission Catalog &amp; Policy Helpers</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/auth/permissions.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export const ROLE_PERMISSIONS = Object.freeze({
+  viewer: ['documents:read'],
+  editor: ['documents:read', 'documents:create', 'documents:edit'],
+  moderator: ['documents:read', 'documents:read:any', 'documents:edit:any'],
+  admin: [
+    'documents:read',
+    'documents:read:any',
+    'documents:create',
+    'documents:edit',
+    'documents:edit:any',
+    'documents:delete:any',
+    'users:manage'
+  ]
+});
+
+export function getPermissionsForRoles(roles = []) {
+  const permissionSet = new Set();
+  for (const role of roles) {
+    const list = ROLE_PERMISSIONS[role] || [];
+    for (const perm of list) {
+      permissionSet.add(perm);
+    }
+  }
+  return permissionSet;
+}
+
+export function canAccessDocument(user, doc, action) {
+  const perms = getPermissionsForRoles(user.roles);
+  if (perms.has(`documents:${action}:any`)) {
+    return true;
+  }
+  if (!perms.has(`documents:${action}`)) {
+    return false;
+  }
+  const isOwner = String(doc.ownerId) === String(user.id);
+  const isCollaborator = Array.isArray(doc.collaboratorIds)
+    && doc.collaboratorIds.some((id) =&gt; String(id) === String(user.id));
+
+  return action === 'read' ? isOwner || isCollaborator : isOwner;
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Authentication &amp; Permission Middleware</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/middlewares/authMiddleware.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import jwt from 'jsonwebtoken';
+import { AppError } from '../errors/AppError.js';
+import { getPermissionsForRoles } from '../../modules/auth/permissions.js';
+
+export function createAuthenticateMiddleware({ userSessionCache }) {
+  return async (req, res, next) =&gt; {
+    const authHeader = req.get('Authorization') || '';
+    if (!authHeader.startsWith('Bearer ')) {
+      return next(new AppError('Authentication required', 401, 'AUTH_REQUIRED'));
+    }
+
+    const token = authHeader.slice(7).trim();
+    try {
+      const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET, {
+        algorithms: ['HS256'],
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE
+      });
+
+      const currentVersion = await userSessionCache.getTokenVersion(payload.sub);
+      if (currentVersion !== null && payload.tv !== currentVersion) {
+        return next(new AppError('Session revoked', 401, 'TOKEN_REVOKED'));
+      }
+
+      req.user = {
+        id: payload.sub,
+        roles: Array.isArray(payload.roles) ? payload.roles : [],
+        jti: payload.jti
+      };
+      next();
+    } catch (err) {
+      next(new AppError('Invalid or expired access token', 401, 'INVALID_TOKEN'));
+    }
+  };
+}
+
+export function requirePermission(requiredPermission) {
+  return (req, res, next) =&gt; {
+    if (!req.user) {
+      return next(new AppError('Authentication required', 401, 'AUTH_REQUIRED'));
+    }
+    const permissions = getPermissionsForRoles(req.user.roles);
+    if (!permissions.has(requiredPermission)) {
+      return next(new AppError('Insufficient permissions', 403, 'FORBIDDEN'));
+    }
+    next();
+  };
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Refresh Token Rotation with Reuse Detection &amp; Logout</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/auth/tokenRotation.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import crypto from 'node:crypto';
+import jwt from 'jsonwebtoken';
+import { AppError } from '../../shared/errors/AppError.js';
+
+function hashToken(rawToken) {
+  return crypto.createHash('sha256').update(rawToken).digest('hex');
+}
+
+export class TokenRotationService {
+  constructor({ refreshTokenRepo, userRepo }) {
+    this.refreshTokenRepo = refreshTokenRepo;
+    this.userRepo = userRepo;
+  }
+
+  signAccessToken(user) {
+    return jwt.sign(
+      {
+        roles: user.roles,
+        tv: user.tokenVersion
+      },
+      process.env.JWT_ACCESS_SECRET,
+      {
+        algorithm: 'HS256',
+        subject: String(user._id),
+        jwtid: crypto.randomUUID(),
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE,
+        expiresIn: '10m'
+      }
+    );
+  }
+
+  async issueInitialSession(user) {
+    const rawRefresh = crypto.randomBytes(48).toString('base64url');
+    const familyId = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await this.refreshTokenRepo.create({
+      userId: user._id,
+      familyId,
+      tokenHash: hashToken(rawRefresh),
+      usedAt: null,
+      revokedAt: null,
+      expiresAt
+    });
+
+    return {
+      accessToken: this.signAccessToken(user),
+      refreshToken: rawRefresh
+    };
+  }
+
+  async rotateRefreshToken(rawRefresh) {
+    const tokenHash = hashToken(rawRefresh);
+    const record = await this.refreshTokenRepo.findByHash(tokenHash);
+
+    if (!record || record.revokedAt || record.expiresAt &lt;= new Date()) {
+      throw new AppError('Refresh session invalid', 401, 'INVALID_REFRESH');
+    }
+
+    if (record.usedAt !== null) {
+      await this.refreshTokenRepo.revokeFamily(record.familyId);
+      throw new AppError('Token reuse detected; session revoked', 401, 'REFRESH_REUSE');
+    }
+
+    const markedUsed = await this.refreshTokenRepo.markUsedAtomically(record._id);
+    if (!markedUsed) {
+      await this.refreshTokenRepo.revokeFamily(record.familyId);
+      throw new AppError('Concurrent refresh conflict', 401, 'REFRESH_CONFLICT');
+    }
+
+    const user = await this.userRepo.findById(record.userId);
+    if (!user || user.disabled) {
+      await this.refreshTokenRepo.revokeFamily(record.familyId);
+      throw new AppError('Account unavailable', 401, 'ACCOUNT_DISABLED');
+    }
+
+    const nextRawRefresh = crypto.randomBytes(48).toString('base64url');
+    await this.refreshTokenRepo.create({
+      userId: user._id,
+      familyId: record.familyId,
+      tokenHash: hashToken(nextRawRefresh),
+      usedAt: null,
+      revokedAt: null,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    });
+
+    return {
+      accessToken: this.signAccessToken(user),
+      refreshToken: nextRawRefresh
+    };
+  }
+
+  async logoutSession(rawRefresh) {
+    if (!rawRefresh) {
+      return;
+    }
+    const record = await this.refreshTokenRepo.findByHash(hashToken(rawRefresh));
+    if (record) {
+      await this.refreshTokenRepo.revokeFamily(record.familyId);
+    }
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 4: Enforcing Ownership Inside the Document Service</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/documents/document.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { AppError } from '../../shared/errors/AppError.js';
+import { canAccessDocument } from '../auth/permissions.js';
+
+export class DocumentService {
+  constructor(documentRepo) {
+    this.documentRepo = documentRepo;
+  }
+
+  async updateDocument({ documentId, updates, actor }) {
+    const doc = await this.documentRepo.findById(documentId);
+    if (!doc) {
+      throw new AppError('Document not found', 404, 'DOC_NOT_FOUND');
+    }
+
+    if (!canAccessDocument(actor, doc, 'edit')) {
+      throw new AppError('You do not have permission to edit this document', 403, 'FORBIDDEN');
+    }
+
+    return this.documentRepo.updateById(documentId, updates);
+  }
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Pinned <code>algorithms: ['HS256']</code>, <code>issuer</code>, <code>audience</code>:</strong> Prevents algorithm-downgrade or cross-service token confusion attacks.</li>
+              <li><strong>SHA-256 Hashing of Refresh Tokens:</strong> Unlike passwords (which need slow salted bcrypt/argon2), high-entropy 48-byte random tokens cannot be brute-forced, so fast SHA-256 hashing enables instant indexed lookups without exposing usable tokens if database backups leak.</li>
+              <li><strong><code>markUsedAtomically</code> + <code>revokeFamily</code>:</strong> Ensures two simultaneous refresh attempts cannot both mint tokens, and immediately kills the entire login session family if a stolen refresh token is replayed.</li>
+              <li><strong><code>canAccessDocument</code> Policy:</strong> Keeps ownership rules centralized and unit-testable instead of scattering <code>if (doc.ownerId === req.user.id)</code> across controllers.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Session Strategies &amp; Authorization Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th>Revocation Speed</th>
+                  <th>DB / Redis Reads per Request</th>
+                  <th>Best Fit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Stateful Redis Session + Cookie</strong></td>
+                  <td>Instant (delete Redis key)</td>
+                  <td>1 fast Redis lookup per request</td>
+                  <td>Browser-first web apps and dashboards where instant server control is top priority</td>
+                </tr>
+                <tr>
+                  <td><strong>Short JWT (10m) + Rotated Refresh Token</strong></td>
+                  <td>Up to 10m natural expiry (or instant with <code>tv</code>/<code>jti</code> check)</td>
+                  <td>Zero DB hits for pure stateless JWT; 1 Redis check if <code>tv</code> enforced</td>
+                  <td>APIs serving web, mobile, and third-party/service consumers across multiple nodes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>RBAC vs. Permission-Based vs. Ownership</h3>
+              <p>
+                Most mature APIs combine all three: assign <strong>roles</strong> to users for administration simplicity, map roles to granular <strong>permissions</strong> checked by route middleware, and verify <strong>resource ownership</strong> (or tenant ID) inside the service layer.
+              </p>
+            </div>
+            <div class="decision-card">
+              <h3>Browser vs. Server Responsibility Note</h3>
+              <p>
+                When setting refresh tokens in an <code>HttpOnly; Secure; SameSite=Lax</code> cookie, browser JavaScript cannot read the cookie—the browser attaches it automatically to <code>POST /api/auth/refresh</code> when <code>fetch(..., { credentials: 'include' })</code> is used, keeping refresh credentials safe from XSS scripts.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Authentication &amp; Access Control Mistakes</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Route-Only Role Middleware Without Resource Ownership Checks</h3>
+              <p><strong>Vulnerability (IDOR / BOLA):</strong> Checking <code>requirePermission('invoices:read')</code> ensures the caller is a logged-in customer, but without verifying <code>invoice.customerId === req.user.id</code> they can download every other customer's invoices.</p>
+              <p><strong>Fix:</strong> Enforce ownership/tenant filters in repositories and service policies on every single-record lookup.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Issuing Long-Lived Unrevocable JWTs</h3>
+              <p><strong>Security risk:</strong> A 7-day access token with no version or denylist check continues working for days after a user clicks "Log out" or an employee is terminated.</p>
+              <p><strong>Fix:</strong> Keep access token TTL short (5–15 minutes), support refresh revocation, and check <code>tokenVersion</code> via fast Redis cache on sensitive actions.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Forgetting to Hash Refresh Tokens &amp; MFA Recovery Codes</h3>
+              <p><strong>Security risk:</strong> Plaintext refresh tokens in a database give anyone with read access to backups immediate impersonation power.</p>
+              <p><strong>Fix:</strong> Store SHA-256 digests of refresh tokens and bcrypt/argon2 hashes of passwords and recovery codes.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Failing Open on Missing Secrets or Role Checks</h3>
+              <p><strong>Security risk:</strong> Writing <code>jwt.verify(token, process.env.SECRET || 'dev-secret')</code> allows attackers to forge tokens using the public fallback string if an env variable is omitted!</p>
+              <p><strong>Fix:</strong> Fail startup immediately if required auth secrets are missing from environment variables, and default all authorization checks to deny.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Authorization Extension Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Add Roles, Permissions &amp; Ownership to a Projects API</h3>
+            <p>
+              Extend a CRUD Express API managing <code>/api/projects</code> with multi-layered access control:
+            </p>
+            <ol>
+              <li>Define roles <code>member</code> (read own/shared projects, create, edit own), <code>reviewer</code> (read any project), and <code>admin</code> (full project &amp; user control) mapped to granular permission strings.</li>
+              <li>Protect endpoints with <code>authenticate</code> and <code>requirePermission(...)</code> middleware.</li>
+              <li>In <code>ProjectService</code>, enforce ownership/collaborator checks on <code>GET /:id</code>, <code>PATCH /:id</code>, and <code>DELETE /:id</code> so normal members receive <code>403 Forbidden</code> when trying to alter another user's project.</li>
+              <li>Add a <code>POST /api/auth/logout-all</code> endpoint that increments the user's <code>tokenVersion</code> in DB/Redis and revokes all active refresh token families.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 8 Quiz: Authentication &amp; Authorization (10 Questions)</h2>
+          <p>Select one option per question, then click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="c" data-explanation="401 Unauthorized indicates missing or invalid authentication (identity unknown), whereas 403 Forbidden means the user is authenticated but lacks permission.">
+              <p class="quiz-prompt">1. A logged-in user with role <code>viewer</code> tries to delete another user's document. Which HTTP status code should the API return?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> 204 No Content</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> 401 Unauthorized</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> 403 Forbidden</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> 301 Moved Permanently</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="b" data-explanation="Reusing an already-rotated refresh token strongly indicates token theft/replay; revoking the entire session family locks out both the stolen token and compromised session immediately.">
+              <p class="quiz-prompt">2. During refresh token rotation, what should the server do if it receives a valid-looking refresh token that was already marked as used?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Issue two new access tokens anyway.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Revoke the entire token family immediately and reject the request with 401.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Upgrade the user's role to admin.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Extend the cookie expiration by 1 year.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="HttpOnly cookies cannot be read by browser JavaScript (mitigating XSS token theft), whereas localStorage is accessible to any script running on the origin.">
+              <p class="quiz-prompt">3. Why is storing a refresh token in an <code>HttpOnly</code>, <code>Secure</code> cookie safer against XSS than storing it in <code>localStorage</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Browser JavaScript (including injected XSS scripts) cannot read <code>HttpOnly</code> cookies via <code>document.cookie</code>.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Cookies are never sent over HTTPS.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> localStorage is shared publicly across every website on the internet.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> HttpOnly cookies do not expire.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Checking only route permissions without verifying whether the target record belongs to req.user.id causes Broken Object Level Authorization (IDOR).">
+              <p class="quiz-prompt">4. What vulnerability exists if <code>GET /api/invoices/:id</code> verifies a valid JWT and <code>invoices:read</code> permission, but does not check <code>invoice.ownerId === req.user.id</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Event loop blocking</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Cache stampede</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> N+1 query bottleneck</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Broken Object Level Authorization (IDOR / BOLA)</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="c" data-explanation="Standard JWS JWT payloads are simply Base64URL-encoded and trivially decoded by anyone holding the token—they are signed for integrity, not encrypted for secrecy.">
+              <p class="quiz-prompt">5. Why must you NEVER store sensitive secrets or passwords inside a standard signed JWT payload?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> JWT libraries reject strings longer than 10 bytes.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> JWTs are stored permanently inside DNS records.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Standard JWT payloads are merely Base64URL-encoded, not encrypted, so anyone with the token can decode and read them.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Express strips all JSON fields from JWTs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="b" data-explanation="Mapping roles to granular permissions lets route guards check specific capabilities like invoices:refund instead of hardcoding brittle role lists everywhere.">
+              <p class="quiz-prompt">6. What is the main maintainability advantage of permission-based authorization over hardcoding role names across every route?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> It removes the need for HTTPS.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Capabilities can be reassigned across roles centrally without rewriting dozens of route handlers.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> It eliminates access tokens completely.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Databases execute queries 10x faster automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Hashing high-entropy opaque refresh tokens with SHA-256 ensures read-only DB leaks do not expose usable refresh tokens while keeping indexed lookups fast.">
+              <p class="quiz-prompt">7. Why should refresh tokens be hashed (e.g., SHA-256) before saving them in the database?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> If database records or backups leak, attackers cannot use the stored hashes as valid refresh tokens.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Cookies cannot hold unhashed ASCII strings.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> SHA-256 compresses cookies by 90%.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Databases forbid storing UUIDs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Before MFA succeeds, the server must only issue a restricted pre-auth/mfa_pending token valid for the MFA verification step—never a full access token.">
+              <p class="quiz-prompt">8. In an MFA-enabled login flow, what token state should be issued right after the user enters a correct password BEFORE completing factor 2?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> A full admin access token with 24-hour expiry</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> A permanent refresh token in localStorage</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> No response until the browser refreshes</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> A short-lived restricted pre-auth token accepted only by the MFA verification endpoint</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="c" data-explanation="Incrementing a user's tokenVersion cached in Redis lets middleware immediately reject previously issued access tokens across all scaled instances on password reset or compromise.">
+              <p class="quiz-prompt">9. How does storing a <code>tokenVersion</code> claim in access tokens (checked against a Redis cache) enable instant global logout?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> It deletes the user's browser cache remotely.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> It upgrades HTTP/1.1 to HTTP/3.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Incrementing the user's <code>tokenVersion</code> causes middleware to immediately reject older tokens carrying the stale version.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> It skips signature verification on JWTs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="b" data-explanation="Pinning allowed algorithms (such as ['HS256'] or ['RS256']), issuer, and audience blocks algorithm confusion and cross-application token reuse.">
+              <p class="quiz-prompt">10. Why should <code>jwt.verify()</code> always specify an explicit <code>algorithms</code> allowlist, <code>issuer</code>, and <code>audience</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Without those options, JWTs expire after 1 second.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> It prevents algorithm-confusion/downgrade issues and stops tokens issued for other services from being accepted.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Express requires them to parse req.body.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> It turns opaque tokens into compressed strings.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Explain the difference between <code>401 Unauthorized</code> and <code>403 Forbidden</code>.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>401 Unauthorized</code> means the caller is unauthenticated (missing, expired, or invalid credentials). <code>403 Forbidden</code> means the caller's identity was successfully verified, but they lack the required role, permission, or resource ownership to perform that action.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Why do we hash passwords with slow algorithms like Argon2/bcrypt, while hashing refresh tokens with fast SHA-256?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Human-chosen passwords have low entropy and must be protected against offline brute-force cracking using slow, memory-hard salted hashing (Argon2id/bcrypt). Random 256-bit+ refresh tokens already have huge cryptographic entropy that cannot be guessed by brute force, so fast SHA-256 hashing prevents plaintext leakage while allowing fast database index lookups.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should login endpoints return generic failure messages like "Invalid credentials" instead of "Email not found"?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Differentiating "Email not found" from "Incorrect password" lets attackers run automated email-enumeration lists to discover which customers hold accounts on your platform, enabling targeted phishing and credential stuffing.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. What extra protection is needed when an API relies on <code>HttpOnly</code> cookies for authentication?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Because browsers automatically send cookies on cross-origin requests, you must guard against Cross-Site Request Forgery (CSRF) by setting <code>SameSite=Lax</code> or <code>Strict</code>, restricting CORS origins strictly, and validating CSRF tokens or custom headers on state-changing routes.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why is MFA recovery code handling similar to password handling?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Backup recovery codes bypass the second factor if a user loses their authenticator device. They must be generated with high randomness, displayed once to the user, stored hashed on the server, and marked consumed immediately after single use.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Eliminate IDOR and Client-Trusted Role Escalation</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A route updates a user's note via <code>PATCH /api/notes/:id</code> using <code>const { userId, role, content } = req.body;</code> and runs <code>NoteModel.findByIdAndUpdate(req.params.id, { content })</code>. Identify the flaws and write the secure controller + service logic.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function updateNoteService({ noteId, content, actor, noteRepo }) {
+  const updated = await noteRepo.updateOwnedById(noteId, actor.id, { content });
+  if (!updated) {
+    const exists = await noteRepo.existsById(noteId);
+    if (!exists) {
+      throw new AppError('Note not found', 404, 'NOTE_NOT_FOUND');
+    }
+    throw new AppError('Forbidden', 403, 'FORBIDDEN');
+  }
+  return updated;
+}</code></pre>
+                </div>
+                <p><strong>Fixes:</strong> Never read <code>userId</code> or <code>role</code> from <code>req.body</code>; always take verified <code>req.user</code> from auth middleware and bind ownership atomically in the query.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Build a Pre-Auth MFA Guard Middleware</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write an Express middleware <code>requireMfaPendingToken</code> that verifies a short-lived pre-auth JWT carrying <code>purpose: 'mfa_challenge'</code> and rejects normal API access tokens or tokens with wrong purpose.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>import jwt from 'jsonwebtoken';
+import { AppError } from '../shared/errors/AppError.js';
+
+export function requireMfaPendingToken(req, res, next) {
+  const token = req.body?.mfaToken;
+  if (!token) {
+    return next(new AppError('MFA challenge token required', 401, 'MFA_TOKEN_REQUIRED'));
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_MFA_SECRET, {
+      algorithms: ['HS256'],
+      issuer: process.env.JWT_ISSUER
+    });
+    if (payload.purpose !== 'mfa_challenge') {
+      return next(new AppError('Invalid token purpose', 401, 'INVALID_MFA_TOKEN'));
+    }
+    req.mfaUserId = payload.sub;
+    next();
+  } catch (err) {
+    next(new AppError('Expired or invalid MFA challenge token', 401, 'INVALID_MFA_TOKEN'));
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Multi-Tenant SaaS Authorization Architecture</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A single user belongs to Organization A as an <code>admin</code> and Organization B as a <code>viewer</code>. Why does putting a single global <code>roles: ['admin']</code> claim inside the user's JWT fail, and how should you design tenant-scoped authorization?</p>
+                <p><strong>Reference Architecture:</strong> Never apply a user's role in Org A across Org B. Either (1) resolve membership and role for the requested <code>orgId</code> (from route param/header) against a cached <code>org_memberships</code> lookup in Redis/DB per request, or (2) issue organization-scoped access tokens carrying <code>{ sub, orgId, orgRoles }</code> and enforce <code>resource.orgId === req.orgContext.orgId</code> on every repository query.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 8 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>AuthN vs AuthZ:</strong> Identity verification returns <code>401</code> on failure; capability and ownership checks return <code>403</code>.</li>
+              <li><strong>Token Lifecycles:</strong> Short-lived access tokens + rotated SHA-256-hashed refresh tokens in <code>HttpOnly</code> cookies limit theft windows and detect replay.</li>
+              <li><strong>RBAC + Permissions + Ownership:</strong> Map roles to granular permissions and always enforce object-level ownership/tenant boundaries to prevent IDOR.</li>
+              <li><strong>Revocation &amp; MFA:</strong> Use refresh family revocation, <code>tokenVersion</code> caches, and isolated pre-auth tokens before MFA completion.</li>
+              <li><strong>Defensive Hygiene:</strong> Pin JWT algorithms/issuers/audiences, fail closed on missing env secrets, and never store secrets inside JWT payloads.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 8 Auth &amp; Authorization Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 8 Advanced Authentication and Authorization visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 8 local visual reference (<code>Day 8/image.webp</code>). Review token rotation, reuse detection, RBAC permissions, and resource ownership gates.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 7/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 7: Real-Time Communication with WebSockets</span>
+          </a>
+          <a href="../Day 9/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 9: Advanced API Design and Versioning &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 7/index.html">Day 7: WebSockets</a></li>
+          <li><a href="../Day 8/index.html">Day 8: Auth &amp; RBAC</a></li>
+          <li><a href="../Day 9/index.html">Day 9: API Versioning</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

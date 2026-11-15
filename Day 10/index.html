@@ -1,0 +1,975 @@
+Direct file/archive downloads are not supported in this chat interface, so here
+are all three separate complete files for Day 10: Advanced Database
+Optimization—ready to copy and save into your Phase 6/Day 10/ folder. (Also,
+if you need the rest of Day 9's style.css and script.js, let me know right after
+this!)
+
+1. Phase 6/Day 10/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 10: Advanced Database Optimization. Learn single and compound indexes, explain plans, N+1 elimination, atomic operations, transactions, connection pooling, aggregation pipelines, and SQL vs NoSQL trade-offs.">
+  <title>Day 10: Advanced Database Optimization | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="10">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 10: Database Optimization</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html" selected>Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 9/index.html" class="nav-step-btn" title="Go to Day 9">Prev</a>
+            <a href="../Day 11/index.html" class="nav-step-btn" title="Go to Day 11">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 10 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 10</span>
+          <span class="category-pill">Data Engineering &amp; Persistence</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="10" aria-pressed="false">Mark Day 10 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Advanced Database Optimization</h1>
+        <p class="lesson-intro">
+          Caching and horizontal API scaling cannot fix slow, unindexed database writes, lock contention, or flawed data modeling. Today you will learn how database indexes work internally, how to design compound indexes with the ESR rule, how to read query execution plans, how to guarantee data integrity with atomic operations and transactions, how to optimize connection pools and MongoDB aggregations, and when relational SQL databases outperform NoSQL document stores.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2, 3 &amp; 4</span>
+            <p>Databases are the stateful bottleneck of scaled backends. Fast indexed queries protect connection pools and cut tail latency on cache misses.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Inspect real execution plans (<code>explain</code> / <code>EXPLAIN ANALYZE</code>) so databases scan dozens of index keys instead of millions of documents.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Diagnose slow queries in a sample API using execution stats, add compound ESR indexes, replace N+1 loops, and wrap multi-record transfers in transactions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Query &amp; Index Execution</a>
+            <a href="#diagrams">Index &amp; Modeling Diagrams</a>
+            <a href="#implementation">Optimization Implementation</a>
+            <a href="#real-world">MongoDB vs. SQL Trade-offs</a>
+            <a href="#mistakes-security">Mistakes &amp; Reliability</a>
+            <a href="#practical-task">Practical Optimization Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Database performance depends on minimizing disk I/O, bounding examined rows/documents, sizing connection pools cleanly, and matching your data model to your access patterns.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Select &amp; Order Indexes</h3>
+              <p>Design single, compound, partial, and TTL indexes using selectivity and the ESR rule.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Interpret Explain Plans</h3>
+              <p>Spot <code>COLLSCAN</code>s, in-memory sorts, and poor index selectivity via execution stats.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Ensure Atomic Consistency</h3>
+              <p>Use single-document atomic operators, ACID transactions, and tuned connection pools safely.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Model &amp; Choose Databases</h3>
+              <p>Weigh embedding vs. referencing, optimize aggregation pipelines, and know when SQL wins.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Database Optimization Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Database Indexes and Index Selection</h3>
+            <p>
+              Without an index, finding <code>{ email: 'ali@example.com' }</code> forces a <strong>Collection Scan (<code>COLLSCAN</code>)</strong> or Full Table Scan—reading every record on disk/RAM in <code>O(N)</code> time. A <strong>B-Tree index</strong> stores sorted key pointers so lookups locate matching records in <code>O(log N)</code> time.
+            </p>
+            <p>
+              Index selection favors <strong>high-cardinality (selective)</strong> fields—such as <code>userId</code>, <code>email</code>, or <code>orderNumber</code>—over low-cardinality booleans like <code>isActive</code> alone. Remember the trade-off: every index speeds up matching reads while slowing down writes (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) and consuming RAM, because every index must stay updated and ideally fit inside the database's working-set memory.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Compound Indexes &amp; the ESR Rule</h3>
+            <p>
+              A <strong>compound index</strong> covers multiple fields in a strict left-to-right order, e.g., <code>{ status: 1, createdAt: -1, totalCents: 1 }</code>. Thanks to the <strong>leftmost prefix rule</strong>, that single index supports queries on <code>(status)</code>, <code>(status, createdAt)</code>, and <code>(status, createdAt, totalCents)</code>, but <em>cannot</em> efficiently serve queries filtering solely on <code>totalCents</code>.
+            </p>
+            <p>
+              To order fields in a compound index for MongoDB or SQL, follow the <strong>ESR Rule</strong>:
+            </p>
+            <ul>
+              <li><strong>E — Equality first:</strong> Exact-match filters (<code>status: 'paid'</code>, <code>tenantId: 't_1'</code>) narrow the index slice immediately.</li>
+              <li><strong>S — Sort second:</strong> Ordering fields (<code>createdAt: -1</code>) let the database read results pre-sorted directly from the index without an expensive in-memory sort!</li>
+              <li><strong>R — Range last:</strong> Inequality/range filters (<code>totalCents: { $gte: 5000 }</code>, <code>$gt</code>, <code>$lt</code>) appear last so they do not break the pre-sorted index order.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Query Execution and Explain Plans</h3>
+            <p>
+              Always verify assumptions with <code>.explain('executionStats')</code> in MongoDB or <code>EXPLAIN ANALYZE</code> in PostgreSQL. Focus on three numbers:
+            </p>
+            <ul>
+              <li><strong>Stage Type:</strong> Look for <code>IXSCAN</code> (Index Scan) or <code>Index Scan</code> rather than <code>COLLSCAN</code> / <code>Seq Scan</code>, and avoid blocking <code>SORT</code> stages on large sets.</li>
+              <li><strong>Examined-to-Returned Ratio:</strong> Compare <code>totalDocsExamined</code> and <code>totalKeysExamined</code> against <code>nReturned</code>. Examining 50,000 documents to return 20 means your index is missing or poorly ordered; an ideal covered/targeted index examines ~20 keys and 20 (or 0) documents.</li>
+              <li><strong>Execution Time:</strong> <code>executionTimeMillis</code> under realistic data volumes.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Avoiding Inefficient Queries &amp; N+1 Problems</h3>
+            <ul>
+              <li><strong>Unanchored Regexes:</strong> Leading-wildcard patterns like <code>/laptop/i</code> or SQL <code>LIKE '%laptop%'</code> cannot use standard B-Tree indexes. Use prefix anchored regexes (<code>/^laptop/</code>), full-text indexes, or dedicated search engines.</li>
+              <li><strong>Negations &amp; Computed Predicates:</strong> <code>$ne</code>, <code>$nin</code>, and wrapping SQL columns in functions (<code>WHERE LOWER(email) = ...</code> without an expression index) bypass standard index lookups.</li>
+              <li><strong>N+1 Queries:</strong> Batch child lookups using <code>$in</code>, SQL <code>JOIN</code>, or aggregation <code>$lookup</code> instead of querying inside loops.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Transactions and Atomic Operations</h3>
+            <p>
+              When updating a single document (e.g., deducting product stock or incrementing a counter), prefer <strong>atomic conditional updates</strong> (<code>findOneAndUpdate</code> with <code>{ _id, stock: { $gte: qty } }</code> and <code>$inc</code>) over multi-document transactions—they acquire minimal locks and perform far faster.
+            </p>
+            <p>
+              When an invariant spans <em>multiple</em> records or collections/tables (such as debiting Account A and crediting Account B, or inserting an Order plus an Outbox Event), wrap both operations in an <strong>ACID transaction</strong> (<code>session.withTransaction()</code> in MongoDB replica sets or <code>BEGIN ... COMMIT</code> in SQL). Keep transactions tiny—never execute slow third-party HTTP calls inside an open database transaction!
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Database Connection Pooling</h3>
+            <p>
+              Establishing a fresh database connection requires TCP handshake, TLS negotiation, and authentication. Drivers maintain a reusable <strong>connection pool</strong> (`maxPoolSize`, `minPoolSize`, `waitQueueTimeoutMS`). Size pools thoughtfully across replicas (<code>instances * maxPoolSize &lt; dbLimit</code>) and fail fast with queue timeouts rather than letting requests pile up indefinitely.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Schema and Data Modeling Trade-Offs</h3>
+            <p>
+              In document databases like MongoDB, decide between <strong>embedding</strong> (storing line items inside an Order document—single fast read, atomic single-doc updates) and <strong>referencing</strong> (storing separate documents linked by ID—prevents unbounded array growth past MongoDB's 16 MB document limit and avoids duplicating rapidly changing shared entities). Rule of thumb: embed bounded data read together; reference unbounded growth (comments, logs, thousands of events) or shared entities.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. MongoDB Aggregation Pipeline</h3>
+            <p>
+              Aggregation pipelines process data directly inside MongoDB across stages (<code>$match</code>, <code>$sort</code>, <code>$limit</code>, <code>$group</code>, <code>$lookup</code>, <code>$project</code>). Always place <code>$match</code> and <code>$sort</code> as the <strong>earliest stages</strong> so MongoDB can leverage B-Tree indexes before documents flow into memory-heavy <code>$group</code> or <code>$lookup</code> stages.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>9. Relational Database Concepts &amp; When SQL Wins</h3>
+            <p>
+              Relational databases (PostgreSQL, MySQL) enforce strict schemas, foreign-key referential integrity, normalized tables, and mature multi-table <code>JOIN</code> query optimizers with rock-solid ACID guarantees. Choose SQL over MongoDB when your domain has highly interconnected many-to-many relationships, complex ad-hoc reporting joins, strict financial/ledger invariants, or schema rigor where preventing orphan records at the database engine level matters most.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>10. Backups and Data Consistency Concepts</h3>
+            <p>
+              Indexes and replication protect against single-node hardware failure, <em>not</em> accidental <code>DROP COLLECTION</code> or buggy migration scripts (which replicate instantaneously to followers!). Production databases require automated encrypted backups, <strong>Point-in-Time Recovery (PITR)</strong> via oplog/WAL archives, periodic <strong>restore drills</strong> into staging (an untested backup is not a backup), and explicit write/read concerns (e.g., MongoDB <code>w: 'majority'</code>) so acknowledged writes survive primary failover.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Query Optimization Inspection Cycle</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Identify Slow Queries:</strong> Enable database slow-query profiling (e.g., queries &gt; 50–100ms) in staging/production logs.
+            </li>
+            <li>
+              <strong>Run Execution Stats:</strong> Execute <code>.explain('executionStats')</code> or <code>EXPLAIN ANALYZE</code> to see exact scan type, keys examined, docs examined, and sort behavior.
+            </li>
+            <li>
+              <strong>Align Index with ESR + Projection:</strong> Create a compound index matching Equality, Sort, and Range order, and project only needed columns.
+            </li>
+            <li>
+              <strong>Re-Verify Ratio &amp; Write Impact:</strong> Confirm <code>totalDocsExamined</code> drops close to <code>nReturned</code> and remove redundant overlapping indexes so writes remain fast.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Indexing &amp; Data Modeling Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: COLLSCAN vs. Compound ESR Index Scan</h3>
+            <p class="diagram-caption">
+              Ordering a compound index as <code>{ tenantId: 1, status: 1, createdAt: -1 }</code> handles equality filters first and reads pre-sorted rows directly without scanning or sorting in RAM.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 190" class="arch-svg" role="img" aria-label="Comparison of full collection scan inspecting 1000000 docs versus ESR compound index inspecting 20 keys for 20 returned docs">
+                <rect x="20" y="20" width="340" height="148" rx="10" class="svg-box-muted"></rect>
+                <text x="190" y="48" text-anchor="middle" class="svg-title">Unindexed Query (COLLSCAN)</text>
+                <text x="190" y="74" text-anchor="middle" class="svg-sub">find({ tenantId, status }).sort({ createdAt: -1 })</text>
+                <rect x="44" y="90" width="292" height="28" rx="6" class="svg-box-blue"></rect>
+                <text x="190" y="109" text-anchor="middle" class="svg-sub">Reads 1,000,000 Docs -&gt; In-Memory Sort</text>
+                <text x="190" y="146" text-anchor="middle" class="svg-sub">Ratio: 50,000 examined per 1 returned (~800ms)</text>
+
+                <rect x="396" y="20" width="344" height="148" rx="10" class="svg-box-accent"></rect>
+                <text x="568" y="48" text-anchor="middle" class="svg-title">ESR Compound Index (IXSCAN)</text>
+                <text x="568" y="74" text-anchor="middle" class="svg-sub">Index: { tenantId: 1, status: 1, createdAt: -1 }</text>
+                <rect x="420" y="90" width="296" height="28" rx="6" class="svg-box-blue"></rect>
+                <text x="568" y="109" text-anchor="middle" class="svg-sub">Equality Slice -&gt; Pre-Sorted Top 20 Limit</text>
+                <text x="568" y="146" text-anchor="middle" class="svg-sub">Ratio: 20 examined / 20 returned (~2ms)</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: MongoDB Embedding vs. Referencing Decision</h3>
+            <p class="diagram-caption">
+              Embed small bounded child items queried alongside the parent; reference unbounded lists or independently updated shared entities.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 175" class="arch-svg" role="img" aria-label="Decision diagram contrasting bounded embedded order items inside one document versus referenced unbounded comments across collections">
+                <rect x="20" y="22" width="345" height="130" rx="10" class="svg-box-blue"></rect>
+                <text x="192" y="48" text-anchor="middle" class="svg-title">Embed (Bounded 1-to-Few)</text>
+                <text x="192" y="72" text-anchor="middle" class="svg-sub">Order { _id, items: [ 1..15 items ], total }</text>
+                <text x="192" y="96" text-anchor="middle" class="svg-sub">1 atomic read &amp; 1 atomic write</text>
+                <text x="192" y="120" text-anchor="middle" class="svg-sub">Safe: line items stay small &amp; fixed</text>
+
+                <rect x="395" y="22" width="345" height="130" rx="10" class="svg-box-muted"></rect>
+                <text x="567" y="48" text-anchor="middle" class="svg-title">Reference (Unbounded / Shared)</text>
+                <text x="567" y="72" text-anchor="middle" class="svg-sub">Post { _id } &lt;-- Comment { postId, text }</text>
+                <text x="567" y="96" text-anchor="middle" class="svg-sub">Indexed postId + paginated reads</text>
+                <text x="567" y="120" text-anchor="middle" class="svg-sub">Avoids 16 MB cap &amp; doc reallocation</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Inspecting &amp; Optimizing Queries in a Node.js + MongoDB API</h2>
+
+          <h3>Step 1: Define ESR Compound Indexes &amp; Tuned Connection Pool</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/orders/order.model.js &amp; db.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import mongoose from 'mongoose';
+
+const orderSchema = new mongoose.Schema(
+  {
+    tenantId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    status: { type: String, enum: ['pending', 'paid', 'shipped', 'cancelled'], required: true },
+    totalCents: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now }
+  },
+  { versionKey: false }
+);
+
+orderSchema.index({ tenantId: 1, status: 1, createdAt: -1, totalCents: 1 });
+orderSchema.index({ customerId: 1, createdAt: -1 });
+
+export const OrderModel = mongoose.model('Order', orderSchema);
+
+export async function connectDatabase() {
+  await mongoose.connect(process.env.MONGO_URI, {
+    maxPoolSize: 20,
+    minPoolSize: 4,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 15000
+  });
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Optimize Aggregation Pipelines &amp; Inspect Explain Stats</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/orders/order.analytics.repository.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export async function getTopTenantOrders({ tenantId, status, minTotalCents, limit = 20 }) {
+  return OrderModel.find({
+    tenantId,
+    status,
+    totalCents: { $gte: minTotalCents }
+  })
+    .select('_id customerId totalCents status createdAt')
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean();
+}
+
+export async function inspectOrderQueryPlan({ tenantId, status }) {
+  const explanation = await OrderModel.find({ tenantId, status })
+    .sort({ createdAt: -1 })
+    .limit(20)
+    .explain('executionStats');
+
+  return {
+    stage: explanation.queryPlanner?.winningPlan?.inputStage?.stage,
+    nReturned: explanation.executionStats?.nReturned,
+    totalKeysExamined: explanation.executionStats?.totalKeysExamined,
+    totalDocsExamined: explanation.executionStats?.totalDocsExamined,
+    executionTimeMillis: explanation.executionStats?.executionTimeMillis
+  };
+}
+
+export async function getMonthlyRevenueByStatus(tenantId, sinceDate) {
+  return OrderModel.aggregate([
+    {
+      $match: {
+        tenantId,
+        createdAt: { $gte: sinceDate }
+      }
+    },
+    {
+      $group: {
+        _id: '$status',
+        orderCount: { $sum: 1 },
+        revenueCents: { $sum: '$totalCents' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        status: '$_id',
+        orderCount: 1,
+        revenueCents: 1
+      }
+    }
+  ]);
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Multi-Document ACID Transaction for Balance Transfers</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/wallet/transfer.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import mongoose from 'mongoose';
+import { AppError } from '../../shared/errors/AppError.js';
+
+export async function transferWalletFunds({ WalletModel, LedgerModel, fromId, toId, amountCents }) {
+  if (!Number.isInteger(amountCents) || amountCents &lt;= 0) {
+    throw new AppError('Invalid transfer amount', 400, 'INVALID_AMOUNT');
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    let ledgerEntry;
+    await session.withTransaction(async () =&gt; {
+      const debited = await WalletModel.findOneAndUpdate(
+        { _id: fromId, balanceCents: { $gte: amountCents } },
+        { $inc: { balanceCents: -amountCents } },
+        { new: true, session }
+      );
+      if (!debited) {
+        throw new AppError('Insufficient funds or missing source wallet', 409, 'INSUFFICIENT_FUNDS');
+      }
+
+      const credited = await WalletModel.findByIdAndUpdate(
+        toId,
+        { $inc: { balanceCents: amountCents } },
+        { new: true, session }
+      );
+      if (!credited) {
+        throw new AppError('Destination wallet not found', 404, 'WALLET_NOT_FOUND');
+      }
+
+      const [createdLedger] = await LedgerModel.create(
+        [{ fromId, toId, amountCents, createdAt: new Date() }],
+        { session }
+      );
+      ledgerEntry = createdLedger.toObject();
+    });
+
+    return ledgerEntry;
+  } finally {
+    await session.endSession();
+  }
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>{ tenantId: 1, status: 1, createdAt: -1, totalCents: 1 }</code>:</strong> Follows ESR strictly: Equality (<code>tenantId</code>, <code>status</code>), Sort (<code>createdAt: -1</code>), Range (<code>totalCents</code>).</li>
+              <li><strong>Early <code>$match</code> in Aggregation:</strong> Filters documents via index before <code>$group</code> aggregates them, cutting memory and CPU dramatically.</li>
+              <li><strong><code>session.withTransaction()</code>:</strong> Automatically handles transient transaction retry semantics while ensuring debit, credit, and ledger write succeed or roll back atomically together.</li>
+              <li><strong><code>finally { await session.endSession(); }</code>:</strong> Guarantees database session resources never leak even when business errors abort the transaction.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>MongoDB vs. Relational SQL Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Factor</th>
+                  <th>MongoDB (Document Store)</th>
+                  <th>PostgreSQL (Relational SQL)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Data Shape</strong></td>
+                  <td>Nested, polymorphic, evolving JSON-like documents</td>
+                  <td>Structured normalized tables + optional <code>JSONB</code> columns</td>
+                </tr>
+                <tr>
+                  <td><strong>Complex Multi-Entity Joins</strong></td>
+                  <td><code>$lookup</code> exists, though heavy multi-table joins are slower/clumsier</td>
+                  <td>Best-in-class join optimizer, foreign keys, CTEs, and window functions</td>
+                </tr>
+                <tr>
+                  <td><strong>Transactions &amp; Integrity</strong></td>
+                  <td>Atomic single-doc updates; multi-doc ACID on replica sets with higher overhead</td>
+                  <td>Native mature ACID transactions, foreign keys, check constraints</td>
+                </tr>
+                <tr>
+                  <td><strong>Best Fit</strong></td>
+                  <td>Catalogs, CMS, event logs, user profiles with varying metadata</td>
+                  <td>Financial ledgers, billing, complex ERPs, inventory/booking relational systems</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes &amp; Data Reliability Risks</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Over-Indexing Every Single Field</h3>
+              <p><strong>Performance risk:</strong> Adding 12 separate indexes per collection slows inserts/updates and bloats working-set RAM until active indexes fall back to disk.</p>
+              <p><strong>Fix:</strong> Design consolidated compound indexes matching actual query shapes and audit unused indexes regularly.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Unbounded Embedded Arrays</h3>
+              <p><strong>Reliability risk:</strong> Appending user activity events or comments into one parent document's array causes repeated document disk reallocation and eventually crashes at MongoDB's 16 MB BSON limit.</p>
+              <p><strong>Fix:</strong> Keep embedded arrays strictly bounded; move unbounded items into a separate referenced collection.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Holding Transactions Open During External Network Calls</h3>
+              <p><strong>Availability risk:</strong> Calling a 2-second Stripe or email API inside <code>BEGIN ... COMMIT</code> holds database row/document locks open, blocking concurrent writers and causing deadlocks.</p>
+              <p><strong>Fix:</strong> Perform external calls outside transactions using state machines (<code>pending</code> &rarr; <code>confirmed</code>) or the Outbox pattern.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Treating Replication as a Backup Strategy</h3>
+              <p><strong>Data loss risk:</strong> An accidental <code>DELETE</code> without a <code>WHERE</code> clause replicates to read replicas in milliseconds.</p>
+              <p><strong>Fix:</strong> Maintain automated immutable snapshots, Point-in-Time Recovery logs, and regularly test full database restores.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Query Inspection &amp; Optimization Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Optimize a Slow Sample Orders API</h3>
+            <p>
+              Given a collection of 50,000+ seeded orders where <code>GET /api/orders?customerId=...&amp;status=paid&amp;minTotal=2000</code> sorts by <code>createdAt: -1</code> and currently triggers a <code>COLLSCAN</code> plus an N+1 loop fetching product titles:
+            </p>
+            <ol>
+              <li>Run <code>.explain('executionStats')</code> before changes and record <code>stage</code>, <code>totalDocsExamined</code>, and <code>executionTimeMillis</code>.</li>
+              <li>Add a compound index ordered by ESR (<code>{ customerId: 1, status: 1, createdAt: -1, totalCents: 1 }</code>) and project only required display fields with <code>.lean()</code>.</li>
+              <li>Replace the N+1 product lookup loop with either a single batched <code>$in</code> query or an aggregation pipeline <code>$lookup</code> after <code>$limit</code>.</li>
+              <li>Re-run <code>.explain('executionStats')</code> and verify <code>IXSCAN</code> with minimal documents examined.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 10 Quiz: Database Optimization (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="ESR stands for Equality first, Sort second, Range last—ensuring equality narrows the search, sort avoids in-memory sorting, and range comes last.">
+              <p class="quiz-prompt">1. According to the ESR rule for compound index ordering, which field order is optimal for querying <code>status = 'paid'</code>, sorting by <code>createdAt DESC</code>, and filtering <code>totalCents &gt;= 1000</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> <code>{ totalCents: 1, createdAt: -1, status: 1 }</code></label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> <code>{ status: 1, createdAt: -1, totalCents: 1 }</code></label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> <code>{ createdAt: -1, totalCents: 1, status: 1 }</code></label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> <code>{ totalCents: 1, status: 1, createdAt: -1 }</code></label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Examining 200,000 documents to return 15 indicates a missing or non-selective index (likely a COLLSCAN or wide scan), wasting disk I/O and CPU.">
+              <p class="quiz-prompt">2. In MongoDB <code>explain('executionStats')</code>, what does <code>totalDocsExamined: 200000</code> and <code>nReturned: 15</code> indicate?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Optimal covered index execution</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Redis cache hit</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> A severely inefficient scan (missing or poorly matched index) reading ~13,333 extra documents per returned row</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Connection pool overflow</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="By the leftmost prefix rule, { a: 1, b: 1, c: 1 } accelerates queries on (a), (a, b), and (a, b, c), but not queries filtering solely on (c).">
+              <p class="quiz-prompt">3. Given a compound index <code>{ a: 1, b: 1, c: 1 }</code>, which query CANNOT efficiently use this index via leftmost prefix matching?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Filtering only on <code>{ c: 42 }</code></label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Filtering only on <code>{ a: 10 }</code></label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Filtering on <code>{ a: 10, b: 20 }</code></label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Filtering on <code>{ a: 10, b: 20, c: 30 }</code></label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Leading wildcards (LIKE '%term' or /term/) cannot narrow a B-Tree range from the left prefix, forcing a full scan.">
+              <p class="quiz-prompt">4. Why do leading-wildcard searches like SQL <code>LIKE '%shoe%'</code> or unanchored regex <code>/shoe/i</code> perform poorly with standard B-Tree indexes?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Databases disable strings longer than 10 characters.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> B-Trees store only numbers.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> They lock the database in read-only mode.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> B-Tree indexes sort from the start of strings, so unknown prefixes force scanning all index entries.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Every extra index slows down inserts, updates, and deletes and consumes memory to stay updated.">
+              <p class="quiz-prompt">5. What is the main cost of adding indexes to every column/field in a write-heavy table or collection?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> Read queries stop returning JSON.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> Write operations slow down and RAM/storage usage grows because every index must be updated on each write.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Transactions stop working completely.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Connection pools shrink to 1 connection.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Placing $match as the first pipeline stage lets MongoDB filter early using B-Tree indexes before passing reduced documents into $group or $lookup.">
+              <p class="quiz-prompt">6. Where should selective <code>$match</code> stages normally be placed in a MongoDB aggregation pipeline?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> At the very end after $group and $lookup</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Inside the Express error handler</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> As early as possible at the start of the pipeline so indexes reduce working documents immediately</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Aggregation pipelines cannot use indexes</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Calling external HTTP APIs inside an open transaction holds database locks for seconds, stalling concurrent queries and risking timeouts/deadlocks.">
+              <p class="quiz-prompt">7. Why must you avoid calling slow external HTTP APIs (such as sending emails or webhooks) inside an open database transaction?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> It keeps database locks and connections held open across slow network waits, causing contention and deadlocks.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Node.js forbids fetch() inside async functions.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Databases automatically encrypt outbound HTTP bodies.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> HTTP calls convert transactions into COLLSCANs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Unbounded embedded arrays cause repeated document reallocation and will eventually fail once documents exceed MongoDB's 16 MB BSON limit.">
+              <p class="quiz-prompt">8. Why is embedding an unbounded list of thousands of user comments inside a single BlogPost document an anti-pattern in MongoDB?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> MongoDB forbids arrays inside documents.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Arrays cannot be returned in Express JSON.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> It disables TLS connections.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Document growth causes disk reallocation churn, bloats transfers, and can hit the 16 MB document size limit.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Relational databases excel at strict foreign-key referential integrity, normalized many-to-many joins, and financial ACID ledger operations.">
+              <p class="quiz-prompt">9. When is a relational SQL database (such as PostgreSQL) typically preferable to MongoDB?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Storing temporary 60-second API rate-limit counters</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Double-entry accounting ledgers, complex multi-table relational joins, and strict foreign-key integrity</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Serving static CSS files</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Broadcasting WebSocket room events</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Replication copies human errors and accidental deletes immediately to replicas; backups + tested Point-in-Time Recovery restore points are essential for true recovery.">
+              <p class="quiz-prompt">10. Why does having a primary-replica database setup NOT eliminate the need for regular tested backups and Point-in-Time Recovery?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Replicas delete all data every midnight.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Replicas only store indexes, not records.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Accidental deletes or bad migrations replicate immediately to followers; only isolated backups/PITR allow rolling back cleanly.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> Backups automatically speed up connection pools.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is a "covered query" and why is it ultra-fast?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A covered query occurs when every field in the filter, sort, and projection exists inside the index itself (e.g., excluding <code>_id</code> if not indexed). The database answers the entire query straight from the in-memory B-Tree index without reading full documents from disk (<code>totalDocsExamined: 0</code>).</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. When is a single-document atomic operator better than a multi-document transaction?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Whenever the state change lives inside one document—such as deducting product inventory or appending a bounded sub-item conditionally with <code>findOneAndUpdate</code>. Single-document atomicity requires no distributed coordinator session and scales with far lower latency.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why is a TTL index useful for audit logs, password-reset tokens, or temporary records?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A MongoDB TTL index automatically deletes expired documents in the background once their timestamp passes the configured expiration window, preventing unbounded table growth without writing custom cleanup cron jobs.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why should <code>$lookup</code> in an aggregation pipeline usually come AFTER <code>$sort</code> and <code>$limit</code> when paginating?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Running <code>$lookup</code> before <code>$limit(20)</code> forces MongoDB to join related records for 50,000 rows only to discard 49,980 of them afterward. Sorting and limiting first ensures <code>$lookup</code> runs only on the 20 documents actually returned on the page.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. What does <code>maxPoolSize</code> vs <code>waitQueueTimeoutMS</code> control in a driver connection pool?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>maxPoolSize</code> caps how many concurrent TCP database connections a single Node process opens, preventing DB overload. <code>waitQueueTimeoutMS</code> caps how long a query waits for a free pool slot before failing fast instead of queuing indefinitely under saturation.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Optimize an Expensive Aggregation Pipeline</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A pipeline runs <code>$lookup</code> on users first, then <code>$sort: { createdAt: -1 }</code>, then <code>$match: { orgId }</code>, then <code>$limit: 20</code> on 200,000 orders. Reorder it cleanly and specify the exact compound index required.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function listRecentOrgOrders(OrderModel, orgId, limit = 20) {
+  return OrderModel.aggregate([
+    { $match: { orgId } },
+    { $sort: { createdAt: -1 } },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'customerId',
+        foreignField: '_id',
+        pipeline: [{ $project: { name: 1, email: 1 } }],
+        as: 'customer'
+      }
+    },
+    { $unwind: { path: '$customer', preserveNullAndEmptyArrays: true } }
+  ]);
+}</code></pre>
+                </div>
+                <p><strong>Required Index:</strong> <code>{ orgId: 1, createdAt: -1 }</code> allows the initial <code>$match</code> + <code>$sort</code> + <code>$limit</code> to read 20 documents straight from the index, running <code>$lookup</code> only 20 times with sub-pipeline field projection.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): SQL Parameterized Transaction in Node.js (<code>pg</code>)</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a PostgreSQL pool transaction helper in JavaScript using <code>pg</code> that atomically inserts an order and deducts inventory with parameterized queries (preventing SQL injection) and rolls back cleanly on any failure.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function createOrderSql(pool, { userId, productId, qty }) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const stockRes = await client.query(
+      'UPDATE products SET stock = stock - $1 WHERE id = $2 AND stock &gt;= $1 RETURNING price_cents',
+      [qty, productId]
+    );
+    if (stockRes.rowCount === 0) {
+      throw new Error('INSUFFICIENT_STOCK');
+    }
+
+    const totalCents = stockRes.rows[0].price_cents * qty;
+    const orderRes = await client.query(
+      'INSERT INTO orders (user_id, product_id, qty, total_cents) VALUES ($1, $2, $3, $4) RETURNING *',
+      [userId, productId, qty, totalCents]
+    );
+
+    await client.query('COMMIT');
+    return orderRes.rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Choosing MongoDB vs. PostgreSQL for a Multi-Feature Platform</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A SaaS company stores (1) customer billing subscriptions, invoices, and tax ledger lines, and (2) dynamic form submissions whose fields vary per tenant. Compare choosing PostgreSQL (with <code>JSONB</code>) vs. MongoDB vs. polyglot persistence.</p>
+                <p><strong>Reference Architecture:</strong> PostgreSQL with relational tables for billing/invoices/ledger (leveraging foreign keys and strict ACID transactions) plus a <code>JSONB</code> column with GIN indexing for dynamic tenant form payloads handles both cleanly in a single operational database—avoiding cross-database distributed transactions unless scale later justifies splitting the form store.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 10 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Indexes &amp; ESR:</strong> Order compound indexes by Equality, Sort, Range and verify <code>IXSCAN</code> + low examined ratios using <code>explain</code> plans.</li>
+              <li><strong>Query hygiene:</strong> Avoid leading-wildcard regexes, unindexed negations, and N+1 loops; place <code>$match</code> and <code>$limit</code> early in aggregations.</li>
+              <li><strong>Consistency:</strong> Favor atomic conditional updates for single records and short ACID transactions (with zero external network waits) for multi-record invariants.</li>
+              <li><strong>Data modeling &amp; SQL:</strong> Keep embedded document arrays bounded, size connection pools across scaled replicas, and pick PostgreSQL when strict relational integrity and complex joins dominate.</li>
+              <li><strong>Backups:</strong> Pair replication with automated snapshots, Point-in-Time Recovery, and regular restore verification tests.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 10 Database Optimization Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 10 Advanced Database Optimization visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 10 local visual reference (<code>Day 10/image.webp</code>). Review ESR compound indexing, explain plan inspection, transactions, and SQL vs. NoSQL modeling.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 9/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 9: Advanced API Design and Versioning</span>
+          </a>
+          <a href="../Day 11/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 11: Cloud File Storage &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 9/index.html">Day 9: API Versioning</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 11/index.html">Day 11: Cloud Storage</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

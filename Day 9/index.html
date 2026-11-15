@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 9: Advanced API Design and Versioning. Learn REST design, versioning strategies, filtering, sorting, pagination, idempotency, OpenAPI/Swagger, backward compatibility, deprecation, and GraphQL.">
+  <title>Day 9: Advanced API Design and Versioning | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="9">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 9: API Design &amp; Versioning</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html" selected>Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 8/index.html" class="nav-step-btn" title="Go to Day 8">Prev</a>
+            <a href="../Day 10/index.html" class="nav-step-btn" title="Go to Day 10">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 9 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 09</span>
+          <span class="category-pill">API Contracts &amp; Evolution</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="9" aria-pressed="false">Mark Day 9 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Advanced API Design and Versioning</h1>
+        <p class="lesson-intro">
+          An API is a long-term contract with web apps, mobile builds that users rarely update, and third-party partners. Renaming a single JSON field or changing an error format casually can break production clients overnight. Today you will learn how to design predictable REST contracts, filter and paginate safely, handle versioning and deprecation without duplicating business logic, document APIs with OpenAPI/Swagger, and evaluate when GraphQL makes sense.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 1 &amp; 3</span>
+            <p>Layered DTO mappers let <code>v1</code> and <code>v2</code> controllers share one core service layer, while clamped pagination protects server memory and database latency.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Additive changes preserve backward compatibility; breaking contract changes belong behind explicit versioned adapters with clear deprecation timelines.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Implement versioned Express endpoints with allowlisted filtering/sorting/pagination, deprecation headers, and an OpenAPI specification.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Versioning &amp; Query Pipeline</a>
+            <a href="#diagrams">API Evolution &amp; GraphQL Diagrams</a>
+            <a href="#implementation">Express + OpenAPI Implementation</a>
+            <a href="#real-world">Versioning &amp; REST vs. GraphQL</a>
+            <a href="#mistakes-security">Mistakes &amp; Query Safety</a>
+            <a href="#practical-task">Practical API Design Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Great APIs are boringly predictable: developers can guess endpoint paths, filter parameters, status codes, and error shapes without reading source code—and existing integrations continue working smoothly as features evolve.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Design Clean REST Contracts</h3>
+              <p>Use resource-oriented nouns, consistent envelopes, ISO-8601 dates, and accurate HTTP semantics.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Build Safe Querying</h3>
+              <p>Allowlist filter and sort fields, clamp pagination, and block query-operator injection.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Evolve &amp; Deprecate Versions</h3>
+              <p>Distinguish breaking from additive changes and adopt URI/header versioning with Sunset headers.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Document &amp; Compare Paradigms</h3>
+              <p>Author OpenAPI/Swagger specs and evaluate when GraphQL fits better than REST.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core API Design &amp; Versioning Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. REST API Design Principles</h3>
+            <ul>
+              <li><strong>Resource-Oriented Nouns:</strong> Model endpoints around plural nouns (<code>/api/v1/orders</code>, <code>/api/v1/orders/:id</code>) rather than RPC verbs like <code>/getAllOrders</code> or <code>/deleteOrderById</code>. Use HTTP methods (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>) for actions.</li>
+              <li><strong>Action Sub-Resources When Needed:</strong> For state transitions that do not map cleanly to a field edit, use explicit sub-resources such as <code>POST /api/v1/orders/:id/cancellations</code> or <code>POST /api/v1/invoices/:id/send</code>.</li>
+              <li><strong>Predictable Naming &amp; Formats:</strong> Use consistent casing (<code>camelCase</code> JSON keys), UTC ISO-8601 timestamps (<code>2026-11-15T09:15:00Z</code>), and integer minor units for money (<code>totalCents</code>) or explicit currency objects.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. API Versioning Strategies</h3>
+            <ul>
+              <li><strong>URI Path Versioning (<code>/api/v1/products</code>, <code>/api/v2/products</code>):</strong> Most explicit, trivial to route, inspect in logs, bookmark, and cache in CDNs. Slightly violates strict "URI identifies a single timeless resource" purism, yet remains the industry favorite for public and mobile APIs.</li>
+              <li><strong>Header Versioning (<code>Accept: application/vnd.arslan.v2+json</code> or <code>API-Version: 2026-11-01</code>):</strong> Keeps URLs clean; popular in date-versioned developer platforms (like Stripe). Requires configuring CDN/proxy <code>Vary</code> headers carefully and is harder to test casually in a browser bar.</li>
+              <li><strong>Query Parameter Versioning (<code>/api/products?version=2</code>):</strong> Easy to default, though awkward with caching rules and mixes routing versions with filter parameters.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Consistent Response Formats</h3>
+            <p>
+              Every endpoint across an API should share a predictable top-level structure—for example:
+            </p>
+            <ul>
+              <li>Single resource: <code>{ "data": { ... }, "meta": { "requestId": "..." } }</code></li>
+              <li>Paginated collection: <code>{ "data": [ ... ], "pagination": { "limit": 20, "nextCursor": "...", "hasMore": true } }</code></li>
+            </ul>
+            <p>
+              Consistency eliminates special-case client parsing logic (e.g., one endpoint returning a bare array <code>[...]</code> while another returns <code>{ items: [...] }</code>).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Filtering, Sorting, and Pagination</h3>
+            <p>
+              Allowing clients to pass arbitrary query keys directly into database queries is dangerous and slow. Production APIs strictly parse and allowlist query options:
+            </p>
+            <ul>
+              <li><strong>Filtering:</strong> Explicitly whitelist filterable fields (<code>category</code>, <code>status</code>, <code>minPriceCents</code>, <code>maxPriceCents</code>) and coerce types cleanly (rejecting non-object values or Mongo operators like <code>$ne</code>).</li>
+              <li><strong>Sorting:</strong> Map client sort tokens (e.g., <code>?sort=-priceCents,createdAt</code>) only against an explicit allowlist of indexed fields so clients cannot sort on huge unindexed text blobs or internal columns.</li>
+              <li><strong>Pagination:</strong> Combine strict limit clamping (e.g., 1–50) with cursor pagination for feeds/logs or offset pagination for bounded admin tables.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Idempotent Operations</h3>
+            <p>
+              An operation is <strong>idempotent</strong> if executing it multiple times produces the same server state as executing it once. By HTTP specification, <code>GET</code>, <code>HEAD</code>, <code>PUT</code> (full replacement), and <code>DELETE</code> are expected to be idempotent, whereas <code>POST</code> is non-idempotent by default.
+            </p>
+            <p>
+              For critical <code>POST</code> endpoints (charges, orders, transfers) where network retries happen, support an <code>Idempotency-Key</code> request header backed by shared Redis/database state (as implemented in Day 2) so duplicate retries safely return the original response.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Error Status Codes and Error Formats</h3>
+            <p>
+              Never return <code>200 OK</code> with <code>{ "success": false }</code>! Use accurate HTTP status codes paired with a consistent structured body (inspired by RFC 9457 Problem Details):
+            </p>
+            <ul>
+              <li><code>400 Bad Request</code> / <code>422 Unprocessable Entity</code>: Malformed syntax or domain/field validation failures (include per-field details).</li>
+              <li><code>401 Unauthorized</code>: Missing/expired/invalid authentication.</li>
+              <li><code>403 Forbidden</code>: Authenticated, but lacks permission/ownership.</li>
+              <li><code>404 Not Found</code>: Resource does not exist (or masked for unauthorized tenants).</li>
+              <li><code>409 Conflict</code>: Duplicate unique email/slug, state conflict, or version mismatch.</li>
+              <li><code>429 Too Many Requests</code>: Rate limit exceeded (include <code>Retry-After</code> header).</li>
+              <li><code>500 Internal Server Error</code> / <code>503 Service Unavailable</code>: Unexpected crash or dependency outage without leaking internal stack traces.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. API Documentation with OpenAPI / Swagger</h3>
+            <p>
+              <strong>OpenAPI</strong> (formerly Swagger) is a language-agnostic YAML or JSON specification describing your endpoints, parameters, request/response schemas, authentication schemes, and error payloads. Serving interactive Swagger UI (<code>swagger-ui-express</code>) or Redoc lets frontend/mobile developers explore and test contracts directly, and enables automated client SDK generation and contract validation.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Backward Compatibility &amp; API Deprecation</h3>
+            <p>
+              Know the boundary between safe and breaking changes:
+            </p>
+            <ul>
+              <li><strong>Safe (Backward-Compatible):</strong> Adding a new endpoint, adding an <em>optional</em> request property, or adding a new response field (assuming clients ignore unknown fields).</li>
+              <li><strong>Breaking (Requires New Version):</strong> Removing or renaming a JSON field, changing a field's type (string to number or object), changing URL paths, adding a new <em>required</em> request field, or changing error codes clients branch on.</li>
+            </ul>
+            <p>
+              When deprecating an older version (<code>v1</code>), emit standard <code>Deprecation: true</code> and <code>Sunset: Wed, 30 Jun 2027 23:59:59 GMT</code> HTTP headers plus a <code>Link</code> header pointing to migration docs, monitor usage metrics per version, and only sunset <code>v1</code> after traffic drops or migration deadlines expire.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>9. GraphQL Overview &amp; When It Is Useful</h3>
+            <p>
+              <strong>GraphQL</strong> exposes a single typed schema endpoint (typically <code>POST /graphql</code>) where clients declare the exact fields and nested relationships they need in one query—solving <strong>over-fetching</strong> (downloading 40 fields when a mobile card needs 3) and <strong>under-fetching</strong> (making 5 sequential REST calls to assemble one screen).
+            </p>
+            <p>
+              However, GraphQL brings real backend trade-offs: standard HTTP/CDN URL caching no longer works out of the box for <code>POST</code> queries, deeply nested queries risk <strong>N+1 database explosions</strong> (requiring tools like <code>DataLoader</code> batching) and query-complexity DoS attacks, and file uploads/rate limiting require extra tooling. Use GraphQL when multiple clients need flexible views over richly connected data; stick to REST for straightforward resource APIs, heavy HTTP caching, webhooks, and public simplicity.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>How Versioned Endpoints Share Core Services Cleanly</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Versioned Route Entry:</strong> Express mounts separate routers at <code>/api/v1</code> and <code>/api/v2</code>, attaching deprecation/sunset headers to <code>v1</code> responses automatically.
+            </li>
+            <li>
+              <strong>Query Sanitization &amp; Allowlisting:</strong> Middleware/parser converts raw <code>req.query</code> strings into typed, bounded filter, sort, and pagination objects.
+            </li>
+            <li>
+              <strong>Shared Domain Service:</strong> Both <code>v1</code> and <code>v2</code> controllers call the <em>same</em> <code>ProductService</code> so business rules, caching, and validations never drift apart.
+            </li>
+            <li>
+              <strong>Versioned DTO Presentation:</strong> Each controller maps the domain object into its version-specific response shape (for example, <code>v1</code> keeps legacy flat <code>price</code> field while <code>v2</code> returns structured <code>pricing: { amountCents, currency }</code>).
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Versioning &amp; API Paradigm Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Versioned Adapter Pattern Sharing One Core Service</h3>
+            <p class="diagram-caption">
+              Keep business logic unified in <code>ProductService</code> while isolating breaking JSON shape changes in thin <code>v1</code> and <code>v2</code> DTO adapters.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 200" class="arch-svg" role="img" aria-label="API v1 with Deprecation header and API v2 routing through separate DTO mappers into one shared ProductService and Repository">
+                <defs>
+                  <marker id="arrow-api" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="20" y="24" width="176" height="62" rx="10" class="svg-box-muted"></rect>
+                <text x="108" y="50" text-anchor="middle" class="svg-title">/api/v1/products</text>
+                <text x="108" y="68" text-anchor="middle" class="svg-sub">Deprecation + Sunset</text>
+
+                <rect x="20" y="114" width="176" height="62" rx="10" class="svg-box-accent"></rect>
+                <text x="108" y="140" text-anchor="middle" class="svg-title">/api/v2/products</text>
+                <text x="108" y="158" text-anchor="middle" class="svg-sub">Current Contract</text>
+
+                <line x1="196" y1="55" x2="246" y2="55" class="svg-arrow" marker-end="url(#arrow-api)"></line>
+                <line x1="196" y1="145" x2="246" y2="145" class="svg-arrow" marker-end="url(#arrow-api)"></line>
+
+                <rect x="250" y="24" width="170" height="62" rx="10" class="svg-box-blue"></rect>
+                <text x="335" y="50" text-anchor="middle" class="svg-title">V1 Controller / DTO</text>
+                <text x="335" y="68" text-anchor="middle" class="svg-sub">{ id, name, price }</text>
+
+                <rect x="250" y="114" width="170" height="62" rx="10" class="svg-box-blue"></rect>
+                <text x="335" y="140" text-anchor="middle" class="svg-title">V2 Controller / DTO</text>
+                <text x="335" y="158" text-anchor="middle" class="svg-sub">{ id, title, pricing }</text>
+
+                <line x1="420" y1="55" x2="480" y2="92" class="svg-arrow" marker-end="url(#arrow-api)"></line>
+                <line x1="420" y1="145" x2="480" y2="108" class="svg-arrow" marker-end="url(#arrow-api)"></line>
+
+                <rect x="484" y="62" width="256" height="76" rx="10" class="svg-box-accent"></rect>
+                <text x="612" y="94" text-anchor="middle" class="svg-title">Shared ProductService &amp; Repo</text>
+                <text x="612" y="114" text-anchor="middle" class="svg-sub">Single Source of Truth</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: REST Multiple Resource Calls vs. GraphQL Single Graph Query</h3>
+            <p class="diagram-caption">
+              GraphQL aggregates nested data in one round-trip while requiring DataLoader batching on the server to prevent N+1 database queries.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 175" class="arch-svg" role="img" aria-label="Comparison of REST requiring multiple endpoint requests versus GraphQL resolving nested fields in one POST query">
+                <rect x="20" y="20" width="340" height="135" rx="10" class="svg-box-muted"></rect>
+                <text x="190" y="46" text-anchor="middle" class="svg-title">REST Resource Endpoints</text>
+                <rect x="40" y="64" width="300" height="24" rx="6" class="svg-box-blue"></rect>
+                <text x="190" y="80" text-anchor="middle" class="svg-sub">1. GET /api/v2/users/42</text>
+                <rect x="40" y="94" width="300" height="24" rx="6" class="svg-box-blue"></rect>
+                <text x="190" y="110" text-anchor="middle" class="svg-sub">2. GET /api/v2/users/42/orders?limit=5</text>
+                <text x="190" y="140" text-anchor="middle" class="svg-sub">Easy HTTP/CDN caching per URL</text>
+
+                <rect x="396" y="20" width="344" height="135" rx="10" class="svg-box-muted"></rect>
+                <text x="568" y="46" text-anchor="middle" class="svg-title">GraphQL Single Endpoint (POST /graphql)</text>
+                <rect x="416" y="64" width="304" height="54" rx="6" class="svg-box-accent"></rect>
+                <text x="568" y="86" text-anchor="middle" class="svg-sub">query { user(id:42) { name orders(first:5) { id } } }</text>
+                <text x="568" y="106" text-anchor="middle" class="svg-sub">Returns exact requested fields in 1 trip</text>
+                <text x="568" y="140" text-anchor="middle" class="svg-sub">Needs DataLoader + depth/cost limits</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Implementing a Versioned, Filtered &amp; Documented Express API</h2>
+
+          <h3>Step 1: Safe Allowlisted Filtering, Sorting &amp; Pagination Parser</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/query/parseCatalogQuery.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>const ALLOWED_SORT_FIELDS = {
+  createdAt: 'createdAt',
+  price: 'priceCents',
+  title: 'title'
+};
+
+export function parseCatalogQuery(rawQuery = {}) {
+  const limitRaw = Number.parseInt(rawQuery.limit, 10);
+  const limit = Number.isInteger(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 20;
+
+  const pageRaw = Number.parseInt(rawQuery.page, 10);
+  const page = Number.isInteger(pageRaw) ? Math.max(pageRaw, 1) : 1;
+
+  const filters = {};
+  if (typeof rawQuery.category === 'string' && rawQuery.category.trim()) {
+    filters.category = rawQuery.category.trim().toLowerCase();
+  }
+
+  const minPrice = Number.parseInt(rawQuery.minPriceCents, 10);
+  const maxPrice = Number.parseInt(rawQuery.maxPriceCents, 10);
+  if (Number.isInteger(minPrice) && minPrice &gt;= 0) {
+    filters.minPriceCents = minPrice;
+  }
+  if (Number.isInteger(maxPrice) && maxPrice &gt;= 0) {
+    filters.maxPriceCents = maxPrice;
+  }
+
+  const sortTokens = typeof rawQuery.sort === 'string' ? rawQuery.sort.split(',') : ['-createdAt'];
+  const sort = {};
+  for (const token of sortTokens) {
+    const trimmed = token.trim();
+    if (!trimmed) {
+      continue;
+    }
+    const descending = trimmed.startsWith('-');
+    const clientField = descending ? trimmed.slice(1) : trimmed;
+    const dbField = ALLOWED_SORT_FIELDS[clientField];
+    if (dbField) {
+      sort[dbField] = descending ? -1 : 1;
+    }
+  }
+  if (Object.keys(sort).length === 0) {
+    sort.createdAt = -1;
+  }
+
+  return { page, limit, filters, sort };
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Deprecation Headers Middleware &amp; Versioned Controllers</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/products/product.versioned.routes.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+import { parseCatalogQuery } from '../../shared/query/parseCatalogQuery.js';
+
+export function deprecateVersion({ sunsetDate, migrationUrl }) {
+  return (req, res, next) =&gt; {
+    res.set('Deprecation', 'true');
+    res.set('Sunset', sunsetDate);
+    res.set('Link', `&lt;${migrationUrl}&gt;; rel="deprecation"`);
+    next();
+  };
+}
+
+function toV1Dto(product) {
+  return {
+    id: String(product._id),
+    name: product.title,
+    price: Number((product.priceCents / 100).toFixed(2)),
+    category: product.category
+  };
+}
+
+function toV2Dto(product) {
+  return {
+    id: String(product._id),
+    title: product.title,
+    category: product.category,
+    pricing: {
+      amountCents: product.priceCents,
+      currency: product.currency || 'USD'
+    },
+    createdAt: product.createdAt
+  };
+}
+
+export function createProductVersionedRouters(productService) {
+  const v1Router = express.Router();
+  v1Router.use(
+    deprecateVersion({
+      sunsetDate: 'Wed, 30 Jun 2027 23:59:59 GMT',
+      migrationUrl: 'https://api.example.com/docs/v1-to-v2'
+    })
+  );
+
+  v1Router.get('/', async (req, res, next) =&gt; {
+    try {
+      const options = parseCatalogQuery(req.query);
+      const result = await productService.listProducts(options);
+      res.status(200).json({
+        data: result.items.map(toV1Dto),
+        pagination: result.pagination
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  const v2Router = express.Router();
+  v2Router.get('/', async (req, res, next) =&gt; {
+    try {
+      const options = parseCatalogQuery(req.query);
+      const result = await productService.listProducts(options);
+      res.status(200).json({
+        data: result.items.map(toV2Dto),
+        pagination: result.pagination,
+        meta: { apiVersion: 'v2' }
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  return { v1Router, v2Router };
+}</code></pre>
+          </div>
+
+          <h3>Step 3: OpenAPI Documentation Spec &amp; Swagger UI Mounting</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">docs/openapi.yaml (Excerpt) &amp; Express Mount</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>openapi: 3.1.0
+info:
+  title: Catalog API
+  version: 2.0.0
+servers:
+  - url: /api/v2
+paths:
+  /products:
+    get:
+      summary: List products with allowlisted filtering, sorting, and pagination
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+        - in: query
+          name: minPriceCents
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            example: -price,createdAt
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: Paginated product list
+        '400':
+          description: Structured validation error</code></pre>
+          </div>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/app.js — Mounting Versioned Routers &amp; Swagger UI</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import fs from 'node:fs';
+import express from 'express';
+import yaml from 'js-yaml';
+import swaggerUi from 'swagger-ui-express';
+
+export function mountApiDocsAndVersions(app, { v1Router, v2Router }) {
+  const openApiSpec = yaml.load(fs.readFileSync('./docs/openapi.yaml', 'utf8'));
+
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
+  app.use('/api/v1/products', v1Router);
+  app.use('/api/v2/products', v2Router);
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Type Guard <code>typeof rawQuery.category === 'string'</code>:</strong> In Express query parsing (<code>qs</code>), <code>?category[$ne]=books</code> produces an object <code>{ $ne: 'books' }</code>! Checking <code>typeof === 'string'</code> blocks NoSQL operator injection cleanly.</li>
+              <li><strong><code>ALLOWED_SORT_FIELDS</code> Lookup Map:</strong> Rejects unknown sort fields rather than passing user strings directly into <code>.sort()</code>, preventing performance abuse and hidden-field probing.</li>
+              <li><strong><code>toV1Dto</code> vs. <code>toV2Dto</code>:</strong> Renaming <code>name</code> to <code>title</code> and changing float <code>price</code> to integer <code>pricing.amountCents</code> would break <code>v1</code> clients, so adapters translate the shared domain model cleanly for each version.</li>
+              <li><strong><code>Deprecation</code> &amp; <code>Sunset</code> Headers:</strong> Standardized machine-readable signals let SDKs and partner monitoring detect deprecated endpoints automatically before removal.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Versioning &amp; REST vs. GraphQL Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Versioning Strategy</th>
+                  <th>Example</th>
+                  <th>Strengths</th>
+                  <th>Drawbacks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>URI Path</strong></td>
+                  <td><code>/api/v2/orders</code></td>
+                  <td>Explicit, easy CDN/proxy caching, simple Express routing and logs</td>
+                  <td>URL changes across major versions</td>
+                </tr>
+                <tr>
+                  <td><strong>Custom / Accept Header</strong></td>
+                  <td><code>API-Version: 2026-11-01</code></td>
+                  <td>Clean resource URLs, supports granular date-based rollouts</td>
+                  <td>Requires <code>Vary</code> header for caches; harder to test directly in browser bar</td>
+                </tr>
+                <tr>
+                  <td><strong>Query Parameter</strong></td>
+                  <td><code>/api/orders?v=2</code></td>
+                  <td>Easy optional default</td>
+                  <td>Mixes version routing with resource query filters; messier routing tables</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>REST + OpenAPI</th>
+                  <th>GraphQL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Over/Under-Fetching</strong></td>
+                  <td>Fixed shapes per endpoint (unless sparse fieldsets added)</td>
+                  <td>Client picks exact fields and nested relations in 1 request</td>
+                </tr>
+                <tr>
+                  <td><strong>HTTP Caching</strong></td>
+                  <td>Native GET URL + <code>ETag</code> / CDN caching</td>
+                  <td><code>POST /graphql</code> bypasses standard HTTP caching unless persisted queries are used</td>
+                </tr>
+                <tr>
+                  <td><strong>Query Safety &amp; N+1</strong></td>
+                  <td>Server controls fixed query shapes</td>
+                  <td>Needs DataLoader batching + depth/cost limiting to stop expensive nested queries</td>
+                </tr>
+                <tr>
+                  <td><strong>Versioning</strong></td>
+                  <td>Explicit <code>v1</code>/<code>v2</code> or date versions</td>
+                  <td>Schema evolution via additive fields + <code>@deprecated</code> field directives</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common API Design Mistakes &amp; Security Hygiene</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Forwarding Raw <code>req.query</code> Directly into Database Filters</h3>
+              <p><strong>Vulnerability:</strong> Calling <code>Product.find(req.query)</code> lets attackers pass query operators like <code>?price[$lt]=0</code> or filter on private unpublished fields like <code>?isDraft=true</code>.</p>
+              <p><strong>Fix:</strong> Parse, type-check, and allowlist every query parameter explicitly before building database filters.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Breaking Backward Compatibility Inside an Existing Version</h3>
+              <p><strong>Reliability risk:</strong> Changing <code>price</code> from a number to <code>"19.99"</code> string or renaming <code>id</code> inside <code>v1</code> crashes deployed iOS/Android clients that take weeks to update.</p>
+              <p><strong>Fix:</strong> Keep changes inside <code>v1</code> strictly additive; publish breaking structural changes under <code>v2</code>.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Returning HTTP <code>200 OK</code> for Errors</h3>
+              <p><strong>Observability &amp; Client bug:</strong> Returning <code>200</code> with <code>{ ok: false }</code> breaks HTTP client error interceptors, load-balancer error-rate dashboards, and CDN negative caching.</p>
+              <p><strong>Fix:</strong> Return accurate <code>4xx</code>/<code>5xx</code> codes with a consistent machine-readable error code and message body.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Copy-Pasting Entire Services for <code>v1</code> and <code>v2</code></h3>
+              <p><strong>Maintenance risk:</strong> Duplicating business logic across <code>v1/order.service.js</code> and <code>v2/order.service.js</code> causes security fixes applied to <code>v2</code> to be forgotten in <code>v1</code>.</p>
+              <p><strong>Fix:</strong> Share one core service and map inputs/outputs in thin versioned controller/DTO adapters.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Versioned API Milestone</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Design &amp; Document a Versioned Articles API</h3>
+            <p>
+              Build and document two versions of an Articles API (<code>/api/v1/articles</code> and <code>/api/v2/articles</code>) backed by a single <code>ArticleService</code>:
+            </p>
+            <ol>
+              <li>Support allowlisted query filtering (<code>tag</code>, <code>authorId</code>), allowlisted sorting (<code>createdAt</code>, <code>views</code>, with <code>-</code> prefix for descending), and clamped pagination (<code>limit</code> 1–50).</li>
+              <li>Return flat legacy fields in <code>v1</code> (plus <code>Deprecation</code> and <code>Sunset</code> headers) and structured <code>author: { id, name }</code> + <code>stats: { views }</code> in <code>v2</code>.</li>
+              <li>Use a consistent structured error format for <code>400</code>, <code>404</code>, and <code>409</code> responses.</li>
+              <li>Author an <code>openapi.yaml</code> file documenting parameters, schemas, and responses, and serve it at <code>/api/docs</code>.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 9 Quiz: Advanced API Design &amp; Versioning (10 Questions)</h2>
+          <p>Select one option per question, then click <strong>Check Quiz Answers</strong> for feedback and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="c" data-explanation="Renaming or removing existing response fields breaks existing clients that parse those keys, requiring a major version change rather than an in-place update.">
+              <p class="quiz-prompt">1. Which API change is a BREAKING change that must NOT be pushed unversioned into an existing <code>v1</code> endpoint?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Adding a new optional <code>subtitle</code> field to the JSON response</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Adding an optional query filter parameter</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Renaming an existing response field from <code>price</code> to <code>amountCents</code> and changing its value scale</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> Adding a new endpoint <code>GET /api/v1/categories</code></label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="b" data-explanation="Forwarding unvalidated req.query allows Express qs-parsed objects like { $gt: '' } to execute unexpected NoSQL operators or filter private fields.">
+              <p class="quiz-prompt">2. Why is passing <code>req.query</code> straight into <code>ProductModel.find(req.query)</code> dangerous?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Express throws a syntax error when req.query is read inside async functions.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Attackers can inject NoSQL query operators (like <code>$ne</code>/<code>$gt</code>) or query private internal fields.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Mongoose cannot query strings.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> It forces responses into XML instead of JSON.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="d" data-explanation="By HTTP semantics, POST is non-idempotent; adding an Idempotency-Key header lets servers deduplicate retried payments or creations safely.">
+              <p class="quiz-prompt">3. Which standard HTTP method is NOT inherently idempotent and typically requires an <code>Idempotency-Key</code> header for safe payment retries?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> GET</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> PUT</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> DELETE</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> POST</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="a" data-explanation="409 Conflict signals a conflict with the current state of the target resource, such as a duplicate unique email or stale optimistic concurrency version.">
+              <p class="quiz-prompt">4. Which HTTP status code is most appropriate when creating a user with an email address that already exists, or encountering a state conflict?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> 409 Conflict</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> 204 No Content</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> 302 Found</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> 502 Bad Gateway</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="c" data-explanation="Deprecation and Sunset HTTP headers signal to API consumers and monitoring tools that an endpoint version is deprecated and when it is scheduled for removal.">
+              <p class="quiz-prompt">5. What is the role of the <code>Deprecation</code> and <code>Sunset</code> HTTP response headers?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> They instruct browsers to disable TLS certificates.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> They compress JSON bodies using Brotli.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> They notify API consumers in a standard machine-readable way that an endpoint is deprecated and when it will be retired.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> They force immediate 301 redirects on POST requests.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="b" data-explanation="Sharing one core service and mapping DTOs in v1/v2 controllers keeps business logic, security checks, and bug fixes unified in one place.">
+              <p class="quiz-prompt">6. When supporting both <code>v1</code> and <code>v2</code> of an API simultaneously, what is the cleanest way to avoid business logic drift?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Maintain two completely separate databases for v1 and v2.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Share the underlying domain service and repository while isolating version-specific input/output mapping in thin controllers/DTO adapters.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Duplicate all service files and edit both manually forever.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Redirect v1 requests directly to a 500 error page.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="d" data-explanation="GraphQL excels when diverse clients need exact subsets of deeply related data in one round-trip, eliminating over-fetching and multi-call REST waterfalls.">
+              <p class="quiz-prompt">7. Which problem does GraphQL primarily solve compared to fixed-shape REST endpoints?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Eliminating database indexes completely</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Replacing TLS encryption</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Making Redis caching unnecessary</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Over-fetching unnecessary fields and under-fetching across multiple nested resource round-trips</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="a" data-explanation="GraphQL queries typically arrive via POST /graphql, bypassing standard URL-based HTTP/CDN caching, and nested resolvers can easily trigger N+1 queries without DataLoader.">
+              <p class="quiz-prompt">8. Which pair of trade-offs must be managed carefully when adopting GraphQL on the backend?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Harder standard HTTP URL/CDN caching and potential N+1 / overly deep nested query abuse</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Inability to return JSON responses and inability to use Node.js</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> Lack of typed schemas and inability to select nested fields</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Mandatory binary-only payloads</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="OpenAPI defines a standard machine-readable YAML/JSON specification of paths, parameters, schemas, and auth used by Swagger UI, validators, and SDK generators.">
+              <p class="quiz-prompt">9. What is the main purpose of maintaining an OpenAPI specification for a REST backend?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> It compiles JavaScript into Docker images.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> It provides a standardized, machine-readable API contract for interactive documentation, validation, and client SDK generation.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> It replaces database connection pooling.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> It encrypts environment variables at runtime.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Allowlisting sort fields ensures clients can only sort by safe, indexed fields rather than forcing expensive full-collection scans on arbitrary or hidden columns.">
+              <p class="quiz-prompt">10. Why should <code>?sort=</code> query parameters always be mapped through an explicit allowlist before querying the database?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Databases cannot sort strings alphabetically without an allowlist.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Express deletes query parameters containing hyphens.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> It prevents clients from sorting by unindexed heavy fields (causing DoS) or probing private internal column names.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> It enables automatic GraphQL federation.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is the difference between <code>PUT</code> and <code>PATCH</code> in RESTful API design?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>PUT</code> performs a full replacement of a resource representation (omitted optional fields reset or become null, making it naturally idempotent). <code>PATCH</code> applies a partial modification containing only the fields the client wants to change.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Why is URI path versioning (<code>/api/v1/</code>) so popular compared to header versioning despite REST purist debates?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>URI path versions are immediately visible in server access logs, browser address bars, curl snippets, and OpenAPI docs, and CDNs/reverse proxies cache distinct URLs cleanly without needing special <code>Vary</code> header tuning.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why must you monitor traffic on a deprecated API version before shutting it down?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Turning off <code>v1</code> purely by calendar date while 20% of active mobile users or paying partners are still calling it causes immediate production outages. Tracking per-version metrics lets you reach out proactively to remaining callers and verify zero critical traffic before sunsetting.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. How does <code>DataLoader</code> help solve GraphQL's N+1 query problem?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>DataLoader</code> batches individual key lookups requested during a single event-loop tick (for example, 25 nested <code>order.customer</code> calls) into one combined database query (e.g., <code>WHERE id IN (...)</code>) and caches results per request.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why should REST responses always wrap collections inside an object like <code>{ data: [...] }</code> rather than returning a raw top-level array <code>[...]</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Wrapping lists inside a JSON object lets you add pagination cursors, totals, or metadata keys later in a backward-compatible additive way—whereas changing a raw top-level array into an object is an instant breaking change for every client.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Unsafe Dynamic Query &amp; Breaking Response Shape</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A route executes <code>const docs = await Item.find(req.query).sort(req.query.sort); res.json(docs);</code>. Identify 3 design/security bugs and write a safe replacement returning consistent paginated JSON.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function listItemsController(req, res, next) {
+  try {
+    const { page, limit, filters, sort } = parseCatalogQuery(req.query);
+    const { items, total } = await itemService.list({ page, limit, filters, sort });
+    res.status(200).json({
+      data: items.map(toPublicItemDto),
+      pagination: {
+        page,
+        limit,
+        total,
+        hasMore: page * limit &lt; total
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+}</code></pre>
+                </div>
+                <p><strong>Three bugs fixed:</strong> (1) Blocked NoSQL operator injection via allowlisted query parsing, (2) enforced bounded pagination + allowlisted sort fields, and (3) wrapped list inside a consistent extensible <code>{ data, pagination }</code> envelope using a public DTO mapper.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Consistent Problem-Details Error Middleware</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write an Express error-handling middleware that formats operational errors into a clean structured response containing <code>type</code>, <code>title</code>, <code>status</code>, <code>code</code>, <code>detail</code>, <code>requestId</code>, and optional <code>errors</code> array (for field validation errors) without leaking internal stack traces.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function problemErrorHandler(err, req, res, next) {
+  const isOperational = Boolean(err && err.isOperational);
+  const status = isOperational ? err.statusCode : 500;
+  const payload = {
+    type: `https://api.example.com/errors/${isOperational ? err.code : 'INTERNAL_ERROR'}`,
+    title: isOperational ? err.name : 'Internal Server Error',
+    status,
+    code: isOperational ? err.code : 'INTERNAL_ERROR',
+    detail: isOperational ? err.message : 'An unexpected error occurred',
+    requestId: req.id || null
+  };
+
+  if (isOperational && Array.isArray(err.details)) {
+    payload.errors = err.details;
+  }
+
+  res.status(status).type('application/problem+json').json(payload);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Choosing Between REST, Header-Versioned REST, and GraphQL</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A team is building two products: (A) a public payment/webhook developer platform used by external companies, and (B) an internal analytics dashboard aggregating 6 complex interrelated entities on one React screen. Which API paradigm/versioning fit each best?</p>
+                <p><strong>Reference Architecture:</strong> Product (A) fits <strong>REST + OpenAPI</strong> with explicit URI or date-header versioning, strict idempotency keys, and signed webhooks because external developers value predictable contracts, HTTP status codes, and straightforward curl/SDK integration. Product (B) is a strong candidate for <strong>GraphQL</strong> (or a dedicated REST BFF aggregation endpoint) so the internal dashboard fetches exact nested slices in one trip while protecting resolvers with DataLoader and query-cost limits.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 9 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Predictable REST design</strong> uses plural resource nouns, standard HTTP status codes, consistent JSON envelopes, and idempotency keys on critical writes.</li>
+              <li><strong>Safe querying</strong> strictly parses, type-checks, and allowlists filter and sort fields alongside clamped pagination.</li>
+              <li><strong>Smart versioning</strong> keeps changes additive within a major version, isolates breaking DTO differences in thin adapters over shared services, and signals retirements via <code>Deprecation</code>/<code>Sunset</code> headers.</li>
+              <li><strong>OpenAPI/Swagger</strong> documents contracts clearly for consumers and tooling.</li>
+              <li><strong>GraphQL</strong> solves multi-resource over/under-fetching at the cost of extra caching, DataLoader N+1 management, and query complexity protection.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 9 API Design &amp; Versioning Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 9 Advanced API Design and Versioning visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 9 local visual reference (<code>Day 9/image.webp</code>). Review versioned DTO adapters, allowlisted filtering, OpenAPI specs, and REST vs. GraphQL trade-offs.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 8/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 8: Advanced Authentication &amp; Authorization</span>
+          </a>
+          <a href="../Day 10/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 10: Advanced Database Optimization &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 8/index.html">Day 8: Auth &amp; RBAC</a></li>
+          <li><a href="../Day 9/index.html">Day 9: API Versioning</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 17: Production Backend Architecture. Synthesize architecture, reliability, timeouts, retries, circuit breakers, backup recovery, caching and queue trade-offs, ADRs, and production readiness checklists.">
+  <title>Day 17: Production Backend Architecture | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="17">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 17: Production Architecture</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html" selected>Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 16/index.html" class="nav-step-btn" title="Go to Day 16">Prev</a>
+            <a href="../Day 18/index.html" class="nav-step-btn" title="Go to Day 18">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 17 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 17</span>
+          <span class="category-pill">Systems Synthesis &amp; Reliability</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="17" aria-pressed="false">Mark Day 17 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Production Backend Architecture</h1>
+        <p class="lesson-intro">
+          In real systems, architecture, performance, security, observability, and deployment are never isolated silos—every design choice ripples across the whole stack. Today you will synthesize Days 1–16 into cohesive production systems: handling partial failures gracefully with timeouts, retries, and circuit breakers; planning database RPO/RTO recovery; balancing caching and queues; writing Architecture Decision Records; and applying a thorough production readiness checklist.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 1–16</span>
+            <p>Unifies modular layering, stateless scaling, Redis, queues, WebSockets, auth, DB optimization, storage, telemetry, testing, security, Docker, and CI/CD.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Assume dependencies will slow down or fail. Bound waits, isolate blast radii, degrade non-critical features gracefully, and document explicit trade-offs.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Implement a Circuit Breaker + bounded retry wrapper and design a complete production architecture with justified trade-offs and runbooks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Synthesis Concepts</a>
+            <a href="#how-it-works">Resilience Execution Flow</a>
+            <a href="#diagrams">Reference &amp; Breaker Diagrams</a>
+            <a href="#implementation">Circuit Breaker &amp; Fallback Code</a>
+            <a href="#real-world">Trade-Offs &amp; Decisions</a>
+            <a href="#mistakes-security">Production Readiness Checklist</a>
+            <a href="#practical-task">Architecture Design Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Senior backend engineering is defined less by memorizing library syntax and more by making balanced system decisions under real constraints of cost, latency, reliability, and team velocity.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Synthesize All Backend Tiers</h3>
+              <p>Connect edge security, stateless APIs, caching, queues, storage, and telemetry into one blueprint.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design for Graceful Failure</h3>
+              <p>Prevent cascading outages with timeouts, jittered retries, circuit breakers, and fallbacks.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Plan Recovery &amp; Operations</h3>
+              <p>Define concrete RPO/RTO targets, backup restore drills, rollback plans, and operational runbooks.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Justify Technical Trade-Offs</h3>
+              <p>Author concise Architecture Decision Records (ADRs) and verify production readiness systematically.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Production Architecture Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Bringing Architecture, Performance, Security &amp; Observability Together</h3>
+            <p>
+              A production-ready backend aligns every layer cleanly: TLS + rate limiting at the edge (Day 14), stateless modular Express services (Days 1–2), Redis caching for hot reads (Day 4), persistent queues/brokers for slow or cross-domain side effects (Days 5–6), indexed pooled databases + object storage (Days 10–11), structured correlated telemetry (Day 12), and automated CI/CD container releases (Days 13, 15, 16).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Reliability and Graceful Failure</h3>
+            <p>
+              When a secondary dependency—such as a recommendations engine, analytics tracker, or Redis read cache—fails, the entire checkout or homepage should <strong>not</strong> return HTTP <code>500</code>! Graceful degradation isolates non-critical failures:
+            </p>
+            <ul>
+              <li>If Redis is unreachable, fall back to database reads with rate protection.</li>
+              <li>If a product-recommendations microservice times out, return an empty recommendations section and still render the main product page.</li>
+              <li>If an email provider is down, keep the job queued in BullMQ with exponential backoff while returning <code>201 Created</code> for the user's order.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Timeouts, Retries, and Circuit Breakers</h3>
+            <ul>
+              <li><strong>Timeouts Everywhere:</strong> Every outbound HTTP request, database query, and Redis command must have an explicit deadline (<code>AbortSignal.timeout(3000)</code>). Hanging forever exhausts sockets and memory.</li>
+              <li><strong>Bounded Retries + Jitter (Idempotent Only):</strong> Retry only transient errors (network resets, <code>429</code>, <code>502</code>/<code>503</code>/<code>504</code>) on <em>idempotent</em> operations (<code>GET</code>, or <code>POST</code> carrying an <code>Idempotency-Key</code>), capped at 2–3 attempts with exponential backoff + jitter. Never blindly retry <code>400</code>/<code>401</code>/<code>403</code>/<code>404</code>!</li>
+              <li><strong>Circuit Breaker:</strong> Monitors consecutive upstream failures. When failures cross a threshold (e.g., 5 failures), the breaker trips <strong>OPEN</strong> and rejects further calls immediately in 0ms for a cooldown window (preventing threads/sockets from piling up against a dead dependency). After cooldown, it enters <strong>HALF-OPEN</strong>, letting 1 test probe through: success resets to <strong>CLOSED</strong>; failure re-opens immediately.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Database Backup and Recovery Planning (RPO &amp; RTO)</h3>
+            <p>Every production data tier needs explicit disaster-recovery targets:</p>
+            <ul>
+              <li><strong>RPO (Recovery Point Objective):</strong> Maximum acceptable data loss measured in time (e.g., RPO = 5 minutes requires continuous WAL/oplog archiving for Point-in-Time Recovery, not just nightly 24-hour dumps).</li>
+              <li><strong>RTO (Recovery Time Objective):</strong> Maximum acceptable downtime to restore service (e.g., RTO = 30 minutes requires automated restore scripts and pre-tested staging recovery drills—not figuring out CLI flags during an outage).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Caching, Queue &amp; Deployment Trade-Off Decisions</h3>
+            <p>
+              Avoid adding infrastructure complexity without clear justification: start with a <strong>modular monolith</strong> + primary DB + Redis (covering cache, sessions, rate limits, and background jobs via BullMQ). Introduce dedicated message brokers (RabbitMQ/Kafka), read replicas, or extracted worker/microservice deployments only when measured bottlenecks, isolation needs, or team boundaries justify the extra operational surface area.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Documentation, ADRs &amp; Operational Handover</h3>
+            <p>
+              Code tells future engineers <em>what</em> the backend does; documentation explains <em>why</em> and <em>how to operate it at 3 AM</em>:
+            </p>
+            <ul>
+              <li><strong>Architecture Decision Records (ADRs):</strong> Short 1-page markdown notes recording Context, Decision, Alternatives Considered, and Consequences/Trade-offs (e.g., "Why we chose PostgreSQL + JSONB over separate MongoDB").</li>
+              <li><strong>Operational Runbooks:</strong> Concrete step-by-step instructions for alerts (high 5xx rate, queue backlog growing, DB pool exhausted, rolling back an image SHA, restoring a snapshot).</li>
+              <li><strong>OpenAPI Specs &amp; Architecture Diagrams:</strong> Kept in-repo alongside code so onboarding engineers get an accurate system map immediately.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>How Circuit Breakers &amp; Graceful Degradation Protect Systems</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Normal Operation (<code>CLOSED</code>):</strong> Outbound calls carry strict timeouts and bounded retries on transient faults; failures stay below threshold.
+            </li>
+            <li>
+              <strong>Fault Surge Trips Breaker (<code>OPEN</code>):</strong> When an upstream API fails repeatedly, the circuit opens—failing fast in 0ms instead of making 500 concurrent Express requests wait 5 seconds each to time out.
+            </li>
+            <li>
+              <strong>Graceful Fallback:</strong> Catching <code>CIRCUIT_OPEN</code> returns cached stale data or omits non-critical UI widgets while keeping core API endpoints fast and healthy.
+            </li>
+            <li>
+              <strong>Self-Healing Probe (<code>HALF_OPEN</code>):</strong> Once the cooldown expires, a single probe tests whether the upstream service recovered, smoothly closing the circuit again.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Production Reference &amp; Circuit Breaker Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Full Production Backend Reference Architecture</h3>
+            <p class="diagram-caption">
+              Integrating CDN/Edge security, stateless Express replicas, shared Redis, pooled primary + replica databases with PITR backups, object storage, workers, and observability.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 250" class="arch-svg" role="img" aria-label="Full production backend architecture from CDN and Load Balancer to stateless Express APIs, Redis, Primary DB plus Replica and Backups, Object Storage, BullMQ Workers, and Observability">
+                <defs>
+                  <marker id="arrow-prod" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="16" y="84" width="114" height="72" rx="10" class="svg-box-muted"></rect>
+                <text x="73" y="114" text-anchor="middle" class="svg-title">Edge / CDN</text>
+                <text x="73" y="133" text-anchor="middle" class="svg-sub">TLS + LB + WAF</text>
+
+                <line x1="130" y1="120" x2="170" y2="120" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+
+                <rect x="174" y="66" width="166" height="108" rx="10" class="svg-box-accent"></rect>
+                <text x="257" y="96" text-anchor="middle" class="svg-title">Stateless API Fleet</text>
+                <text x="257" y="116" text-anchor="middle" class="svg-sub">Helmet, Rate Limit, Auth</text>
+                <text x="257" y="134" text-anchor="middle" class="svg-sub">Circuit Breakers + /ready</text>
+                <text x="257" y="152" text-anchor="middle" class="svg-sub">JSON Logs + Metrics</text>
+
+                <line x1="340" y1="90" x2="404" y2="45" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+                <line x1="340" y1="120" x2="404" y2="120" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+                <line x1="340" y1="150" x2="404" y2="195" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+
+                <rect x="408" y="16" width="166" height="58" rx="8" class="svg-box-blue"></rect>
+                <text x="491" y="41" text-anchor="middle" class="svg-title">Redis Cluster</text>
+                <text x="491" y="59" text-anchor="middle" class="svg-sub">Cache, Limits, Queues</text>
+
+                <rect x="408" y="90" width="166" height="60" rx="8" class="svg-box-blue"></rect>
+                <text x="491" y="115" text-anchor="middle" class="svg-title">Primary DB + Replica</text>
+                <text x="491" y="133" text-anchor="middle" class="svg-sub">Pooled + PITR Backups</text>
+
+                <rect x="408" y="166" width="166" height="58" rx="8" class="svg-box-muted"></rect>
+                <text x="491" y="191" text-anchor="middle" class="svg-title">Object Storage</text>
+                <text x="491" y="209" text-anchor="middle" class="svg-sub">Private Bucket + Presigned</text>
+
+                <line x1="574" y1="45" x2="612" y2="45" class="svg-arrow" marker-end="url(#arrow-prod)"></line>
+                <rect x="616" y="16" width="128" height="58" rx="8" class="svg-box-muted"></rect>
+                <text x="680" y="41" text-anchor="middle" class="svg-title">Workers</text>
+                <text x="680" y="59" text-anchor="middle" class="svg-sub">Idempotent + DLQ</text>
+
+                <rect x="616" y="96" width="128" height="128" rx="8" class="svg-box-muted"></rect>
+                <text x="680" y="136" text-anchor="middle" class="svg-title">Observability</text>
+                <text x="680" y="158" text-anchor="middle" class="svg-sub">Logs + Traces</text>
+                <text x="680" y="176" text-anchor="middle" class="svg-sub">SLO Dashboards</text>
+                <text x="680" y="194" text-anchor="middle" class="svg-sub">Error Tracking</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Circuit Breaker State Machine</h3>
+            <p class="diagram-caption">
+              Transitions between <code>CLOSED</code>, <code>OPEN</code>, and <code>HALF_OPEN</code> prevent slow failing dependencies from exhausting API thread/socket pools.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 155" class="arch-svg" role="img" aria-label="Circuit breaker states transitioning from CLOSED to OPEN on failure threshold, OPEN to HALF_OPEN after cooldown, and HALF_OPEN back to CLOSED or OPEN">
+                <defs>
+                  <marker id="arrow-cb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="24" y="46" width="174" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="111" y="74" text-anchor="middle" class="svg-title">CLOSED</text>
+                <text x="111" y="93" text-anchor="middle" class="svg-sub">Requests pass normally</text>
+
+                <line x1="198" y1="68" x2="288" y2="68" class="svg-arrow" marker-end="url(#arrow-cb)"></line>
+                <text x="243" y="58" text-anchor="middle" class="svg-sub">N failures</text>
+
+                <rect x="292" y="46" width="184" height="64" rx="10" class="svg-box-accent"></rect>
+                <text x="384" y="74" text-anchor="middle" class="svg-title">OPEN (Fail Fast)</text>
+                <text x="384" y="93" text-anchor="middle" class="svg-sub">Reject in 0ms + Fallback</text>
+
+                <line x1="476" y1="68" x2="566" y2="68" class="svg-arrow" marker-end="url(#arrow-cb)"></line>
+                <text x="521" y="58" text-anchor="middle" class="svg-sub">Cooldown</text>
+
+                <rect x="570" y="46" width="168" height="64" rx="10" class="svg-box-muted"></rect>
+                <text x="654" y="74" text-anchor="middle" class="svg-title">HALF_OPEN</text>
+                <text x="654" y="93" text-anchor="middle" class="svg-sub">Allow 1 test probe</text>
+
+                <path d="M 654 110 L 654 138 L 111 138 L 111 114" fill="none" class="svg-arrow" marker-end="url(#arrow-cb)"></path>
+                <text x="384" y="132" text-anchor="middle" class="svg-sub">Probe succeeds -&gt; CLOSED | Probe fails -&gt; OPEN</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Implementing Timeouts, Jittered Retries &amp; Circuit Breakers</h2>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/resilience/resilientClient.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export class CircuitBreaker {
+  constructor({ failureThreshold = 5, cooldownMs = 15000 } = {}) {
+    this.failureThreshold = failureThreshold;
+    this.cooldownMs = cooldownMs;
+    this.state = 'CLOSED';
+    this.failureCount = 0;
+    this.openedAt = 0;
+  }
+
+  canAttempt() {
+    if (this.state === 'CLOSED') {
+      return true;
+    }
+    if (this.state === 'OPEN' &amp;&amp; Date.now() - this.openedAt &gt;= this.cooldownMs) {
+      this.state = 'HALF_OPEN';
+      return true;
+    }
+    return this.state === 'HALF_OPEN';
+  }
+
+  recordSuccess() {
+    this.failureCount = 0;
+    this.state = 'CLOSED';
+  }
+
+  recordFailure() {
+    this.failureCount += 1;
+    if (this.state === 'HALF_OPEN' || this.failureCount &gt;= this.failureThreshold) {
+      this.state = 'OPEN';
+      this.openedAt = Date.now();
+    }
+  }
+
+  async execute(fn) {
+    if (!this.canAttempt()) {
+      const err = new Error('Upstream circuit breaker is OPEN');
+      err.code = 'CIRCUIT_OPEN';
+      throw err;
+    }
+    try {
+      const result = await fn();
+      this.recordSuccess();
+      return result;
+    } catch (err) {
+      this.recordFailure();
+      throw err;
+    }
+  }
+}
+
+export async function fetchWithTimeoutAndRetry(
+  url,
+  { method = 'GET', timeoutMs = 2500, maxAttempts = 3, headers = {} } = {}
+) {
+  const isIdempotent = method === 'GET' || method === 'HEAD' || Boolean(headers['Idempotency-Key']);
+  const attempts = isIdempotent ? maxAttempts : 1;
+
+  let lastError;
+  for (let attempt = 1; attempt &lt;= attempts; attempt += 1) {
+    try {
+      const res = await fetch(url, {
+        method,
+        headers,
+        signal: AbortSignal.timeout(timeoutMs)
+      });
+      if (res.status &gt;= 500 || res.status === 429) {
+        throw new Error(`Transient upstream status ${res.status}`);
+      }
+      return res;
+    } catch (err) {
+      lastError = err;
+      if (attempt &lt; attempts) {
+        const base = 150 * Math.pow(2, attempt - 1);
+        const jitter = Math.floor(Math.random() * 100);
+        await new Promise((r) =&gt; setTimeout(r, base + jitter));
+      }
+    }
+  }
+  throw lastError;
+}</code></pre>
+          </div>
+
+          <h3>Graceful Degradation Example in a Product Service</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/catalog/productView.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export async function getProductPageData({
+  productId,
+  productService,
+  recommendationClient,
+  recommendationBreaker,
+  logger
+}) {
+  const { product } = await productService.getProductById(productId);
+
+  let recommendations = [];
+  try {
+    recommendations = await recommendationBreaker.execute(() =&gt;
+      recommendationClient.fetchRelated(productId)
+    );
+  } catch (err) {
+    logger.warn({ productId, code: err.code || 'REC_FALLBACK' }, 'degraded_recommendations_skipped');
+  }
+
+  return { product, recommendations };
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Idempotency Gate on Retries:</strong> <code>fetchWithTimeoutAndRetry</code> refuses to retry non-idempotent <code>POST</code> calls unless an <code>Idempotency-Key</code> is supplied, preventing duplicate charges.</li>
+              <li><strong>Fail-Fast <code>OPEN</code> State:</strong> Immediately stops waiting on dead dependencies while allowing non-critical sections (<code>recommendations</code>) to degrade cleanly to <code>[]</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Resilience Patterns &amp; Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Pattern</th>
+                  <th>Problem Solved</th>
+                  <th>Key Trade-Off</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Strict Timeout</strong></td>
+                  <td>Prevents slow sockets from hanging forever</td>
+                  <td>Too aggressive a timeout falsely aborts legitimate slow responses</td>
+                </tr>
+                <tr>
+                  <td><strong>Retry + Exponential Jitter</strong></td>
+                  <td>Absorbs brief network blips seamlessly</td>
+                  <td>Amplifies load on struggling servers if used without jitter or on non-idempotent writes</td>
+                </tr>
+                <tr>
+                  <td><strong>Circuit Breaker</strong></td>
+                  <td>Stops cascading waits when an upstream service is down</td>
+                  <td>Requires sensible thresholds and fallback UX so transient blips don't trip needlessly</td>
+                </tr>
+                <tr>
+                  <td><strong>Queue Offloading</strong></td>
+                  <td>Decouples HTTP response from slow downstream work</td>
+                  <td>Introduces eventual consistency and worker monitoring responsibilities</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Verification</span>
+          <h2>Production Readiness Checklist</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Architecture &amp; Scaling:</strong> Stateless API replicas, bounded connection pools, graceful <code>SIGTERM</code> shutdown, and no local disk/RAM assumptions.</li>
+              <li><strong>Resilience:</strong> Explicit timeouts on every DB/Redis/HTTP call, jittered idempotent retries, circuit breakers/fallbacks for secondary dependencies, and DLQs on queues.</li>
+              <li><strong>Data &amp; Recovery:</strong> ESR indexes verified via explain plans, automated PITR backups, documented RPO/RTO, and tested restore drills.</li>
+              <li><strong>Security:</strong> Rate limiting, strict schema validation, AuthN + RBAC + IDOR ownership checks, Helmet/CORS, SSRF guards, secret managers, and dependency audits.</li>
+              <li><strong>Observability &amp; Ops:</strong> Redacted JSON logs with correlation IDs, <code>/health</code> + <code>/ready</code> probes, symptom alerts, CI/CD SHA releases, ADRs, and incident runbooks.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Capstone Design Practice</span>
+          <h2>Practical System Architecture Design Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Architect a Production-Ready B2B Invoicing &amp; Webhook Platform</h3>
+            <p>
+              Design a complete production backend architecture for a platform where businesses create invoices, generate PDFs, accept payment webhooks, and send real-time dashboard alerts to team members:
+            </p>
+            <ol>
+              <li>Outline the component topology (Edge LB, Express API, PostgreSQL/MongoDB + replicas, Redis, S3 Object Storage, Worker Pool, Socket.IO + Redis Adapter).</li>
+              <li>Justify 3 key technical trade-offs using short ADR bullets (e.g., PostgreSQL vs MongoDB for ledger integrity, presigned S3 URLs for PDFs, separate priority queues for webhooks vs bulk reports).</li>
+              <li>Define RPO/RTO targets, timeout/retry/circuit-breaker rules for outbound customer webhooks (including SSRF checks), and a zero-downtime deployment + rollback plan.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 17 Quiz: Production Backend Architecture (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="A circuit breaker trips OPEN after repeated upstream failures so subsequent calls fail fast in 0ms instead of hanging sockets and exhausting worker capacity.">
+              <p class="quiz-prompt">1. What primary failure mode does the Circuit Breaker pattern prevent?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> SQL syntax errors in migrations</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Cascading latency and resource exhaustion caused by piling requests onto an already failing upstream service</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> XSS in user-uploaded SVGs</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> Missing Docker .dockerignore files</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="In HALF_OPEN, the breaker lets a limited probe request through after cooldown to verify whether the upstream service has recovered.">
+              <p class="quiz-prompt">2. What happens when a Circuit Breaker transitions from <code>OPEN</code> to <code>HALF_OPEN</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> It deletes all Redis cache keys.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> It restarts the database server.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> It allows a test probe request through to determine whether to close normally or re-open.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> It permanently disables the endpoint.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Retrying non-idempotent POST requests without an Idempotency-Key risks charging customers or creating records multiple times.">
+              <p class="quiz-prompt">3. Why should automatic HTTP client retries NEVER run on unkeyed non-idempotent <code>POST /payments</code> requests?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> If the first request succeeded on the server before a response timeout, retrying without an Idempotency-Key causes duplicate charges.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Node.js fetch() forbids retrying POST requests.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Retrying POST deletes CORS headers.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> TLS forbids sending POST bodies twice.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Graceful degradation keeps core user workflows functional when optional secondary features (like recommendations) fail.">
+              <p class="quiz-prompt">4. Which behavior best demonstrates graceful degradation?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Returning HTTP 500 on the entire product page when the optional recommendations API times out</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Crashing the Node.js process on every 404</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Disabling authentication checks when Redis is busy</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Logging a warning, skipping the optional recommendations widget, and still serving the primary product details</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="RPO (Recovery Point Objective) defines the maximum tolerable age of lost data (time window); RTO (Recovery Time Objective) defines max acceptable restore downtime.">
+              <p class="quiz-prompt">5. What is the difference between RPO and RTO in disaster recovery planning?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> RPO measures CPU speed; RTO measures RAM size.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> RPO is maximum acceptable data loss window; RTO is maximum acceptable downtime to restore service.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> RPO applies to Docker; RTO applies only to CSS.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> They are synonyms for rate-limit headers.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Point-in-Time Recovery archives continuous transaction logs (WAL/oplog) alongside snapshots so backups can restore to minutes before an incident rather than losing up to 24 hours.">
+              <p class="quiz-prompt">6. If a business sets an RPO of 5 minutes, why are once-a-day midnight database snapshots insufficient?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Snapshots take 5 days to upload.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Nightly backups erase indexes.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> An outage at 23:55 would lose nearly 24 hours of writes unless continuous Point-in-Time Recovery (WAL/oplog archiving) is enabled.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Snapshots cannot run on PostgreSQL or MongoDB.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="ADRs record context, alternatives considered, and consequences/trade-offs behind major architectural choices for future maintainers.">
+              <p class="quiz-prompt">7. What is the primary purpose of an Architecture Decision Record (ADR)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> To document the context, options evaluated, and trade-offs behind a key technical decision for future engineers.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> To replace OpenAPI endpoint schemas completely.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> To store encrypted production passwords inside Git.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> To auto-generate Dockerfile instructions.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Retrying a permanent 400 Bad Request or 403 Forbidden error wastes resources and delays reporting the real bug.">
+              <p class="quiz-prompt">8. Which HTTP status class from an upstream API should NOT trigger automatic retries?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> 503 Service Unavailable</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> 504 Gateway Timeout</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> 429 Too Many Requests (after Retry-After)</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> 400 Bad Request / 401 / 403 client/validation failures</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Premature microservices add network latency, distributed debugging, and deployment overhead before scale or team size requires them.">
+              <p class="quiz-prompt">9. When starting a new production SaaS backend with a 4-developer team, why is a well-structured modular monolith + Redis usually favored over 12 separate microservices?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Microservices cannot use Docker or Redis.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> A modular monolith delivers clean domain separation and horizontal stateless scaling without distributed network latency, partial failures, and multi-repo CI overhead.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Node.js does not support HTTP calls between services.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Monoliths never require backups.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="A tested restore drill proves backups are readable, encrypted keys work, and actual RTO targets can be met under pressure.">
+              <p class="quiz-prompt">10. Why is an untested database backup strategy considered incomplete for production readiness?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Untested backups delete themselves after 1 hour.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Testing restores skips authentication.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Corrupt archives, missing decryption keys, or slow restore speeds go unnoticed until an actual emergency unless restore drills run regularly.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> MongoDB disables replication unless backups are restored daily.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why is it dangerous to enable automatic retries WITHOUT timeouts on outbound HTTP requests?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Without strict timeouts, slow connections hold sockets and memory open for minutes; multiplying across retries keeps resources pinned even longer and worsens overload when the upstream service starts recovering.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Give an example where graceful degradation is appropriate and an example where failing closed is mandatory.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Graceful degradation:</strong> Omitting personalized "recommended items" or falling back from Redis cache to DB read. <strong>Fail closed (mandatory):</strong> Never bypass JWT signature checks, permission guards, or payment fraud verification if an auth store or validator fails—reject securely with <code>503</code>/<code>401</code>.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. What should a good incident runbook contain for an operational handover?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Alert trigger meaning, dashboard/log query links, immediate triage steps, safe mitigation actions (e.g., how to scale workers, pause a broken webhook queue, or roll back an image SHA), escalation contacts, and verification steps.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why do production systems separate high-priority queues from bulk batch queues?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Separating latency-sensitive queues (password reset emails, payment webhooks) from massive bulk queues (50,000 monthly reports) isolates blast radius so bulk spikes never delay critical user operations.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why does every architecture decision involve trade-offs rather than a "one-size-fits-all best tool"?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Every choice trades one dimension for another: caching trades freshness for speed, queues trade immediate feedback for resilience, microservices trade operational simplicity for team/scale isolation, and strict consistency trades availability under partitions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix a Dangerous Retry Storm</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A service wraps <code>POST /charge</code> in a 5-attempt immediate retry loop with zero timeout and catches all HTTP errors (including <code>400</code>). Identify 3 production flaws and fix them.</p>
+                <p><strong>Reference Fixes:</strong> (1) Attach a bounded timeout per attempt (<code>AbortSignal.timeout(3000)</code>); (2) Require an <code>Idempotency-Key</code> header before retrying any mutating <code>POST</code> charge; (3) Retry only transient network/5xx faults (never <code>4xx</code> validation/decline errors) using exponential backoff + jitter.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Add Timeout Fallback Wrapper for Non-Critical Calls</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a small helper <code>withTimeoutFallback(promise, ms, fallbackFn)</code> that returns <code>fallbackFn(err)</code> gracefully if a non-critical dependency exceeds <code>ms</code> milliseconds.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function withTimeoutFallback(promise, ms, fallbackFn) {
+  let timer;
+  const timeoutPromise = new Promise((_, reject) =&gt; {
+    timer = setTimeout(() =&gt; reject(new Error('DEPENDENCY_TIMEOUT')), ms);
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } catch (err) {
+    return fallbackFn(err);
+  } finally {
+    clearTimeout(timer);
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Writing a Production ADR for Notification Delivery</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a concise ADR choosing how an order platform delivers real-time dashboard updates + email receipts after checkout.</p>
+                <p><strong>Reference ADR:</strong> <em>Context:</em> Checkout must stay under 200ms and never fail if SMTP slows down. <em>Decision:</em> Commit Order + Outbox event atomically in DB; publish <code>order.placed</code> to queue/broker; Worker sends idempotent email with exponential backoff + DLQ, and emits <code>order:updated</code> via Socket.IO Redis Emitter to online users while persisting unread notification in DB. <em>Trade-off:</em> Adds Redis + Worker operational management and brief eventual consistency (~100ms), accepted for high checkout reliability.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 17 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Systems synthesis:</strong> Combine stateless modular services, Redis, async queues, indexed pooled DBs, security hardening, and CI/CD into one coherent design.</li>
+              <li><strong>Resilience patterns:</strong> Bound every external call with timeouts, idempotent jittered retries, circuit breakers, and graceful fallbacks for non-critical paths.</li>
+              <li><strong>Disaster recovery:</strong> Define RPO/RTO targets, enable automated PITR backups, and verify restores regularly.</li>
+              <li><strong>Operational excellence:</strong> Record ADRs, maintain incident runbooks, and validate every release against a concrete production readiness checklist.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 17 Production Architecture Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 17 Production Backend Architecture visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 17 local visual reference (<code>Day 17/image.webp</code>). Review end-to-end production topology, circuit breakers, and operational readiness.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 16/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 16: CI/CD and Deployment</span>
+          </a>
+          <a href="../Day 18/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 18: Complete Revision &amp; Final Assessment &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 16/index.html">Day 16: CI/CD</a></li>
+          <li><a href="../Day 17/index.html">Day 17: Prod Architecture</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

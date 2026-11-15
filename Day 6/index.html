@@ -1,0 +1,1043 @@
+Here are all three complete files for Day 6: Message Queues and Event-Driven
+Architecture, ready to copy and save into your Phase 6/Day 6/ folder.
+
+1. Phase 6/Day 6/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 6: Message Queues and Event-Driven Architecture. Learn producers, consumers, message brokers, pub/sub, delivery guarantees, dead-letter queues, duplicate handling, and eventual consistency.">
+  <title>Day 6: Message Queues and Event-Driven Architecture | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="6">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 6: Message Queues &amp; Events</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html" selected>Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 5/index.html" class="nav-step-btn" title="Go to Day 5">Prev</a>
+            <a href="../Day 7/index.html" class="nav-step-btn" title="Go to Day 7">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 6 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 06</span>
+          <span class="category-pill">Messaging &amp; Distributed Events</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="6" aria-pressed="false">Mark Day 6 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Message Queues and Event-Driven Architecture</h1>
+        <p class="lesson-intro">
+          When an order is placed, five downstream domains may care: email confirmation, inventory reservation, loyalty points, billing ledger, and analytics. Calling all five over direct synchronous HTTP creates brittle coupling and cascading outages. Today you will learn how message brokers, pub/sub routing, delivery guarantees, dead-letter queues, and eventual consistency decouple complex backend workflows.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Day 5</span>
+            <p>Day 5 focused on dispatching single background jobs to workers. Day 6 expands to event-driven systems where producers broadcast domain facts to multiple independent consumers.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Producers announce what happened (events) without knowing which consumers react; brokers buffer, route, and isolate failures safely.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Design and implement a RabbitMQ producer-consumer event workflow featuring topic routing, manual acknowledgments, idempotency, and a dead-letter queue.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Message Lifecycle</a>
+            <a href="#diagrams">Broker &amp; DLQ Diagrams</a>
+            <a href="#implementation">Producer-Consumer Workflow</a>
+            <a href="#real-world">Brokers &amp; Trade-offs</a>
+            <a href="#mistakes-security">Mistakes &amp; Reliability</a>
+            <a href="#practical-task">Practical Workflow Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Event-driven architecture (EDA) replaces tight synchronous request chains with asynchronous message exchange through an intermediary broker. Mastering EDA helps you design backends where services fail independently without dragging down core user actions.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Model Events &amp; Actors</h3>
+              <p>Distinguish commands from domain events and structure clear producer-consumer contracts.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Apply Queues &amp; Pub/Sub</h3>
+              <p>Use competing-consumer queues for load sharing and pub/sub topics for multi-service fan-out.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Reason About Delivery</h3>
+              <p>Understand at-most-once, at-least-once, duplicate messages, and dead-letter queues.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design for Eventual Consistency</h3>
+              <p>Handle asynchronous propagation delays and evaluate when EDA helps versus complicates a system.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Event-Driven &amp; Messaging Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Events and Event-Driven Systems</h3>
+            <p>
+              An <strong>event</strong> is an immutable record stating that something notable occurred in the past—named in past tense, such as <code>OrderPlaced</code>, <code>PaymentCaptured</code>, or <code>UserRegistered</code>. Unlike a <strong>command</strong> (<code>SendReceiptEmail</code>), where a caller directs one specific target to perform an action, an event announces a fact without dictating who reacts or how.
+            </p>
+            <p>
+              Every event message should carry structured metadata: a unique <code>eventId</code> (UUID), <code>eventType</code>, schema <code>version</code>, <code>occurredAt</code> ISO timestamp, <code>correlationId</code> (for tracing across services), and the domain <code>payload</code>.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Producers and Consumers</h3>
+            <p>
+              A <strong>producer</strong> (publisher) emits events to a message broker and moves on without waiting for downstream consumers to finish. A <strong>consumer</strong> (subscriber) connects to the broker, reads messages from a queue or stream at its own pace, processes them, and sends an acknowledgment (<code>ACK</code>).
+            </p>
+            <p>
+              This decouples systems in three dimensions: <em>time</em> (the consumer can be offline temporarily and process the backlog when it recovers), <em>location</em> (producers do not know consumer hostnames/URLs), and <em>concurrency</em> (consumers pull only as many messages as their <code>prefetch</code> limit allows).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Message Brokers and Queues</h3>
+            <p>
+              A <strong>message broker</strong> (such as RabbitMQ, Apache Kafka, Redis Streams, or AWS SQS/SNS) sits reliably between producers and consumers. In queue-based brokers like RabbitMQ:
+            </p>
+            <ul>
+              <li>Producers publish messages to an <strong>Exchange</strong> (never directly to consumer memory).</li>
+              <li>The Exchange routes copies of the message to one or more <strong>Queues</strong> based on bindings and routing keys (e.g., <code>order.placed</code>).</li>
+              <li>Consumers read from a queue and explicitly <code>ack</code> once durable processing succeeds, allowing the broker to remove the message safely.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Point-to-Point Queues vs. Pub/Sub Concepts</h3>
+            <p>
+              Two fundamental messaging topologies address different needs:
+            </p>
+            <ul>
+              <li><strong>Point-to-Point (Competing Consumers):</strong> Multiple workers listen to <em>one shared queue</em>. Each message is delivered to exactly one available worker—ideal for horizontally scaling work distribution.</li>
+              <li><strong>Publish / Subscribe (Pub/Sub Fan-Out):</strong> One event is broadcast to <em>multiple separate queues</em> (or topic subscriptions). Each interested service (Email Service, Analytics Service, Loyalty Service) has its own queue and receives its own independent copy of the <code>OrderPlaced</code> event.</li>
+            </ul>
+            <p>
+              Combining both gives the best of both worlds: a pub/sub exchange fans out <code>order.placed</code> to an <code>analytics_queue</code> and a <code>loyalty_queue</code>, while 3 competing consumer replicas scale out reading from <code>analytics_queue</code>.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Delivery Guarantees (Conceptual Level)</h3>
+            <ul>
+              <li><strong>At-Most-Once:</strong> Broker drops or auto-acks the message immediately upon sending. Fastest, zero duplicates, but messages are lost if the consumer crashes mid-work. Useful only for disposable telemetry.</li>
+              <li><strong>At-Least-Once:</strong> Broker retains the message until the consumer explicitly sends <code>ACK</code> after durable processing. Messages are never lost, but network drops or crashes after DB commit and before <code>ACK</code> mean the broker will redeliver the same message.</li>
+              <li><strong>Why "Exactly-Once" Is Misunderstood:</strong> Across unreliable networks, physical delivery cannot guarantee a packet executes exactly once without coordination. Production systems achieve <em>effectively-once processing</em> by pairing <strong>at-least-once delivery</strong> with <strong>idempotent consumers</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Retries, Dead-Letter Queues (DLQ), and Duplicate Messages</h3>
+            <p>
+              If a consumer throws an error and blindly executes <code>nack(msg, requeue: true)</code> immediately, a malformed message ("poison pill") loops forever at 10,000 retries per second, burning CPU and blocking healthy messages.
+            </p>
+            <p>
+              Instead, track attempt counts (or route failed messages through delayed retry queues) and move messages that exceed max retries—or fail schema validation permanently—into a <strong>Dead-Letter Queue (DLQ)</strong>. Engineers can inspect DLQ messages, fix the bug or bad payload, and replay them safely without losing data.
+            </p>
+            <p>
+              To handle <strong>duplicate messages</strong> cleanly, store processed <code>eventId</code> values in a database table (unique constraint on <code>event_id</code>) or Redis set with TTL so a redelivered event is safely ignored after confirming it was already applied.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Eventual Consistency</h3>
+            <p>
+              In an event-driven flow, when <code>OrderService</code> saves an order and emits <code>OrderPlaced</code>, the user's loyalty points balance might update 150ms later when <code>LoyaltyConsumer</code> finishes processing. During that brief window, two parts of the system reflect slightly different moments in time—a property called <strong>eventual consistency</strong>.
+            </p>
+            <p>
+              Applications handle eventual consistency by returning clear status indicators (e.g., "Order confirmed — reward points update shortly"), designing UIs optimistically or via notifications (Day 7 WebSockets), and avoiding reading downstream derived state synchronously milliseconds after emitting an event.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. When Event-Driven Architecture Is Appropriate</h3>
+            <p>
+              EDA shines when one action triggers multiple independent downstream side effects, traffic bursts require buffering, or independent teams/services own distinct domains. It is <strong>inappropriate</strong> when a caller needs an immediate synchronous validation answer (like checking login credentials or verifying card authorization before proceeding) or when a small monolith team does not need distributed operational complexity.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>End-to-End Event Flow &amp; Failure Handling</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Commit &amp; Publish:</strong> The producer commits the primary domain state (e.g., new order) and publishes an immutable event envelope (<code>eventId</code>, <code>eventType</code>, <code>payload</code>) to a durable topic exchange.
+            </li>
+            <li>
+              <strong>Broker Routing:</strong> The broker matches the routing key (<code>order.placed</code>) against bound queues and persists the message to each matching queue's storage.
+            </li>
+            <li>
+              <strong>Prefetch &amp; Deduplication:</strong> A consumer fetches bounded batches (e.g., <code>prefetch(10)</code>) and checks whether <code>eventId</code> was already processed.
+            </li>
+            <li>
+              <strong>Process &amp; Ack (or Dead-Letter):</strong> On success, the consumer commits its local update and calls <code>channel.ack(msg)</code>. On permanent error or exhausted retries, it routes the message to the DLQ via <code>nack(msg, false, false)</code> so the main queue stays unblocked.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Messaging Topology &amp; DLQ Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Pub/Sub Fan-Out Combined with Competing Consumers</h3>
+            <p class="diagram-caption">
+              One <code>order.placed</code> event fans out to multiple domain queues via an exchange, while each queue can scale horizontally with competing consumer workers.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 230" class="arch-svg" role="img" aria-label="Order Service publishing order.placed to a Topic Exchange which fans out copies to Email Queue, Analytics Queue, and Loyalty Queue with competing workers">
+                <defs>
+                  <marker id="arrow-mq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="84" width="128" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="82" y="111" text-anchor="middle" class="svg-title">Order Producer</text>
+                <text x="82" y="129" text-anchor="middle" class="svg-sub">Emit order.placed</text>
+
+                <line x1="146" y1="116" x2="196" y2="116" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+
+                <rect x="200" y="76" width="138" height="80" rx="10" class="svg-box-accent"></rect>
+                <text x="269" y="109" text-anchor="middle" class="svg-title">Topic Exchange</text>
+                <text x="269" y="128" text-anchor="middle" class="svg-sub">domain.events</text>
+
+                <line x1="338" y1="98" x2="404" y2="45" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+                <line x1="338" y1="116" x2="404" y2="116" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+                <line x1="338" y1="134" x2="404" y2="187" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+
+                <rect x="408" y="18" width="146" height="52" rx="8" class="svg-box-muted"></rect>
+                <text x="481" y="40" text-anchor="middle" class="svg-title">Email Queue</text>
+                <text x="481" y="57" text-anchor="middle" class="svg-sub">order.*</text>
+
+                <rect x="408" y="90" width="146" height="52" rx="8" class="svg-box-muted"></rect>
+                <text x="481" y="112" text-anchor="middle" class="svg-title">Loyalty Queue</text>
+                <text x="481" y="129" text-anchor="middle" class="svg-sub">order.placed</text>
+
+                <rect x="408" y="162" width="146" height="52" rx="8" class="svg-box-muted"></rect>
+                <text x="481" y="184" text-anchor="middle" class="svg-title">Analytics Queue</text>
+                <text x="481" y="201" text-anchor="middle" class="svg-sub">order.#</text>
+
+                <line x1="554" y1="44" x2="594" y2="44" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+                <line x1="554" y1="116" x2="594" y2="116" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+                <line x1="554" y1="188" x2="594" y2="188" class="svg-arrow" marker-end="url(#arrow-mq)"></line>
+
+                <rect x="598" y="18" width="144" height="52" rx="8" class="svg-box-blue"></rect>
+                <text x="670" y="49" text-anchor="middle" class="svg-sub">Email Workers (x2)</text>
+
+                <rect x="598" y="90" width="144" height="52" rx="8" class="svg-box-blue"></rect>
+                <text x="670" y="121" text-anchor="middle" class="svg-sub">Loyalty Consumer</text>
+
+                <rect x="598" y="162" width="144" height="52" rx="8" class="svg-box-blue"></rect>
+                <text x="670" y="193" text-anchor="middle" class="svg-sub">Analytics Sink</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Consumer Idempotency &amp; Dead-Letter Queue Flow</h3>
+            <p class="diagram-caption">
+              Consumers check for duplicate <code>eventId</code>s before applying changes, acknowledge cleanly on success, and isolate unrecoverable messages into a DLQ.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 175" class="arch-svg" role="img" aria-label="Consumer reading message, checking idempotency store, processing, sending ACK on success or routing to Dead-Letter Exchange and Queue after retry limit">
+                <defs>
+                  <marker id="arrow-dlq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="54" width="128" height="56" rx="10" class="svg-box-muted"></rect>
+                <text x="82" y="79" text-anchor="middle" class="svg-title">Main Queue</text>
+                <text x="82" y="97" text-anchor="middle" class="svg-sub">prefetch(10)</text>
+
+                <line x1="146" y1="82" x2="188" y2="82" class="svg-arrow" marker-end="url(#arrow-dlq)"></line>
+
+                <rect x="192" y="44" width="170" height="76" rx="10" class="svg-box-accent"></rect>
+                <text x="277" y="72" text-anchor="middle" class="svg-title">Idempotency Check</text>
+                <text x="277" y="91" text-anchor="middle" class="svg-sub">Seen eventId?</text>
+                <text x="277" y="107" text-anchor="middle" class="svg-sub">Yes -&gt; Skip &amp; ACK</text>
+
+                <line x1="362" y1="82" x2="404" y2="82" class="svg-arrow" marker-end="url(#arrow-dlq)"></line>
+
+                <rect x="408" y="50" width="136" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="476" y="79" text-anchor="middle" class="svg-title">Process Event</text>
+                <text x="476" y="97" text-anchor="middle" class="svg-sub">Commit DB State</text>
+
+                <line x1="544" y1="68" x2="594" y2="38" class="svg-arrow" marker-end="url(#arrow-dlq)"></line>
+                <rect x="598" y="14" width="144" height="48" rx="8" class="svg-box-blue"></rect>
+                <text x="670" y="43" text-anchor="middle" class="svg-title">channel.ack()</text>
+
+                <line x1="544" y1="96" x2="594" y2="128" class="svg-arrow" marker-end="url(#arrow-dlq)"></line>
+                <rect x="598" y="104" width="144" height="54" rx="8" class="svg-box-muted"></rect>
+                <text x="670" y="128" text-anchor="middle" class="svg-title">Dead-Letter Queue</text>
+                <text x="670" y="146" text-anchor="middle" class="svg-sub">nack(requeue=false)</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Implementing a RabbitMQ Producer-Consumer Event Workflow</h2>
+          <p>
+            Below is a practical Node.js implementation using <strong>RabbitMQ</strong> (<code>amqplib</code>). It sets up a durable topic exchange, binds a loyalty queue with dead-letter routing, publishes structured events, and implements an idempotent consumer with bounded prefetch and safe retry/DLQ handling.
+          </p>
+
+          <h3>Step 1: Broker Topology &amp; Dead-Letter Queue Setup</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/messaging/brokerSetup.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import amqp from 'amqplib';
+
+export const EVENTS_EXCHANGE = 'domain.events';
+export const DLX_EXCHANGE = 'domain.dlx';
+export const LOYALTY_QUEUE = 'loyalty.order_placed';
+export const LOYALTY_DLQ = 'loyalty.order_placed.dlq';
+
+export async function connectBroker() {
+  const connection = await amqp.connect(process.env.RABBITMQ_URL);
+  const channel = await connection.createChannel();
+
+  await channel.assertExchange(EVENTS_EXCHANGE, 'topic', { durable: true });
+  await channel.assertExchange(DLX_EXCHANGE, 'direct', { durable: true });
+
+  await channel.assertQueue(LOYALTY_DLQ, { durable: true });
+  await channel.bindQueue(LOYALTY_DLQ, DLX_EXCHANGE, LOYALTY_QUEUE);
+
+  await channel.assertQueue(LOYALTY_QUEUE, {
+    durable: true,
+    arguments: {
+      'x-dead-letter-exchange': DLX_EXCHANGE,
+      'x-dead-letter-routing-key': LOYALTY_QUEUE
+    }
+  });
+  await channel.bindQueue(LOYALTY_QUEUE, EVENTS_EXCHANGE, 'order.placed');
+
+  return { connection, channel };
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Event Producer (Confirm Channel &amp; Structured Envelope)</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/messaging/eventPublisher.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import crypto from 'node:crypto';
+import { EVENTS_EXCHANGE } from './brokerSetup.js';
+
+export class EventPublisher {
+  constructor(confirmChannel) {
+    this.channel = confirmChannel;
+  }
+
+  async publish(routingKey, payload, { correlationId } = {}) {
+    const event = {
+      eventId: crypto.randomUUID(),
+      eventType: routingKey,
+      version: 1,
+      occurredAt: new Date().toISOString(),
+      correlationId: correlationId || crypto.randomUUID(),
+      payload
+    };
+
+    const body = Buffer.from(JSON.stringify(event));
+
+    return new Promise((resolve, reject) =&gt; {
+      this.channel.publish(
+        EVENTS_EXCHANGE,
+        routingKey,
+        body,
+        {
+          persistent: true,
+          contentType: 'application/json',
+          messageId: event.eventId,
+          headers: { 'x-retry-count': 0 }
+        },
+        (err) =&gt; {
+          if (err) {
+            return reject(err);
+          }
+          resolve(event);
+        }
+      );
+    });
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Idempotent Consumer with Retry Cap &amp; DLQ Routing</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/consumers/loyaltyConsumer.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { EVENTS_EXCHANGE, LOYALTY_QUEUE } from '../messaging/brokerSetup.js';
+
+const MAX_RETRIES = 3;
+
+export async function startLoyaltyConsumer({ channel, loyaltyRepository, processedEventStore }) {
+  await channel.prefetch(10);
+
+  await channel.consume(LOYALTY_QUEUE, async (msg) =&gt; {
+    if (!msg) {
+      return;
+    }
+
+    let event;
+    try {
+      event = JSON.parse(msg.content.toString('utf8'));
+    } catch (parseErr) {
+      channel.nack(msg, false, false);
+      return;
+    }
+
+    try {
+      const alreadyProcessed = await processedEventStore.has(event.eventId);
+      if (alreadyProcessed) {
+        channel.ack(msg);
+        return;
+      }
+
+      const { userId, orderId, totalCents } = event.payload;
+      const points = Math.floor(totalCents / 100);
+      await loyaltyRepository.awardPoints({ userId, orderId, points, eventId: event.eventId });
+      await processedEventStore.markProcessed(event.eventId);
+
+      channel.ack(msg);
+    } catch (err) {
+      const retries = Number(msg.properties.headers?.['x-retry-count'] || 0);
+      if (retries &lt; MAX_RETRIES) {
+        const nextHeaders = {
+          ...(msg.properties.headers || {}),
+          'x-retry-count': retries + 1
+        };
+        channel.publish(EVENTS_EXCHANGE, msg.fields.routingKey, msg.content, {
+          persistent: true,
+          contentType: 'application/json',
+          messageId: msg.properties.messageId,
+          headers: nextHeaders
+        });
+        channel.ack(msg);
+      } else {
+        channel.nack(msg, false, false);
+      }
+    }
+  });
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>durable: true</code> &amp; <code>persistent: true</code>:</strong> Ensures exchanges, queues, and published messages survive a broker restart on disk rather than vanishing from RAM.</li>
+              <li><strong>Confirm Channel:</strong> Using <code>connection.createConfirmChannel()</code> for publishing lets the producer await confirmation that RabbitMQ safely accepted the message.</li>
+              <li><strong><code>channel.prefetch(10)</code>:</strong> Prevents RabbitMQ from dumping 50,000 unacknowledged messages into one consumer's memory at once, preserving natural backpressure across competing consumers.</li>
+              <li><strong><code>channel.nack(msg, false, false)</code>:</strong> Rejects malformed JSON or retry-exhausted messages without requeuing, automatically routing them via <code>x-dead-letter-exchange</code> into <code>loyalty.order_placed.dlq</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Broker Options &amp; Architectural Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Broker / Technology</th>
+                  <th>Core Model</th>
+                  <th>Strengths</th>
+                  <th>Trade-Offs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>RabbitMQ (AMQP)</strong></td>
+                  <td>Smart broker, flexible exchanges &amp; queues</td>
+                  <td>Rich routing patterns, per-message ACKs, native DLX/DLQ, easy Node integration</td>
+                  <td>Messages deleted once ACKed; not built for replaying months of historical streams</td>
+                </tr>
+                <tr>
+                  <td><strong>Apache Kafka</strong></td>
+                  <td>Distributed append-only partitioned log</td>
+                  <td>Extreme throughput, durable retention, multiple consumer groups replaying history</td>
+                  <td>Heavier operational complexity; overkill for moderate backend workloads</td>
+                </tr>
+                <tr>
+                  <td><strong>Redis Streams</strong></td>
+                  <td>Lightweight in-memory append log + consumer groups</td>
+                  <td>Fast setup if already operating Redis; supports consumer group ACKs and replay</td>
+                  <td>Bound by Redis RAM capacity compared to disk-backed brokers</td>
+                </tr>
+                <tr>
+                  <td><strong>AWS SQS + SNS</strong></td>
+                  <td>Managed cloud pub/sub + queue</td>
+                  <td>Zero broker server maintenance, native DLQs, scales automatically</td>
+                  <td>Cloud vendor coupling; slightly higher per-message latency than local brokers</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>When Event-Driven Architecture Shines</h3>
+              <ul>
+                <li>An action triggers multiple independent reactions (emails, search indexing, billing sync, analytics).</li>
+                <li>Services need resilience against downstream outages or bursty spikes.</li>
+                <li>Different modules scale at wildly different rates.</li>
+              </ul>
+            </div>
+            <div class="decision-card">
+              <h3>When Synchronous Request-Response Is Better</h3>
+              <ul>
+                <li>Client immediately requires the exact result (login verification, payment authorization, stock check).</li>
+                <li>Simple CRUD flows where adding a broker introduces eventual consistency and debugging overhead without real benefit.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes &amp; Reliability Pitfalls</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Dual-Write Inconsistency (DB Commits, Broker Publish Fails)</h3>
+              <p><strong>Reliability risk:</strong> Saving an order in PostgreSQL/MongoDB and then calling <code>publisher.publish()</code> as two separate network steps means a broker blip right after DB commit loses the event permanently.</p>
+              <p><strong>Fix:</strong> For critical events, use the <strong>Transactional Outbox Pattern</strong>: write the event row inside the same database transaction as the domain record, and let a relay worker publish outbox rows reliably.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Infinite Requeue Loops on Poison Pills</h3>
+              <p><strong>Availability risk:</strong> Calling <code>nack(msg, false, true)</code> on corrupt JSON or business-rule errors causes immediate redelivery in an endless hot loop.</p>
+              <p><strong>Fix:</strong> Bound retries explicitly and send unrecoverable or exhausted messages to a monitored Dead-Letter Queue.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Forgetting <code>prefetch</code> Limits</h3>
+              <p><strong>Memory risk:</strong> Without <code>channel.prefetch(N)</code>, RabbitMQ pushes every queued message immediately into the first consumer, risking Out-Of-Memory crashes and starving newly scaled consumer replicas.</p>
+              <p><strong>Fix:</strong> Always set an explicit <code>prefetch</code> matching safe consumer concurrency.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Unencrypted Brokers or Unvalidated Event Payloads</h3>
+              <p><strong>Security risk:</strong> Connecting over plaintext <code>amqp://</code> across networks or trusting raw unvalidated message JSON leaves systems open to tampering or unexpected crashes.</p>
+              <p><strong>Fix:</strong> Use TLS (<code>amqps://</code>), credentialed least-privilege broker users via env vars, and validate incoming event schemas inside consumers.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Producer-Consumer Design &amp; Build Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Build an Event-Driven Signup Pipeline</h3>
+            <p>
+              Design and implement a producer-consumer workflow for a <code>user.registered</code> event:
+            </p>
+            <ol>
+              <li>Create a broker topology module asserting a durable <code>topic</code> exchange, two separate consumer queues (<code>email.welcome</code> and <code>analytics.signups</code>), and a Dead-Letter Queue for failed welcome emails.</li>
+              <li>Modify a simulated registration service to emit a versioned <code>user.registered</code> event containing <code>eventId</code>, <code>userId</code>, and timestamp (never include the user's raw password!).</li>
+              <li>Build both consumers with <code>prefetch(5)</code>, idempotency checking by <code>eventId</code>, and manual <code>ack</code>/<code>nack</code> routing to DLQ after 3 failed attempts.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 6 Quiz: Message Queues &amp; Events (10 Questions)</h2>
+          <p>Select one option per question, then click <strong>Check Quiz Answers</strong> for feedback and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="An event represents an immutable past-tense domain fact (OrderPlaced), whereas a command instructs a specific target to perform an action.">
+              <p class="quiz-prompt">1. How does a domain event differ conceptually from a command?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Events can only be sent via HTTP GET.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> An event announces an immutable fact that already happened, without dictating which consumers react.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Commands do not carry payloads.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> Events require synchronous responses from every subscriber.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Pub/Sub fan-out delivers a copy of the same event to multiple independent queues so separate services (Email, Loyalty, Analytics) each process it.">
+              <p class="quiz-prompt">2. When one <code>order.placed</code> event must be processed independently by Email, Loyalty, and Analytics services, which pattern should you use?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Single shared queue with no exchange</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Synchronous recursive HTTP polling</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Publish/Subscribe fan-out routing to separate queues per consumer group</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Browser localStorage</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="At-least-once delivery keeps messages until ACKed, guaranteeing no silent loss, while idempotent consumers safely ignore redelivered duplicates.">
+              <p class="quiz-prompt">3. How do production backends achieve effectively-once state updates over networks that provide at-least-once delivery?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Pair at-least-once delivery with idempotent consumers that deduplicate by unique eventId.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Disable consumer acknowledgments completely.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Use at-most-once delivery for payment events.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Run all consumers inside the browser.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="A Dead-Letter Queue isolates poison-pill or retry-exhausted messages so healthy queue traffic continues flowing and engineers can inspect or replay failures.">
+              <p class="quiz-prompt">4. What is the purpose of a Dead-Letter Queue (DLQ)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> To compress large HTTP JSON responses.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> To store user passwords in plaintext.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> To load balance TLS certificates.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> To isolate unprocessable or retry-exhausted messages for inspection without blocking the main queue.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Requeuing an unparseable message immediately causes an infinite tight failure loop that wastes CPU and clogs the queue.">
+              <p class="quiz-prompt">5. What happens if a consumer catches a JSON syntax error and immediately calls <code>nack(msg, false, true)</code> (requeue: true)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> RabbitMQ repairs the JSON automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> The poison message is redelivered endlessly in a hot failure loop, starving healthy messages.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> The producer receives an HTTP 400 error.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> The message moves to the Dead-Letter Queue automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Prefetch limits the number of unacknowledged messages a consumer holds in flight, balancing load across competing workers and preventing OOM crashes.">
+              <p class="quiz-prompt">6. Why should consumers configure <code>channel.prefetch(10)</code> before calling <code>consume()</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> It deletes messages older than 10 seconds.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> It encrypts the message body 10 times.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> It caps unacknowledged messages per consumer to maintain backpressure and fair work distribution across replicas.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> It limits producers to 10 events per day.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Eventual consistency means downstream services reflect state changes asynchronously after a short propagation delay rather than instantaneously within one transaction.">
+              <p class="quiz-prompt">7. What does "eventual consistency" mean in an event-driven backend?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Downstream consumers update derived state asynchronously, so different modules converge to the same truth after a brief delay.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Databases randomly discard 10% of writes.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> All services must share a single synchronous lock.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Responses are cached forever with no TTL.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Authentication login or synchronous authorization checks require an immediate pass/fail answer before proceeding, making async event queues a poor fit.">
+              <p class="quiz-prompt">8. Which backend operation is generally a POOR fit for asynchronous event-driven execution?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Updating a search index after a product edit</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Sending post-purchase confirmation emails</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> Recording audit analytics events</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Validating a user's password during synchronous login before issuing an access token</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Kafka stores a durable partitioned log with configurable retention, letting independent consumer groups track offsets and replay past events.">
+              <p class="quiz-prompt">9. Which messaging broker is specifically built around a durable, partitioned append-only log that allows consumer groups to replay historical events?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Express Router</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Apache Kafka</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Compression middleware</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Mongoose lean queries</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="The Transactional Outbox Pattern records domain changes and outgoing events in the same atomic DB transaction so a relay publishes reliably even after temporary broker outages.">
+              <p class="quiz-prompt">10. How does the Transactional Outbox Pattern solve the dual-write problem between a primary database and a message broker?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> It removes the database completely.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> It sends events over UDP before validating input.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> It persists the event inside the same atomic DB transaction as the domain write, then a relay publishes it reliably to the broker.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> It stores events in browser cookies.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is the difference between a competing-consumer queue and a pub/sub broadcast?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>In a <strong>competing-consumer queue</strong>, multiple workers share one queue and each message is processed by only one worker (scaling throughput). In <strong>pub/sub</strong>, a single event is fanned out to multiple separate queues or topics so every distinct subscriber group receives its own copy.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Why should you NEVER include sensitive secrets like raw passwords inside event payloads?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Events sit in broker queues, Dead-Letter Queues, monitoring dashboards, and potentially long-retention logs across multiple downstream consumers, drastically expanding the blast radius if any consumer or queue inspection UI is compromised.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why is <code>version</code> an important field in an event envelope?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Producers and consumers often deploy on different schedules. Versioning event schemas (e.g., <code>version: 1</code> vs <code>version: 2</code>) lets consumers handle backward-compatible transitions cleanly without crashing when payload structures evolve.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. How can duplicate events occur even when the producer only called <code>publish()</code> once?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>If a consumer finishes updating its database and crashes or loses its network connection right before sending <code>channel.ack(msg)</code>, the broker assumes the message failed and redelivers it to another consumer.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Give two signs that an application does NOT yet need an external message broker like RabbitMQ or Kafka.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>First, when all workflows are simple synchronous request-response CRUD operations with no heavy side effects or fan-out. Second, when a small modular monolith already has Redis for lightweight background jobs (Day 5) and adding a separate broker introduces operational overhead with little gain.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Prevent Out-of-Order Event State Corruption</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A consumer receives <code>order.cancelled</code> (sequence 2) slightly before a delayed retry of <code>order.confirmed</code> (sequence 1), and blindly overwrites <code>order.status = 'confirmed'</code>! Write a repository guard that rejects stale out-of-order updates.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function applyOrderStatusProjection(OrderProjectionModel, event) {
+  const { orderId, newStatus, eventVersion } = event.payload;
+  return OrderProjectionModel.findOneAndUpdate(
+    {
+      _id: orderId,
+      lastEventVersion: { $lt: eventVersion }
+    },
+    {
+      $set: {
+        status: newStatus,
+        lastEventVersion: eventVersion,
+        updatedAt: new Date(event.occurredAt)
+      }
+    },
+    { new: true }
+  );
+}</code></pre>
+                </div>
+                <p><strong>Explanation:</strong> Embedding a monotonically increasing <code>eventVersion</code> (or domain sequence number) and checking <code>lastEventVersion &lt; eventVersion</code> atomically prevents delayed retries from regressing newer state.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Build a Dead-Letter Queue Replay Utility</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> After fixing a bug that caused 40 messages to land in <code>loyalty.order_placed.dlq</code>, write a safe Node.js script function <code>replayDeadLetters(channel, dlqName, exchange, maxCount = 100)</code> that drains up to <code>maxCount</code> messages from the DLQ back to the main exchange with reset retry counts.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function replayDeadLetters(channel, dlqName, exchange, maxCount = 100) {
+  let replayed = 0;
+  while (replayed &lt; maxCount) {
+    const msg = await channel.get(dlqName, { noAck: false });
+    if (!msg) {
+      break;
+    }
+
+    const originalRoutingKey =
+      msg.properties.headers?.['x-first-death-reason']
+        ? msg.fields.routingKey
+        : 'order.placed';
+
+    channel.publish(exchange, originalRoutingKey, msg.content, {
+      persistent: true,
+      contentType: msg.properties.contentType || 'application/json',
+      messageId: msg.properties.messageId,
+      headers: {
+        ...(msg.properties.headers || {}),
+        'x-retry-count': 0
+      }
+    });
+
+    channel.ack(msg);
+    replayed += 1;
+  }
+  return replayed;
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Synchronous Checkout vs. Event-Driven Post-Checkout</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Design an e-commerce checkout boundary separating what MUST run synchronously during <code>POST /checkout</code> versus what should flow through events afterward.</p>
+                <p><strong>Reference Architecture:</strong> <em>Synchronous HTTP boundary:</em> validate cart items, atomically reserve stock in the database, authorize payment with the gateway, and commit the <code>Order</code> + an Outbox <code>OrderPlaced</code> event. <em>Event-driven asynchronous boundary:</em> Outbox relay emits <code>order.placed</code> to RabbitMQ/Kafka, fanning out independently to Email Receipt Consumer, Warehouse Fulfillment Consumer, Loyalty Points Consumer, and Fraud/Analytics Pipeline—so a slow email provider or analytics outage never blocks customer checkouts.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 6 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Events decouple domains:</strong> Producers emit immutable past-tense facts; consumers subscribe without tight coupling.</li>
+              <li><strong>Topologies combine cleanly:</strong> Pub/Sub fans out events to multiple service queues; competing consumers scale each queue horizontally.</li>
+              <li><strong>Reliability relies on idempotency:</strong> Brokers give at-least-once delivery; deduplicate by <code>eventId</code> and guard sequence versions.</li>
+              <li><strong>Isolate failures with DLQs:</strong> Cap retries, set <code>prefetch</code> limits, and route poison pills to Dead-Letter Queues.</li>
+              <li><strong>Evaluate trade-offs:</strong> Accept eventual consistency only where async propagation fits, and keep critical synchronous validations direct.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 6 Event-Driven Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 6 Message Queues and Event-Driven Architecture visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 6 local visual reference (<code>Day 6/image.webp</code>). Review producer exchanges, pub/sub queues, consumer acknowledgments, and Dead-Letter Queues.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 5/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 5: Background Jobs &amp; Task Scheduling</span>
+          </a>
+          <a href="../Day 7/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 7: Real-Time Communication with WebSockets &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 5/index.html">Day 5: Background Jobs</a></li>
+          <li><a href="../Day 6/index.html">Day 6: Message Queues</a></li>
+          <li><a href="../Day 7/index.html">Day 7: WebSockets</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

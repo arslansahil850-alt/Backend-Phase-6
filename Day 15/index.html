@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 15: Docker and Containerization. Learn containers vs images, Node.js Dockerfiles, layer caching, environment variables, Docker Compose, persistent volumes, networking, and production hardening.">
+  <title>Day 15: Docker and Containerization | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="15">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 15: Docker &amp; Containers</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html" selected>Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 14/index.html" class="nav-step-btn" title="Go to Day 14">Prev</a>
+            <a href="../Day 16/index.html" class="nav-step-btn" title="Go to Day 16">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 15 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 15</span>
+          <span class="category-pill">Containers &amp; Environments</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="15" aria-pressed="false">Mark Day 15 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Docker and Containerization</h1>
+        <p class="lesson-intro">
+          Backend services rarely run alone—they depend on exact Node.js versions, MongoDB or PostgreSQL, Redis, and native OS libraries. When developer laptops, CI runners, and cloud servers drift apart, deployments break mysteriously. Today you will learn how Docker images and containers package runtimes reproducibly, how to write optimized non-root Node.js Dockerfiles, and how Docker Compose orchestrates APIs, databases, networks, and persistent volumes cleanly.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2, 12 &amp; 14</span>
+            <p>Containers make horizontal scaling repeatable, ship JSON logs cleanly via <code>stdout</code>, and enforce non-root least privilege without baking secrets into images.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Build an immutable image once without secrets; inject environment configuration at container startup and keep durable database state in named volumes.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Author a layer-cached <code>.dockerignore</code>, multi-stage production <code>Dockerfile</code>, and <code>compose.yaml</code> linking Express, MongoDB, and Redis.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Build &amp; Compose Flow</a>
+            <a href="#diagrams">Layer &amp; Network Diagrams</a>
+            <a href="#implementation">Dockerfile &amp; Compose Setup</a>
+            <a href="#real-world">Dev vs. Prod Concerns</a>
+            <a href="#mistakes-security">Mistakes &amp; Container Security</a>
+            <a href="#practical-task">Practical Container Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Containers isolate processes, filesystems, and network interfaces on top of a shared host kernel—giving near-native speed with strict environment repeatability.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Distinguish Images &amp; Containers</h3>
+              <p>Understand read-only layered images, writable container layers, and why containers beat heavy VMs for microservices.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Author Clean Node.js Dockerfiles</h3>
+              <p>Optimize build caching, exclude junk with <code>.dockerignore</code>, and preserve clean <code>SIGTERM</code> handling.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Orchestrate with Docker Compose</h3>
+              <p>Connect API, database, and Redis over bridge DNS networks with healthchecks and persistent volumes.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Harden Production Containers</h3>
+              <p>Separate dev hot-reload setups from slim non-root production images with runtime-injected secrets.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Docker &amp; Containerization Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Containers vs. Images &amp; Why Containerization Helps</h3>
+            <p>
+              A <strong>Docker Image</strong> is an immutable, read-only blueprint built from stacked filesystem layers (base OS/Node runtime + installed npm dependencies + application code). A <strong>Container</strong> is a live, isolated running instance created from that image with a thin writable scratch layer on top. Multiple containers can share identical underlying read-only image layers cleanly.
+            </p>
+            <p>
+              Unlike Virtual Machines (which boot a separate guest OS kernel per VM), containers share the host Linux kernel via namespaces and cgroups—starting in milliseconds and enabling identical behavior across laptops, Day 16 CI runners, and production clusters.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Dockerfile Structure &amp; Layer Caching</h3>
+            <p>
+              Docker caches every instruction layer sequentially. If a step's files or command change, Docker invalidates that layer and every subsequent layer below it:
+            </p>
+            <ul>
+              <li><strong><code>FROM node:22-alpine</code>:</strong> Pinned major/minor slim base image (avoid floating <code>:latest</code> tags that break unexpectedly).</li>
+              <li><strong><code>WORKDIR /app</code>:</strong> Sets the working directory inside the container.</li>
+              <li><strong><code>COPY package*.json ./</code> then <code>RUN npm ci --omit=dev</code>:</strong> Copying manifests <em>before</em> copying <code>src/</code> lets Docker reuse the slow <code>npm ci</code> layer whenever application code changes without dependency edits!</li>
+              <li><strong><code>COPY src ./src</code>:</strong> Copies only needed runtime source files (filtered by <code>.dockerignore</code>).</li>
+              <li><strong><code>USER node</code>:</strong> Drops root privileges before running application code.</li>
+              <li><strong><code>CMD ["node", "src/server.js"]</code>:</strong> Uses JSON exec-form directly on <code>node</code> (PID 1) so <code>SIGTERM</code> signals reach your Day 2 graceful shutdown handler instead of being swallowed by <code>/bin/sh</code> or <code>npm</code>!</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Environment Variables in Containers</h3>
+            <p>
+              Never put database passwords, JWT secrets, or API keys inside a <code>Dockerfile</code> via <code>ENV</code> or <code>COPY .env .</code>—anyone who pulls or inspects the image layers (`docker history`) can extract them! Always inject runtime configuration when launching containers (`docker run --env-file .env.local`, Compose `env_file:`, or cloud secret managers).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Docker Compose, Networking &amp; Persistent Volumes</h3>
+            <p>
+              Real backends rarely consist of one container. <strong>Docker Compose</strong> defines your multi-service stack declaratively in <code>compose.yaml</code>:
+            </p>
+            <ul>
+              <li><strong>Internal DNS Networking:</strong> Compose creates an isolated bridge network where containers reach each other by <em>service name</em>! Inside the <code>api</code> container, <code>localhost</code> means the API container itself—reach MongoDB at <code>mongodb://mongo:27017/app</code> and Redis at <code>redis://redis:6379</code>.</li>
+              <li><strong>Healthchecks &amp; <code>depends_on</code>:</strong> Waiting merely for container start does not mean PostgreSQL or MongoDB is ready to accept connections. Use <code>healthcheck</code> probes paired with <code>depends_on: { condition: service_healthy }</code>.</li>
+              <li><strong>Persistent Volumes:</strong> Container filesystems are ephemeral—running <code>docker compose down</code> destroys the writable layer. Mount a <strong>named volume</strong> (<code>mongo_data:/data/db</code>) so database files survive container restarts and image upgrades.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Development vs. Production Container Concerns</h3>
+            <p>
+              In <strong>local development</strong>, you mount your local source folder with a bind mount (<code>./src:/app/src</code>) and run <code>node --watch</code> for instant edits without rebuilding images. In <strong>production</strong>, never mount host source folders—build an immutable minimal image using multi-stage builds (stripping TypeScript compilers, test runners, and build tools), run as non-root <code>USER node</code>, attach explicit memory/CPU limits and <code>HEALTHCHECK</code>, and store zero secrets inside the image.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Container Build &amp; Multi-Service Startup Flow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Build Context Filtering:</strong> Docker reads <code>.dockerignore</code> first, skipping <code>node_modules</code>, <code>.git</code>, and <code>.env</code> so host binaries and secrets never enter the build context.
+            </li>
+            <li>
+              <strong>Layered Build:</strong> Docker executes <code>npm ci</code> on cached <code>package-lock.json</code>, copies <code>src/</code>, switches to non-root <code>node</code> user, and produces a tagged immutable image.
+            </li>
+            <li>
+              <strong>Compose Network &amp; Health Ordering:</strong> <code>docker compose up</code> creates a private bridge network, boots <code>mongo</code> and <code>redis</code> attached to named volumes, waits for their healthchecks to pass, and then launches <code>api</code> with injected runtime environment variables.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Docker Layers &amp; Compose Architecture Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Ordered Dockerfile Layer Caching</h3>
+            <p class="diagram-caption">
+              Copying <code>package*.json</code> and running <code>npm ci</code> before copying <code>src/</code> keeps builds fast whenever only application code changes.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 190" class="arch-svg" role="img" aria-label="Stacked Dockerfile layers from base Node alpine image, package lock copy, npm ci cached layer, source code copy, and non-root runtime">
+                <rect x="30" y="20" width="330" height="32" rx="6" class="svg-box-muted"></rect>
+                <text x="195" y="41" text-anchor="middle" class="svg-sub">Layer 1: FROM node:22-alpine (Cached)</text>
+
+                <rect x="30" y="58" width="330" height="32" rx="6" class="svg-box-blue"></rect>
+                <text x="195" y="79" text-anchor="middle" class="svg-sub">Layer 2: COPY package*.json ./ (Cached)</text>
+
+                <rect x="30" y="96" width="330" height="32" rx="6" class="svg-box-blue"></rect>
+                <text x="195" y="117" text-anchor="middle" class="svg-sub">Layer 3: RUN npm ci --omit=dev (Cached!)</text>
+
+                <rect x="30" y="134" width="330" height="34" rx="6" class="svg-box-accent"></rect>
+                <text x="195" y="156" text-anchor="middle" class="svg-title">Layer 4: COPY src ./src + USER node</text>
+
+                <rect x="404" y="28" width="326" height="134" rx="10" class="svg-box-muted"></rect>
+                <text x="567" y="62" text-anchor="middle" class="svg-title">Why Order Matters</text>
+                <text x="567" y="88" text-anchor="middle" class="svg-sub">Edit src/order.js -&gt; Layers 1-3 reused</text>
+                <text x="567" y="110" text-anchor="middle" class="svg-sub">Build finishes in ~1 second</text>
+                <text x="567" y="136" text-anchor="middle" class="svg-sub">COPY . . too early = slow npm ci every edit</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Docker Compose Networking &amp; Persistent Volumes</h3>
+            <p class="diagram-caption">
+              Containers resolve sibling services by service name over the bridge network, while named volumes persist database files independently of container lifecycles.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 200" class="arch-svg" role="img" aria-label="Host port 3000 forwarding to api container which connects via internal Docker bridge network to mongo with named volume and redis">
+                <defs>
+                  <marker id="arrow-dk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="68" width="110" height="62" rx="10" class="svg-box-muted"></rect>
+                <text x="73" y="96" text-anchor="middle" class="svg-title">Host Machine</text>
+                <text x="73" y="114" text-anchor="middle" class="svg-sub">localhost:3000</text>
+
+                <line x1="128" y1="99" x2="178" y2="99" class="svg-arrow" marker-end="url(#arrow-dk)"></line>
+
+                <rect x="182" y="56" width="176" height="86" rx="10" class="svg-box-accent"></rect>
+                <text x="270" y="86" text-anchor="middle" class="svg-title">Service: api</text>
+                <text x="270" y="105" text-anchor="middle" class="svg-sub">Express (Non-root)</text>
+                <text x="270" y="123" text-anchor="middle" class="svg-sub">Port 3000:3000</text>
+
+                <line x1="358" y1="84" x2="430" y2="54" class="svg-arrow" marker-end="url(#arrow-dk)"></line>
+                <line x1="358" y1="114" x2="430" y2="144" class="svg-arrow" marker-end="url(#arrow-dk)"></line>
+
+                <rect x="434" y="20" width="166" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="517" y="48" text-anchor="middle" class="svg-title">Service: mongo</text>
+                <text x="517" y="66" text-anchor="middle" class="svg-sub">mongodb://mongo:27017</text>
+
+                <rect x="434" y="114" width="166" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="517" y="142" text-anchor="middle" class="svg-title">Service: redis</text>
+                <text x="517" y="160" text-anchor="middle" class="svg-sub">redis://redis:6379</text>
+
+                <line x1="600" y1="52" x2="634" y2="52" class="svg-arrow" marker-end="url(#arrow-dk)"></line>
+                <rect x="638" y="20" width="104" height="64" rx="10" class="svg-box-muted"></rect>
+                <text x="690" y="48" text-anchor="middle" class="svg-title">Volume</text>
+                <text x="690" y="66" text-anchor="middle" class="svg-sub">mongo_data</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Containerizing an Express API with MongoDB &amp; Redis</h2>
+
+          <h3>Step 1: Exclude Host Artifacts &amp; Secrets via <code>.dockerignore</code></h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">.dockerignore</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.*
+tests
+coverage
+.local_dev_storage</code></pre>
+          </div>
+
+          <h3>Step 2: Write a Clean, Non-Root Production <code>Dockerfile</code></h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Dockerfile</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json ./
+COPY src ./src
+
+RUN chown -R node:node /app
+USER node
+
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/health').then((r) =&gt; process.exit(r.ok ? 0 : 1)).catch(() =&gt; process.exit(1))"
+
+CMD ["node", "src/server.js"]</code></pre>
+          </div>
+
+          <h3>Step 3: Multi-Service Local Stack in <code>compose.yaml</code></h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">compose.yaml</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGO_URI: mongodb://mongo:27017/phase6_dev
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mongo_data:
+  redis_data:</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Multi-Stage Build (<code>AS deps</code> &rarr; <code>AS runner</code>):</strong> Keeps build caches and potential native compile tools out of the final production image.</li>
+              <li><strong><code>USER node</code>:</strong> Runs the Express process with unprivileged permissions instead of Linux <code>root</code>, limiting container-escape blast radius.</li>
+              <li><strong><code>CMD ["node", "src/server.js"]</code>:</strong> Running <code>node</code> directly as PID 1 ensures <code>docker stop</code>'s <code>SIGTERM</code> triggers Express graceful shutdown cleanly.</li>
+              <li><strong><code>condition: service_healthy</code>:</strong> Prevents the API from crashing on boot while MongoDB or Redis is still initializing.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Development vs. Production Container Concerns</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Aspect</th>
+                  <th>Development Container</th>
+                  <th>Production Container</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Code Delivery</strong></td>
+                  <td>Bind mount (<code>./src:/app/src</code>) + <code>node --watch</code></td>
+                  <td>Baked immutable image artifact built in CI</td>
+                </tr>
+                <tr>
+                  <td><strong>Dependencies</strong></td>
+                  <td>Includes devDependencies (linters, test tools)</td>
+                  <td><code>npm ci --omit=dev</code> only; smallest attack surface</td>
+                </tr>
+                <tr>
+                  <td><strong>Databases</strong></td>
+                  <td>Local Compose containers with named volumes</td>
+                  <td>Managed cloud DBs or hardened stateful clusters with automated backups</td>
+                </tr>
+                <tr>
+                  <td><strong>Secrets</strong></td>
+                  <td>Local untracked <code>.env</code> file passed via Compose</td>
+                  <td>Injected at runtime by orchestrator / cloud secret manager</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Container Mistakes &amp; Security Pitfalls</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Copying <code>.env</code> or Secrets into the Image</h3>
+              <p><strong>Security leak:</strong> <code>COPY . .</code> without <code>.dockerignore</code> embeds local secrets into immutable image layers pushed to registries.</p>
+              <p><strong>Fix:</strong> Ignore <code>.env*</code> in <code>.dockerignore</code> and supply environment variables strictly at container runtime.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Connecting to <code>localhost</code> for Sibling DB Containers</h3>
+              <p><strong>Connection failure:</strong> Inside the <code>api</code> container, <code>mongodb://localhost:27017</code> connects to the <code>api</code> container's own loopback interface, failing with <code>ECONNREFUSED</code>.</p>
+              <p><strong>Fix:</strong> Use the Compose service name as hostname (<code>mongodb://mongo:27017/...</code>).</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Using Shell-Form <code>CMD npm start</code></h3>
+              <p><strong>Graceful shutdown failure:</strong> Spawning <code>sh -c "npm start"</code> puts the shell at PID 1, which often fails to forward <code>SIGTERM</code> to Node.js, causing abrupt 10-second kills during deploys.</p>
+              <p><strong>Fix:</strong> Use exec-form <code>CMD ["node", "src/server.js"]</code>.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Omitting Named Volumes on Database Containers</h3>
+              <p><strong>Data loss:</strong> Re-creating a database container without a volume wipes every database record immediately.</p>
+              <p><strong>Fix:</strong> Always mount persistent named volumes at the DB data path (<code>/data/db</code> for MongoDB, <code>/var/lib/postgresql/data</code> for PostgreSQL).</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Containerization Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Containerize an Express + Database Stack</h3>
+            <p>
+              Take a small Express API that exposes <code>/health</code>, <code>/ready</code>, and a simple CRUD resource backed by MongoDB or PostgreSQL + Redis:
+            </p>
+            <ol>
+              <li>Create <code>.dockerignore</code> excluding <code>node_modules</code>, <code>.git</code>, and <code>.env*</code>.</li>
+              <li>Write a multi-stage <code>Dockerfile</code> using pinned <code>node:22-alpine</code>, layer-cached <code>npm ci --omit=dev</code>, non-root <code>USER node</code>, and exec-form <code>CMD</code>.</li>
+              <li>Create a <code>compose.yaml</code> linking <code>api</code>, database (with named volume + healthcheck), and <code>redis</code>, verifying <code>/ready</code> returns <code>200</code> after <code>docker compose up --build</code>.</li>
+              <li>Verify persistence by creating a record, running <code>docker compose down</code> (without <code>-v</code>), running <code>docker compose up</code> again, and confirming the record remains intact.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 15 Quiz: Docker &amp; Containerization (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="An image is an immutable read-only blueprint of layers; a container is a live running instance created from that image with a thin writable runtime layer.">
+              <p class="quiz-prompt">1. How does a Docker image differ from a Docker container?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> An image runs only on Windows while containers run on Linux.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> An image is an immutable read-only template; a container is a running isolated instance of that image.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Containers permanently modify the underlying image files.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> They are identical terms for Docker Compose files.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Copying package manifests and running npm ci before copying src/ allows Docker to cache the slow dependency layer unless package.json or package-lock.json actually changes.">
+              <p class="quiz-prompt">2. Why should a Node.js <code>Dockerfile</code> copy <code>package.json</code> and <code>package-lock.json</code> and run <code>npm ci</code> BEFORE <code>COPY src ./src</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Docker forbids copying folders before JSON files.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> It hides source code from node_modules.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> It preserves Docker layer caching so code edits in <code>src/</code> do not force re-downloading all npm packages.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> npm ci deletes src/ if run afterward.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Inside a container, localhost refers to that container's own isolated network namespace; Compose service names (like mongo or redis) resolve to sibling containers.">
+              <p class="quiz-prompt">3. Inside a Docker Compose <code>api</code> container, why does connecting to <code>mongodb://localhost:27017</code> fail when MongoDB runs in a sibling <code>mongo</code> service?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> <code>localhost</code> inside the <code>api</code> container points only to the <code>api</code> container itself; use service hostname <code>mongo</code> instead.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> MongoDB blocks connections on port 27017 in containers.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Docker disables TCP inside Alpine images.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Express replaces localhost with 0.0.0.0 automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Secrets placed into ENV instructions or copied .env files become permanently embedded inside image layers; secrets must be injected at runtime.">
+              <p class="quiz-prompt">4. Why should you NEVER bake production API keys or database passwords into a <code>Dockerfile</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Docker refuses to build images containing environment variables.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Node.js ignores ENV values set inside Dockerfiles.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> It makes the container image 500 MB larger.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Secrets stay permanently exposed in image layers and image history, and prevent reusing one image across staging/prod.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Named volumes store database data outside the container's ephemeral writable layer so records persist across container restarts and recreations.">
+              <p class="quiz-prompt">5. What is the role of a named volume (such as <code>mongo_data:/data/db</code>) in Docker Compose?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> It increases Express HTTP throughput by 10x.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> It persists database files on the host independently so data survives container restarts or rebuilds.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> It automatically backs up databases to AWS S3.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> It opens firewall ports to the public internet.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Running containers as non-root USER node enforces least privilege so an app vulnerability does not grant root permissions inside the container.">
+              <p class="quiz-prompt">6. Why should a production Node.js <code>Dockerfile</code> include <code>USER node</code> before <code>CMD</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Otherwise Express cannot bind port 3000.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> npm ci only works when USER node is set afterward.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Running as a non-root user reduces privilege and security impact if the application is compromised.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Alpine Linux lacks a root user.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Exec-form CMD runs node directly as PID 1 so SIGTERM signals from docker stop reach your graceful shutdown handler immediately.">
+              <p class="quiz-prompt">7. Why is exec-form <code>CMD ["node", "src/server.js"]</code> preferred over shell-form <code>CMD npm start</code> in production containers?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Node runs directly as PID 1 and receives <code>SIGTERM</code> cleanly for graceful shutdown instead of having a shell or npm swallow the signal.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> npm start only runs on Windows.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Exec-form compiles JavaScript into WebAssembly.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Shell-form disables console output to stdout.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation=".dockerignore keeps host node_modules, .git, and .env files out of the Docker build context, speeding builds and preventing secret/platform-binary leaks.">
+              <p class="quiz-prompt">8. What does a <code>.dockerignore</code> file containing <code>node_modules</code>, <code>.git</code>, and <code>.env*</code> prevent?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> It stops Node.js from importing packages at runtime.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> It deletes local .env files from your laptop.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> It prevents Docker Compose from creating bridge networks.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> It avoids sending bulky host dependencies, git history, and local secret files into the Docker build context.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Plain depends_on only waits for container start, not DB readiness; pairing healthcheck with condition: service_healthy waits until the DB accepts connections.">
+              <p class="quiz-prompt">9. In Docker Compose, why is <code>depends_on</code> paired with <code>condition: service_healthy</code> better than plain <code>depends_on: [mongo]</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Plain depends_on exposes port 27017 publicly.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Plain depends_on only waits for the container process to start, not until the database is actually ready for connections.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> service_healthy automatically creates MongoDB indexes.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> It converts containers into virtual machines.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="npm ci installs exact locked versions from package-lock.json deterministically and fails if lockfile and package.json drift.">
+              <p class="quiz-prompt">10. Why do Dockerfiles use <code>npm ci --omit=dev</code> instead of <code>npm install</code> for production builds?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> npm install cannot download packages over HTTPS.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> npm ci ignores package-lock.json completely.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> <code>npm ci</code> performs clean reproducible installs strictly matching <code>package-lock.json</code> and skips dev-only test/build packages.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> It reduces CPU core count to 1.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why are containers much faster and lighter than traditional Virtual Machines?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Virtual Machines emulate full hardware and boot an entire guest OS kernel per VM. Containers share the host Linux kernel directly using OS isolation primitives (namespaces and cgroups), starting in milliseconds with minimal memory overhead.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. What happens if you run <code>docker compose down -v</code> vs. <code>docker compose down</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>docker compose down</code> stops and removes containers and the bridge network while preserving named volumes (keeping your database records safe). Adding the <code>-v</code> flag also deletes named volumes, wiping local database data permanently.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should Dockerfiles pin specific base image versions (e.g., <code>node:22.11-alpine</code>) instead of <code>node:latest</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>The <code>:latest</code> tag changes silently over time—meaning a rebuild months later might suddenly pull a brand-new major Node.js version with breaking changes. Pinning versions keeps builds predictable and reproducible.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why is using bind mounts (<code>./src:/app/src</code>) helpful in local dev containers, yet unsafe/undesirable in production?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>In local development, bind mounts sync file edits into the running container immediately for fast iteration. In production, containers need self-contained immutable artifacts built in CI so every scaled replica across any cloud host runs the exact tested code.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why might native C++ npm packages (like <code>bcrypt</code> or <code>sharp</code>) break if you accidentally copy host <code>node_modules</code> into an Alpine Linux container?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Native add-ons compile binary <code>.node</code> files targeting the host OS and C standard library (e.g., Windows/macOS or glibc Ubuntu vs musl Alpine). Listing <code>node_modules</code> in <code>.dockerignore</code> ensures <code>npm ci</code> installs/builds binaries specifically matching the container OS.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix 4 Bugs in an Insecure Slow Dockerfile</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Review this broken Dockerfile: <code>FROM node:latest</code> / <code>WORKDIR /app</code> / <code>COPY . .</code> / <code>RUN npm install</code> / <code>CMD npm start</code> (with no <code>.dockerignore</code>). Identify 4 flaws and explain the fix.</p>
+                <p><strong>Reference Fixes:</strong> (1) Pin base image (<code>node:22-alpine</code>); (2) Add <code>.dockerignore</code> excluding <code>node_modules</code>, <code>.git</code>, <code>.env*</code>; (3) Copy <code>package*.json</code> and run <code>npm ci --omit=dev</code> before copying <code>src/</code> for layer caching and deterministic installs; (4) Switch to non-root <code>USER node</code> and exec-form <code>CMD ["node", "src/server.js"]</code> for security and clean <code>SIGTERM</code> graceful shutdown.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Add a PostgreSQL Service with Healthcheck to Compose</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a PostgreSQL 16 Compose service named <code>postgres</code> using persistent volume <code>pg_data</code>, environment placeholders, and a working <code>pg_isready</code> healthcheck.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution (compose.yaml snippet)</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: app_dev
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d app_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Multi-Container Stack with API + Background Worker</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Using Day 5's worker architecture, explain how one single built <code>Dockerfile</code> image can run both the Express <code>api</code> service and the BullMQ <code>worker</code> service cleanly in <code>compose.yaml</code>.</p>
+                <p><strong>Reference Architecture:</strong> Build one shared image containing both <code>src/server.js</code> and <code>src/workerMain.js</code>. In <code>compose.yaml</code>, define service <code>api</code> (exposing port <code>3000</code>, default <code>CMD ["node", "src/server.js"]</code>) and service <code>worker</code> (using the exact same image, zero exposed HTTP ports, overriding <code>command: ["node", "src/workerMain.js"]</code>), both sharing Redis/DB env configuration and scaling independently.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 15 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Images vs. Containers:</strong> Read-only layered blueprints produce fast, isolated runtime containers sharing the host kernel.</li>
+              <li><strong>Dockerfile best practices:</strong> Use pinned slim bases, <code>.dockerignore</code>, ordered <code>package*.json</code> + <code>npm ci --omit=dev</code> caching, non-root <code>USER node</code>, and exec-form <code>CMD</code>.</li>
+              <li><strong>Runtime secrets:</strong> Never bake <code>.env</code> or credentials inside images; inject config at startup.</li>
+              <li><strong>Docker Compose:</strong> Connect services via internal DNS service names, gate startup with <code>service_healthy</code>, and persist DBs with named volumes.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 15 Docker &amp; Containerization Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 15 Docker and Containerization visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 15 local visual reference (<code>Day 15/image.webp</code>). Review Dockerfile layer caching, Compose bridge DNS networking, and named volumes.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 14/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 14: Rate Limiting and API Security</span>
+          </a>
+          <a href="../Day 16/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 16: CI/CD and Deployment &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 14/index.html">Day 14: API Security</a></li>
+          <li><a href="../Day 15/index.html">Day 15: Docker</a></li>
+          <li><a href="../Day 16/index.html">Day 16: CI/CD</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

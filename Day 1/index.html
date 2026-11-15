@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 1: Advanced Backend Architecture and Design Patterns. Learn monolithic vs modular design, layered architecture, MVC, service and repository patterns, dependency injection, and SOLID principles in Node.js and Express.">
+  <title>Day 1: Advanced Backend Architecture and Design Patterns | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="1">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 1: Architecture &amp; Patterns</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html" selected>Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <button type="button" class="nav-step-btn" disabled aria-disabled="true" title="First lesson of Phase 6">Prev</button>
+            <a href="../Day 2/index.html" class="nav-step-btn" title="Go to Day 2">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 1 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 01</span>
+          <span class="category-pill">Architecture &amp; Design</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="1" aria-pressed="false">Mark Day 1 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Advanced Backend Architecture and Design Patterns</h1>
+        <p class="lesson-intro">
+          Small Express APIs often start as a few route files with database queries directly inside request handlers. That works for prototypes, but collapses rapidly as business rules, validation, authentication, error handling, and team size grow. Today you will learn how to structure backend systems into clear boundaries that remain testable, replaceable, and maintainable under production change.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Prerequisites</span>
+            <p>Node.js, Express routing and middleware, async/await, HTTP status codes, and basic CRUD operations.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Connection to Phase 6</span>
+            <p>Every topic ahead — caching, queues, testing, logging, and scaling — relies on the clean layer boundaries established today.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Refactor a coupled Express route handler into distinct routes, controllers, services, repositories, and a composition root.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Request Lifecycle Flow</a>
+            <a href="#diagrams">Architecture Diagrams</a>
+            <a href="#implementation">Step-by-Step Refactoring</a>
+            <a href="#real-world">Use Cases &amp; Trade-offs</a>
+            <a href="#mistakes-security">Mistakes, Security &amp; Perf</a>
+            <a href="#practical-task">Practical Exercises &amp; Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Architecture is not about adding folders for appearance; it is about controlling <strong>coupling</strong> (how tightly modules depend on each other) and <strong>cohesion</strong> (how clearly each module owns a single responsibility).
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Compare Structural Paradigms</h3>
+              <p>Distinguish classic monoliths, modular monoliths, layered architectures, and MVC variations for Node.js backends.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Enforce Separation of Concerns</h3>
+              <p>Isolate HTTP transport handling, domain business logic, and database persistence into dedicated layers.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Apply Service &amp; Repository Patterns</h3>
+              <p>Decouple business workflows from ORM/driver specifics so logic is easy to test and evolve.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Use Dependency Injection &amp; SOLID</h3>
+              <p>Wire collaborators explicitly and apply SOLID principles pragmatically in idiomatic JavaScript.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Architectural Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Monolithic vs. Modular Monolith Architecture</h3>
+            <p>
+              A <strong>monolith</strong> deploys the entire backend as a single process and codebase. Contrary to common hype, monoliths are often the best starting point because they have zero network latency between modules, simple atomic database transactions, and straightforward deployment.
+            </p>
+            <p>
+              The failure mode of a <em>disorganized</em> monolith (a "big ball of mud") is not single deployment—it is unrestricted cross-imports where billing code queries user tables directly and auth middleware mutates order state. A <strong>modular monolith</strong> keeps a single deployable process while organizing code into strict domain modules (such as <code>orders</code>, <code>users</code>, <code>billing</code>) that communicate only through public module service interfaces.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Layered Architecture</h3>
+            <p>
+              Layered architecture slices an application horizontally by technical responsibility. Requests enter at the top and travel downward through strictly ordered layers:
+            </p>
+            <ul>
+              <li><strong>Presentation / Transport Layer (Routes &amp; Controllers):</strong> Parses HTTP params, headers, and bodies; invokes validation; sends HTTP status codes and JSON responses.</li>
+              <li><strong>Application / Business Logic Layer (Services):</strong> Orchestrates use cases, enforces domain rules (e.g., discount eligibility, stock reservation), and remains unaware of HTTP <code>req</code> or <code>res</code> objects.</li>
+              <li><strong>Data Access Layer (Repositories):</strong> Executes queries against MongoDB, PostgreSQL, or external APIs and maps raw records into predictable domain structures.</li>
+              <li><strong>Infrastructure / Cross-Cutting Layer:</strong> Configuration, loggers, database connection pools, cryptographic utilities, and error classes shared cleanly across layers.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. MVC and Separation of Concerns</h3>
+            <p>
+              Classic <strong>MVC (Model-View-Controller)</strong> separates data/rules (Model), rendered UI (View), and input coordination (Controller). In REST or JSON APIs, there is no server-rendered HTML View—the JSON serializer acts as the representation.
+            </p>
+            <p>
+              A frequent mistake in Express MVC apps is stuffing all business rules inside Mongoose/Sequelize Models ("fat models") or inside Controllers ("fat controllers"). Adding a dedicated <strong>Service Layer</strong> solves this: Controllers handle HTTP only, Services hold business rules, and Models/Repositories define schemas and persistence queries.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Service and Repository Patterns</h3>
+            <p>
+              The <strong>Service Pattern</strong> encapsulates a complete business operation—such as <code>createOrder</code> or <code>resetPassword</code>—independently of how it was triggered (HTTP endpoint, CLI script, or background worker).
+            </p>
+            <p>
+              The <strong>Repository Pattern</strong> wraps persistence behind collection-like methods such as <code>findById(id)</code>, <code>findActiveByEmail(email)</code>, or <code>save(entity)</code>. Your service never constructs raw Mongoose filters or SQL strings; it calls repository methods. This makes unit testing services trivial using an in-memory fake repository, and isolates schema or database changes to one place.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Dependency Injection (DI) in JavaScript</h3>
+            <p>
+              If a service executes <code>const userRepo = require('./user.repository')</code> internally, it hardcodes its dependency. Swapping a real database repository for a mock in tests becomes awkward, requiring module-loader monkey patching.
+            </p>
+            <p>
+              <strong>Dependency Injection</strong> flips control: instead of creating its own dependencies, a module <em>receives</em> them as constructor parameters or factory arguments. In JavaScript, you do not need heavy decorator frameworks—simple constructor injection or factory functions assembled in a single <strong>composition root</strong> (<code>container.js</code> or <code>app.js</code>) give you full DI benefits with zero magic.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. SOLID Principles Applied to Backend Code</h3>
+            <div class="solid-grid">
+              <div class="solid-card">
+                <h4>S — Single Responsibility</h4>
+                <p>A controller parses HTTP; a service enforces business rules; a repository persists data. Each module has one primary reason to change.</p>
+              </div>
+              <div class="solid-card">
+                <h4>O — Open / Closed</h4>
+                <p>Add new notification channels (email, SMS, webhook) or payment gateways by adding new strategy classes without rewriting core checkout logic.</p>
+              </div>
+              <div class="solid-card">
+                <h4>L — Liskov Substitution</h4>
+                <p>An in-memory repository and a MongoDB repository must honor the same method signatures, return shapes, and error contracts.</p>
+              </div>
+              <div class="solid-card">
+                <h4>I — Interface Segregation</h4>
+                <p>Keep repository and service contracts focused. Do not force a read-only analytics service to depend on write-heavy user mutation methods.</p>
+              </div>
+              <div class="solid-card">
+                <h4>D — Dependency Inversion</h4>
+                <p>High-level business services depend on abstract repository contracts (expected method shapes), not directly on Mongoose models or SQL drivers.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Maintainable Folder Structures</h3>
+            <p>
+              Two major folder layouts exist in Node.js backends: <strong>grouping by technical role</strong> (<code>controllers/</code>, <code>services/</code>, <code>repositories/</code>) and <strong>grouping by domain feature</strong> (<code>modules/orders/</code>, <code>modules/users/</code>). Small services work well with role-based folders, while medium-to-large backends scale far better with feature-based modular folders where everything needed to change a domain lives side by side.
+            </p>
+            <div class="code-card">
+              <div class="code-header">
+                <span class="code-title">Feature-Based Modular Monolith Layout</span>
+                <button type="button" class="copy-code-btn">Copy</button>
+              </div>
+              <pre><code>src/
+  config/
+    env.js
+    database.js
+  shared/
+    errors/
+      AppError.js
+    middlewares/
+      errorHandler.js
+      validateRequest.js
+  modules/
+    orders/
+      order.routes.js
+      order.controller.js
+      order.service.js
+      order.repository.js
+      order.schema.js
+      order.model.js
+    users/
+      user.routes.js
+      user.controller.js
+      user.service.js
+      user.repository.js
+  container.js
+  app.js
+  server.js</code></pre>
+            </div>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Choosing the Right Architecture</h3>
+            <p>
+              Over-engineering a tiny CRUD service with 15 abstraction layers slows delivery without benefit. Under-engineering a financial ledger or multi-tenant SaaS creates costly bugs. Choose based on team size, domain rule complexity, expected lifespan, and rate of requirement change.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>How a Layered Request Flows End to End</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Route &amp; Middleware:</strong> Express matches the HTTP method and path, applies authentication and input validation middleware, and forwards control to the controller.
+            </li>
+            <li>
+              <strong>Controller:</strong> Extracts sanitized parameters (<code>req.body</code>, <code>req.params</code>, <code>req.user</code>), calls the appropriate service method, and translates the result into an HTTP status code and JSON envelope.
+            </li>
+            <li>
+              <strong>Service:</strong> Validates business invariants (such as checking inventory, calculating totals, preventing duplicate states), coordinates one or more repositories, and throws domain errors when rules fail.
+            </li>
+            <li>
+              <strong>Repository:</strong> Translates domain calls into database commands (Mongoose, PostgreSQL pool, or in-memory store), returning plain objects or domain models without leaking driver internals upward.
+            </li>
+            <li>
+              <strong>Centralized Error Middleware:</strong> Catches operational errors (<code>AppError</code> with status <code>400</code>, <code>404</code>, <code>409</code>) vs. unexpected programmer errors (<code>500</code>), sending consistent safe responses.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Architecture &amp; Dependency Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Strict Layered Request &amp; Dependency Direction</h3>
+            <p class="diagram-caption">
+              Control flows downward during a request and returns upward, while each layer only knows about the layer directly beneath it.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 220" class="arch-svg" role="img" aria-label="Layered backend architecture request flow from HTTP Client through Routes, Controller, Service, Repository to Database">
+                <defs>
+                  <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+                <rect x="16" y="68" width="102" height="64" rx="10" class="svg-box-muted"></rect>
+                <text x="67" y="96" text-anchor="middle" class="svg-title">HTTP Client</text>
+                <text x="67" y="114" text-anchor="middle" class="svg-sub">JSON / Headers</text>
+
+                <line x1="118" y1="100" x2="146" y2="100" class="svg-arrow" marker-end="url(#arrow-cyan)"></line>
+
+                <rect x="150" y="68" width="112" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="206" y="96" text-anchor="middle" class="svg-title">Routes &amp; Val.</text>
+                <text x="206" y="114" text-anchor="middle" class="svg-sub">Schema / Auth</text>
+
+                <line x1="262" y1="100" x2="290" y2="100" class="svg-arrow" marker-end="url(#arrow-cyan)"></line>
+
+                <rect x="294" y="68" width="106" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="347" y="96" text-anchor="middle" class="svg-title">Controller</text>
+                <text x="347" y="114" text-anchor="middle" class="svg-sub">HTTP Mapping</text>
+
+                <line x1="400" y1="100" x2="428" y2="100" class="svg-arrow" marker-end="url(#arrow-cyan)"></line>
+
+                <rect x="432" y="68" width="106" height="64" rx="10" class="svg-box-accent"></rect>
+                <text x="485" y="96" text-anchor="middle" class="svg-title">Service</text>
+                <text x="485" y="114" text-anchor="middle" class="svg-sub">Business Rules</text>
+
+                <line x1="538" y1="100" x2="566" y2="100" class="svg-arrow" marker-end="url(#arrow-cyan)"></line>
+
+                <rect x="570" y="68" width="106" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="623" y="96" text-anchor="middle" class="svg-title">Repository</text>
+                <text x="623" y="114" text-anchor="middle" class="svg-sub">Data Queries</text>
+
+                <line x1="676" y1="100" x2="696" y2="100" class="svg-arrow" marker-end="url(#arrow-cyan)"></line>
+
+                <rect x="700" y="68" width="48" height="64" rx="10" class="svg-box-muted"></rect>
+                <text x="724" y="104" text-anchor="middle" class="svg-title">DB</text>
+
+                <rect x="294" y="162" width="382" height="38" rx="8" class="svg-box-muted"></rect>
+                <text x="485" y="185" text-anchor="middle" class="svg-sub">Cross-Cutting: AppError, Config, Logger, Error Middleware</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Dependency Injection &amp; Composition Root</h3>
+            <p class="diagram-caption">
+              Instead of <code>OrderService</code> importing a database driver directly, <code>container.js</code> wires concrete implementations into services so tests can pass lightweight in-memory fakes.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 210" class="arch-svg" role="img" aria-label="Composition root injecting repository and notifier implementations into OrderService">
+                <rect x="260" y="18" width="240" height="46" rx="10" class="svg-box-accent"></rect>
+                <text x="380" y="46" text-anchor="middle" class="svg-title">Composition Root (container.js)</text>
+
+                <line x1="320" y1="64" x2="150" y2="118" class="svg-arrow"></line>
+                <line x1="380" y1="64" x2="380" y2="118" class="svg-arrow"></line>
+                <line x1="440" y1="64" x2="610" y2="118" class="svg-arrow"></line>
+
+                <rect x="40" y="122" width="210" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="145" y="149" text-anchor="middle" class="svg-title">MongoOrderRepository</text>
+                <text x="145" y="168" text-anchor="middle" class="svg-sub">Prod DB Adapter</text>
+
+                <rect x="275" y="122" width="210" height="64" rx="10" class="svg-box-accent"></rect>
+                <text x="380" y="149" text-anchor="middle" class="svg-title">OrderService(repo, mailer)</text>
+                <text x="380" y="168" text-anchor="middle" class="svg-sub">Pure Business Logic</text>
+
+                <rect x="510" y="122" width="210" height="64" rx="10" class="svg-box-blue"></rect>
+                <text x="615" y="149" text-anchor="middle" class="svg-title">InMemoryOrderRepository</text>
+                <text x="615" y="168" text-anchor="middle" class="svg-sub">Fast Unit Test Adapter</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Refactoring a Coupled Express Endpoint into Clean Layers</h2>
+          <p>
+            Consider a typical unlayered Express endpoint that mixes request validation, pricing rules, stock checks, Mongoose queries, and HTTP error responses in a single file.
+          </p>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Before: Tightly Coupled Route Handler</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+import Order from '../models/Order.js';
+import Product from '../models/Product.js';
+
+const router = express.Router();
+
+router.post('/orders', async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+    if (!productId || !quantity || quantity &lt; 1) {
+      return res.status(400).json({ error: 'Invalid input' });
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    if (product.stock &lt; quantity) {
+      return res.status(409).json({ error: 'Insufficient stock' });
+    }
+    product.stock -= quantity;
+    await product.save();
+    const total = product.price * quantity;
+    const order = await Order.create({
+      userId: req.user.id,
+      productId,
+      quantity,
+      total
+    });
+    res.status(201).json(order);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+export default router;</code></pre>
+          </div>
+
+          <h3>Step 1: Define a Shared Operational Error Class</h3>
+          <p>
+            Services should never import Express's <code>res</code> object. Instead, they throw structured domain errors carrying an HTTP-friendly status code and machine-readable code.
+          </p>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/errors/AppError.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export class AppError extends Error {
+  constructor(message, statusCode = 500, code = 'INTERNAL_ERROR') {
+    super(message);
+    this.name = 'AppError';
+    this.statusCode = statusCode;
+    this.code = code;
+    this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Create Focused Repositories</h3>
+          <p>
+            Each repository hides database query syntax and returns plain JavaScript objects or consistent domain records. Notice how stock deduction uses an atomic conditional update (<code>stock: { $gte: quantity }</code>) to prevent race-condition overselling.
+          </p>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/orders/order.repository.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export class MongoOrderRepository {
+  constructor(OrderModel) {
+    this.OrderModel = OrderModel;
+  }
+
+  async create(orderData) {
+    const doc = await this.OrderModel.create(orderData);
+    return doc.toObject();
+  }
+
+  async findByUserId(userId) {
+    return this.OrderModel.find({ userId }).sort({ createdAt: -1 }).lean();
+  }
+}
+
+export class MongoProductRepository {
+  constructor(ProductModel) {
+    this.ProductModel = ProductModel;
+  }
+
+  async findById(productId) {
+    return this.ProductModel.findById(productId).lean();
+  }
+
+  async reserveStock(productId, quantity) {
+    return this.ProductModel.findOneAndUpdate(
+      { _id: productId, stock: { $gte: quantity } },
+      { $inc: { stock: -quantity } },
+      { new: true }
+    ).lean();
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Implement the Pure Service Layer with Dependency Injection</h3>
+          <p>
+            <code>OrderService</code> receives repositories in its constructor. It contains zero Express imports and zero Mongoose queries, making business rules crystal clear and independently testable.
+          </p>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/orders/order.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { AppError } from '../../shared/errors/AppError.js';
+
+export class OrderService {
+  constructor({ orderRepository, productRepository }) {
+    this.orderRepository = orderRepository;
+    this.productRepository = productRepository;
+  }
+
+  async placeOrder({ userId, productId, quantity }) {
+    if (!Number.isInteger(quantity) || quantity &lt; 1) {
+      throw new AppError('Quantity must be a positive integer', 400, 'INVALID_QUANTITY');
+    }
+
+    const product = await this.productRepository.findById(productId);
+    if (!product) {
+      throw new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND');
+    }
+
+    const reserved = await this.productRepository.reserveStock(productId, quantity);
+    if (!reserved) {
+      throw new AppError('Insufficient stock available', 409, 'INSUFFICIENT_STOCK');
+    }
+
+    const totalCents = Math.round(reserved.priceCents * quantity);
+    return this.orderRepository.create({
+      userId,
+      productId,
+      quantity,
+      totalCents,
+      status: 'confirmed'
+    });
+  }
+
+  async listUserOrders(userId) {
+    return this.orderRepository.findByUserId(userId);
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 4: Build the Thin Controller &amp; Route Binding</h3>
+          <p>
+            The controller adapts HTTP inputs into service parameters, passes errors to Express's error middleware via <code>next(err)</code>, and formats the HTTP response.
+          </p>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/orders/order.controller.js &amp; order.routes.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+
+export class OrderController {
+  constructor(orderService) {
+    this.orderService = orderService;
+  }
+
+  create = async (req, res, next) =&gt; {
+    try {
+      const order = await this.orderService.placeOrder({
+        userId: req.user.id,
+        productId: req.body.productId,
+        quantity: Number(req.body.quantity)
+      });
+      res.status(201).json({ status: 'success', data: order });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  listMine = async (req, res, next) =&gt; {
+    try {
+      const orders = await this.orderService.listUserOrders(req.user.id);
+      res.status(200).json({ status: 'success', data: orders });
+    } catch (err) {
+      next(err);
+    }
+  };
+}
+
+export function createOrderRouter(orderController, authMiddleware) {
+  const router = express.Router();
+  router.use(authMiddleware);
+  router.post('/', orderController.create);
+  router.get('/', orderController.listMine);
+  return router;
+}</code></pre>
+          </div>
+
+          <h3>Step 5: Assemble Dependencies in the Composition Root</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/container.js &amp; src/shared/middlewares/errorHandler.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import OrderModel from './modules/orders/order.model.js';
+import ProductModel from './modules/products/product.model.js';
+import { MongoOrderRepository, MongoProductRepository } from './modules/orders/order.repository.js';
+import { OrderService } from './modules/orders/order.service.js';
+import { OrderController } from './modules/orders/order.controller.js';
+
+export function buildContainer() {
+  const orderRepository = new MongoOrderRepository(OrderModel);
+  const productRepository = new MongoProductRepository(ProductModel);
+  const orderService = new OrderService({ orderRepository, productRepository });
+  const orderController = new OrderController(orderService);
+
+  return { orderController, orderService };
+}
+
+export function errorHandler(err, req, res, next) {
+  const statusCode = err.isOperational ? err.statusCode : 500;
+  const payload = {
+    status: 'error',
+    code: err.isOperational ? err.code : 'INTERNAL_ERROR',
+    message: err.isOperational ? err.message : 'An unexpected error occurred'
+  };
+  res.status(statusCode).json(payload);
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Arrow class methods (<code>create = async (req, res, next) =&gt;</code>):</strong> Preserves lexical <code>this</code> binding when Express passes <code>orderController.create</code> as a route callback without manual <code>.bind(controller)</code>.</li>
+              <li><strong>Integer cents (<code>totalCents</code>):</strong> Avoids IEEE-754 floating-point rounding bugs common in naive monetary calculations (e.g., <code>0.1 + 0.2 !== 0.3</code>).</li>
+              <li><strong><code>.lean()</code> in Mongoose repositories:</strong> Returns plain JavaScript objects instead of heavy hydrated Mongoose documents, reducing memory overhead and preventing accidental model mutation inside services.</li>
+              <li><strong>Safe Error Masking:</strong> Unknown non-operational errors never leak database stack traces or driver messages to API clients.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Use Cases, Alternatives, and Trade-Offs</h2>
+          <p>
+            Good architects evaluate architectural styles against actual project constraints rather than following trends blindly.
+          </p>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Architecture Style</th>
+                  <th>Best Fit</th>
+                  <th>Strengths</th>
+                  <th>Limitations &amp; Risks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Simple Route-Model (Flat MVC)</strong></td>
+                  <td>Hackathons, internal scripts, 3–5 endpoint prototypes</td>
+                  <td>Fastest initial velocity, minimal boilerplate</td>
+                  <td>High coupling; logic duplicates quickly; hard to unit test without DB</td>
+                </tr>
+                <tr>
+                  <td><strong>Layered Modular Monolith</strong></td>
+                  <td>Most production APIs, SaaS backends, mid-to-large teams</td>
+                  <td>Clear boundaries, easy testing via DI, atomic DB transactions</td>
+                  <td>Requires team discipline to prevent cross-module shortcut imports</td>
+                </tr>
+                <tr>
+                  <td><strong>Hexagonal / Clean Architecture</strong></td>
+                  <td>Complex domains (fintech, compliance, multi-adapter systems)</td>
+                  <td>Domain completely insulated from frameworks and databases</td>
+                  <td>Extra mapper/DTO boilerplate; overkill for basic CRUD</td>
+                </tr>
+                <tr>
+                  <td><strong>Microservices</strong></td>
+                  <td>Large orgs needing independent scaling/deploy cadence per team</td>
+                  <td>Fault isolation, independent tech stacks and scaling</td>
+                  <td>Distributed transactions, network latency, complex observability &amp; ops</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>When to Use Layered + DI Architecture</h3>
+              <ul>
+                <li>Business workflows involve validation, multi-step state transitions, or external integrations.</li>
+                <li>Multiple team members edit the codebase concurrently.</li>
+                <li>You want fast unit tests that run without spinning up MongoDB or PostgreSQL on every check.</li>
+                <li>The same business logic may later be invoked by a background worker or CLI tool.</li>
+              </ul>
+            </div>
+            <div class="decision-card">
+              <h3>When NOT to Over-Abstract</h3>
+              <ul>
+                <li>Building a throwaway spike or 2-route webhook forwarder where 6 files add pure friction.</li>
+                <li>Creating pass-through service methods that blindly wrap single-line repository calls with zero rules and zero anticipated growth.</li>
+                <li>Introducing complex IoC reflection containers when plain constructor arguments suffice.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes, Security, Reliability &amp; Performance</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Passing <code>req</code> and <code>res</code> into the Service Layer</h3>
+              <p><strong>Why it hurts:</strong> Ties business logic to Express HTTP transport, breaking reuse in BullMQ workers, cron tasks, or WebSocket handlers.</p>
+              <p><strong>Fix:</strong> Extract plain primitive or DTO inputs in the controller and return plain data or throw <code>AppError</code> from the service.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Circular Dependencies Between Services</h3>
+              <p><strong>Why it hurts:</strong> <code>OrderService</code> imports <code>UserService</code> while <code>UserService</code> imports <code>OrderService</code>, causing undefined imports at runtime.</p>
+              <p><strong>Fix:</strong> Keep service graphs acyclic (DAG), extract shared logic into a lower-level helper/service, or communicate via domain events.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Anemic Pass-Through Layers Without Validation Boundaries</h3>
+              <p><strong>Why it hurts:</strong> Spreading partial validation across routes, controllers, and schemas leaves gaps where invalid payloads reach databases.</p>
+              <p><strong>Fix:</strong> Validate input shape and types at the HTTP boundary (e.g., Zod/Joi middleware), and enforce domain invariants (stock, permissions, state machines) inside services.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Leaking Internal Errors or Sensitive Fields</h3>
+              <p><strong>Why it hurts:</strong> Returning raw database objects exposes password hashes or internal flags; returning raw driver errors leaks table/collection names.</p>
+              <p><strong>Fix:</strong> Project explicit public DTO fields in repositories/controllers and restrict error responses to safe operational messages in production.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Exercises &amp; Refactoring Milestone</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Refactor a Coupled Express Tasks API</h3>
+            <p>
+              Take a single-file Express app containing routes for <code>POST /api/tasks</code>, <code>PATCH /api/tasks/:id/complete</code>, and <code>GET /api/tasks</code> (where handlers currently call Mongoose directly and catch errors inline). Refactor it into the modular layered architecture learned today:
+            </p>
+            <ol>
+              <li>Create <code>task.repository.js</code> implementing <code>create</code>, <code>findById</code>, <code>markComplete</code>, and <code>listByOwner</code>.</li>
+              <li>Create <code>task.service.js</code> that accepts the repository via constructor injection, enforces ownership checks, and prevents completing an already-completed task (throwing <code>AppError(409)</code>).</li>
+              <li>Create <code>task.controller.js</code> and <code>task.routes.js</code> with zero database imports.</li>
+              <li>Create an <code>InMemoryTaskRepository</code> class matching the repository contract and verify <code>TaskService</code> logic with plain Node assertions without starting a database.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 1 Quiz: Architecture &amp; Design Patterns (10 Questions)</h2>
+          <p>Select one option per question, then click <strong>Check Quiz Answers</strong> for detailed feedback and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="A modular monolith deploys as a single process while enforcing strict boundaries between domain modules so internal models and queries stay isolated.">
+              <p class="quiz-prompt">1. What distinguishes a modular monolith from an unstructured monolith?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Each module runs in a separate Docker container over HTTP.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> It deploys as one application while organizing domains into isolated modules with explicit public interfaces.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> It avoids using a database in favor of in-memory files.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> It puts all routes, validation, and SQL queries inside one index.js file.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Controllers own HTTP transport concerns: extracting inputs from req, calling services, forwarding errors, and formatting HTTP status codes and JSON.">
+              <p class="quiz-prompt">2. In a layered Express backend, which responsibility belongs strictly to the Controller?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Writing MongoDB aggregation pipelines or SQL joins.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Calculating invoice tax rules and discount eligibility.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Parsing HTTP request data, calling the service, and sending the HTTP response.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Configuring database connection pools.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Keeping req and res out of services lets you reuse the exact same business logic from background workers, cron scripts, WebSockets, or unit tests.">
+              <p class="quiz-prompt">3. Why should a Service class NOT accept Express <code>req</code> or <code>res</code> objects as arguments?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> It couples business logic to HTTP, preventing reuse in workers, CLI scripts, and isolated unit tests.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Express forbids passing req outside route callbacks.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Node.js garbage collection fails when req is passed to classes.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Services cannot execute async/await functions if req is passed.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="The Repository Pattern abstracts persistence behind domain-focused data methods so services remain independent of specific ORM or driver query syntax.">
+              <p class="quiz-prompt">4. What is the primary goal of the Repository Pattern?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> To host frontend static assets inside Git repositories.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> To bypass schema validation and insert raw req.body directly.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> To replace HTTP routing middleware.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> To encapsulate database queries behind clean data-access methods decoupled from business services.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Constructor or factory Dependency Injection allows tests and different environments to pass alternate or fake implementations without modifying service code.">
+              <p class="quiz-prompt">5. How does Dependency Injection improve testability in a Node.js service?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> It automatically generates 100% test coverage.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> It allows passing an in-memory fake repository or mock gateway directly into the service constructor.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> It eliminates the need for error handling.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> It compiles JavaScript into native C++ binaries.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Dependency Inversion (D in SOLID) states that high-level business policies should depend on abstractions/contracts rather than concrete low-level database implementations.">
+              <p class="quiz-prompt">6. Which SOLID principle is directly demonstrated when <code>OrderService</code> depends on a repository contract rather than importing Mongoose directly?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Interface Segregation Principle</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Open/Closed Principle</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Dependency Inversion Principle</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Single Responsibility Principle</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Liskov Substitution requires substitutable implementations (like MongoOrderRepository and InMemoryOrderRepository) to honor the same method signatures, return shapes, and error semantics.">
+              <p class="quiz-prompt">7. If <code>InMemoryUserRepo.findById</code> returns <code>undefined</code> when missing while <code>PostgresUserRepo.findById</code> throws an error, which SOLID principle is violated?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Liskov Substitution Principle</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Single Responsibility Principle</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Horizontal Scaling Principle</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Stateless Session Principle</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Organizing by feature keeps routes, controllers, services, and repositories for one domain together, reducing cross-folder jumping as the backend grows.">
+              <p class="quiz-prompt">8. Why do medium-to-large backends often prefer feature-based folder structures over role-based folders?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Node.js cannot resolve relative imports across more than two folders.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Role-based folders are incompatible with Express Router.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> Feature-based folders automatically run in separate threads.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Related files for a domain live together, improving cohesion and making module boundaries clear.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="In an atomic conditional update like findOneAndUpdate({ _id, stock: { $gte: qty } }, { $inc: { stock: -qty } }), the check and decrement happen together on the database server, preventing overselling under concurrent requests.">
+              <p class="quiz-prompt">9. In the refactored stock reservation repository, why is <code>findOneAndUpdate</code> with <code>$gte</code> safer than checking <code>product.stock</code> in JavaScript and then calling <code>save()</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> It avoids creating an index in MongoDB.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> It performs the check and decrement atomically, preventing race-condition overselling.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> It automatically retries failed HTTP requests on the client.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> It converts float currencies to integers.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Returning internal stack traces or database error strings in production leaks schema details to attackers; operational errors return controlled messages while unexpected errors return a generic 500 response.">
+              <p class="quiz-prompt">10. How should centralized error middleware treat an unexpected non-operational database crash in production?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Send the full stack trace and SQL/Mongo query in the JSON response.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Return HTTP 200 with an empty array.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Log full details internally on the server and return a generic safe 500 error message to the client.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> Ignore the error so the request times out silently.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is the difference between coupling and cohesion, and what target state do we want?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Cohesion</strong> measures how closely related the responsibilities inside a single module are. <strong>Coupling</strong> measures how heavily one module depends on the internal details of another. Well-designed backends aim for <strong>high cohesion</strong> inside each module and <strong>loose coupling</strong> between modules.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Explain what a "Composition Root" is in a Node.js application.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A composition root (such as <code>container.js</code> or startup wiring in <code>app.js</code>) is the single top-level location where concrete repositories, external clients, services, and controllers are instantiated and wired together. Lower layers never import or construct their collaborators directly.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why is jumping straight to microservices often harmful for a small team?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Microservices trade in-process function calls for network calls, introducing partial failures, distributed tracing complexity, eventual consistency across separate databases, and heavy deployment pipelines. A modular monolith delivers clean domain separation without distributed systems overhead until scale or team boundaries truly demand splitting.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. How can you apply the Open/Closed Principle to a backend notification feature?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Define a consistent notifier interface (e.g., <code>send({ to, subject, body })</code>) and inject a map or array of channel providers (<code>EmailNotifier</code>, <code>SmsNotifier</code>, <code>WebhookNotifier</code>) into <code>NotificationService</code>. Adding a new channel requires adding a new provider class and registering it in the composition root without modifying core service logic.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why does returning <code>.lean()</code> objects from a Mongoose repository improve architectural cleanliness?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><code>.lean()</code> returns plain JavaScript objects rather than Mongoose Document instances containing <code>.save()</code>, change-tracking getters, and ORM state. This guarantees that services cannot accidentally trigger hidden database writes and keeps the service layer unaware of Mongoose internals.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix the Hidden Coupling and Broken Error Handling</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A junior developer wrote <code>BillingService.charge(req, res)</code> which calls <code>StripeClient</code> created directly inside the method and sends <code>res.status(402).json({ err })</code> on decline. Explain three architectural flaws and show the corrected signature and behavior.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export class BillingService {
+  constructor(paymentGateway, invoiceRepository) {
+    this.paymentGateway = paymentGateway;
+    this.invoiceRepository = invoiceRepository;
+  }
+
+  async chargeInvoice({ invoiceId, paymentMethodId }) {
+    const invoice = await this.invoiceRepository.findById(invoiceId);
+    if (!invoice) {
+      throw new AppError('Invoice not found', 404, 'INVOICE_NOT_FOUND');
+    }
+    const receipt = await this.paymentGateway.charge({
+      amountCents: invoice.amountCents,
+      paymentMethodId
+    });
+    if (!receipt.approved) {
+      throw new AppError('Payment declined', 402, 'PAYMENT_DECLINED');
+    }
+    return this.invoiceRepository.markPaid(invoiceId, receipt.transactionId);
+  }
+}</code></pre>
+                </div>
+                <p><strong>Three flaws fixed:</strong> (1) Removed <code>req</code>/<code>res</code> transport coupling, (2) injected <code>paymentGateway</code> and <code>invoiceRepository</code> instead of instantiating inside the method, and (3) threw structured <code>AppError</code> instead of sending HTTP responses from the service.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Build an In-Memory Repository for Unit Testing</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Implement an <code>InMemoryProductRepository</code> matching <code>MongoProductRepository</code>'s contract (<code>findById</code> and atomic-style <code>reserveStock</code>) so <code>OrderService</code> can be tested with zero database dependency.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export class InMemoryProductRepository {
+  constructor(initialProducts = []) {
+    this.store = new Map(
+      initialProducts.map((item) =&gt; [item._id, { ...item }])
+    );
+  }
+
+  async findById(productId) {
+    const item = this.store.get(productId);
+    return item ? { ...item } : null;
+  }
+
+  async reserveStock(productId, quantity) {
+    const item = this.store.get(productId);
+    if (!item || item.stock &lt; quantity) {
+      return null;
+    }
+    item.stock -= quantity;
+    return { ...item };
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Structure a Multi-Channel Notification Module</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Design the module structure and interfaces for a system that sends order confirmations via Email immediately, and later needs SMS and Push notifications added without changing <code>OrderService</code>.</p>
+                <p><strong>Reference Architecture:</strong> Inject a single <code>notificationPublisher</code> port into <code>OrderService</code>. At startup, <code>NotificationDispatcher</code> receives an array/map of channel adapters (<code>EmailChannel</code>, <code>SmsChannel</code>, <code>PushChannel</code>), each implementing <code>supports(preference)</code> and <code>deliver(payload)</code>. Adding a new channel is an additive change (Open/Closed Principle) wired in <code>container.js</code>, leaving <code>OrderService</code> untouched.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 1 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Modular monoliths</strong> provide clean domain separation without premature microservice network and operational overhead.</li>
+              <li><strong>Layered separation</strong> assigns HTTP parsing to controllers, business rules to services, and query mechanics to repositories.</li>
+              <li><strong>Dependency Injection</strong> in JavaScript requires no complex frameworks—pass collaborators via constructors/factories from a single composition root.</li>
+              <li><strong>SOLID principles</strong> translate directly to backend Node.js: focused layers (SRP), pluggable adapters (OCP), consistent repository contracts (LSP), lean interfaces (ISP), and abstract dependencies (DIP).</li>
+              <li><strong>Operational error handling</strong> separates predictable client/domain failures from unexpected crashes so sensitive internals are never exposed.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 1 Architecture Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 1 Advanced Backend Architecture and Design Patterns visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 1 local visual reference (<code>Day 1/image.webp</code>). Review how routes, controllers, services, repositories, and injected dependencies align.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <button type="button" class="pagination-btn is-disabled" disabled aria-disabled="true">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">Start of Phase 6</span>
+          </button>
+          <a href="../Day 2/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 2: Scalable Backend Systems &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 2/index.html">Day 2: Scalability</a></li>
+          <li><a href="../Day 4/index.html">Day 4: Redis Caching</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

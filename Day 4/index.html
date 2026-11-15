@@ -1,0 +1,1061 @@
+I cannot generate a direct downloadable .zip file attachment in this chat, so
+here are all three complete files for Day 4: Caching with Redis in full—ready to
+copy and save into your Phase 6/Day 4/ folder.
+
+1. Phase 6/Day 4/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 4: Caching with Redis. Learn cache-aside, read-through, write-through, TTLs, cache invalidation, Redis data types, cache consistency, and practical Express caching.">
+  <title>Day 4: Caching with Redis | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="4">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 4: Caching with Redis</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html" selected>Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 3/index.html" class="nav-step-btn" title="Go to Day 3">Prev</a>
+            <a href="../Day 5/index.html" class="nav-step-btn" title="Go to Day 5">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 4 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 04</span>
+          <span class="category-pill">Distributed Caching &amp; Redis</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="4" aria-pressed="false">Mark Day 4 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Caching with Redis</h1>
+        <p class="lesson-intro">
+          Even well-indexed database queries perform disk reads, query planning, and lock checks on every request. When thousands of users request the same catalog items, configuration, or dashboard summaries repeatedly, recomputing the exact same result wastes database capacity. Today you will learn how Redis caching works, how to design keys and TTLs safely, how invalidation prevents stale bugs, and how to integrate cache-aside caching into Express.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2 &amp; 3</span>
+            <p>Shared Redis caching keeps horizontally scaled Node instances stateless while slashing read latency from tens of milliseconds to ~1–2ms.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Caching is a controlled trade-off between speed and freshness. Every cached entry needs an explicit key design, TTL, and invalidation plan.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Implement a fault-tolerant Redis cache service and add cache-aside reads with write invalidation to an Express product API.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Hit &amp; Miss Lifecycle</a>
+            <a href="#diagrams">Caching Diagrams</a>
+            <a href="#implementation">Express + Redis Implementation</a>
+            <a href="#real-world">Patterns &amp; Data Types</a>
+            <a href="#mistakes-security">Consistency &amp; Pitfalls</a>
+            <a href="#practical-task">Practical Caching Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Redis (Remote Dictionary Server) is an in-memory key-value data store shared across backend instances. Because data lives in RAM and Redis executes commands on a single fast event loop without complex SQL joins or disk seeks on reads, lookups routinely finish in under a millisecond inside the same data center.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Apply Caching Patterns</h3>
+              <p>Implement Cache-Aside in Node.js and distinguish it from Read-Through and Write-Through architectures.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design Keys, TTLs &amp; Invalidation</h3>
+              <p>Construct collision-free cache keys, choose practical expiration windows, and invalidate stale entries cleanly.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Use Core Redis Data Types</h3>
+              <p>Choose appropriately between Strings, Hashes, Lists, Sets, and Sorted Sets for backend scenarios.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Prevent Caching Failures</h3>
+              <p>Guard against cache stampedes, cache penetration, cross-user data leaks, and blocking <code>KEYS *</code> scans.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Caching &amp; Redis Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Why Caching Is Needed</h3>
+            <p>
+              Most real-world applications follow a skewed read pattern: 80–95% of traffic reads a relatively small subset of popular items (homepage feeds, product details, public profiles, exchange rates, feature flags). Caching stores the computed or queried result in fast RAM so repeated requests bypass heavy database joins, aggregations, or external third-party API calls.
+            </p>
+            <p>
+              Unlike Day 2's warning against in-memory Node.js Maps, <strong>Redis sits outside your web processes</strong>. Every horizontally scaled Express container reads and writes the exact same shared cache tier.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. The Cache-Aside (Lazy Loading) Pattern</h3>
+            <p>
+              Cache-aside is the most common caching pattern in Node.js backends because your application code stays in full control:
+            </p>
+            <ol>
+              <li>The service asks Redis for a key (e.g., <code>v1:product:42</code>).</li>
+              <li><strong>Cache Hit:</strong> Redis returns the serialized payload, and the API responds immediately without touching the database.</li>
+              <li><strong>Cache Miss:</strong> The service queries the primary database, writes the result into Redis with an expiration time (TTL), and returns the data.</li>
+              <li><strong>On Write/Update:</strong> The service updates the primary database and deletes (invalidates) the affected cache key so the next read fetches fresh data.</li>
+            </ol>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Read-Through and Write-Through Concepts</h3>
+            <p>
+              In <strong>Read-Through</strong> caching, the application talks only to a cache provider/library; on a miss, the cache layer itself knows how to fetch from the database, populate itself, and return the record.
+            </p>
+            <p>
+              In <strong>Write-Through</strong> caching, every database write goes synchronously through the cache layer, updating both the cache and the database before confirming success. This keeps cached reads consistently fresh, at the cost of slightly higher write latency and storing items in RAM that may never be read again unless paired with TTLs.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Cache Keys and Expiration</h3>
+            <p>
+              Well-structured keys prevent silent collisions and simplify debugging. Follow a predictable namespace convention including schema version, domain, and normalized parameters:
+            </p>
+            <ul>
+              <li><code>v1:product:65f1a9c2</code> — single entity key.</li>
+              <li><code>v1:catalog:cat=electronics:page=1:limit=20</code> — list/query key with sorted query parameters so <code>?page=1&amp;cat=books</code> and <code>?cat=books&amp;page=1</code> reuse the same cache entry.</li>
+              <li><code>v1:user:891:permissions</code> — user-scoped key (must include user or tenant ID!).</li>
+            </ul>
+            <p>
+              Including a version prefix like <code>v1:</code> allows instant logical invalidation across the entire app when you deploy a breaking response shape change—simply bump the prefix to <code>v2:</code>.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. TTL and Cache Invalidation</h3>
+            <p>
+              Every cached key should have a <strong>Time To Live (TTL)</strong> (set via Redis <code>EX</code> or <code>PX</code>). TTL acts as both a memory safeguard (preventing unbounded RAM growth) and an upper bound on how long stale data can survive if an invalidation event fails.
+            </p>
+            <p>
+              Choose TTL based on staleness tolerance: 30 seconds for live dashboards, 5–15 minutes for product descriptions, or 24 hours for static country lists. When updating a record, prefer <strong>deleting the key (<code>DEL</code>)</strong> rather than updating its value blindly in Redis, because concurrent writes can overwrite each other out of order.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Redis Data Types at a Practical Level</h3>
+            <p>Redis is far more capable than a plain JSON string store. Five foundational data types cover most backend needs:</p>
+            <div class="table-wrap">
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Redis Type</th>
+                    <th>Key Commands</th>
+                    <th>Ideal Backend Use Cases</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>String</strong></td>
+                    <td><code>GET</code>, <code>SET EX</code>, <code>INCR</code>, <code>SET NX</code></td>
+                    <td>Serialized JSON API responses, atomic rate-limit counters, distributed locks, idempotency keys</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hash</strong></td>
+                    <td><code>HGET</code>, <code>HSET</code>, <code>HGETALL</code>, <code>HINCRBY</code></td>
+                    <td>Structured objects (user session attributes, shopping carts, feature flags) where single fields update independently</td>
+                  </tr>
+                  <tr>
+                    <td><strong>List</strong></td>
+                    <td><code>LPUSH</code>, <code>RPOP</code>, <code>LRANGE</code>, <code>LTRIM</code></td>
+                    <td>Simple job queues, capped recent activity feeds (last 20 notifications)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Set</strong></td>
+                    <td><code>SADD</code>, <code>SISMEMBER</code>, <code>SREM</code></td>
+                    <td>Unique tags, active user IDs in a room, token revocation checks</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sorted Set (ZSET)</strong></td>
+                    <td><code>ZADD</code>, <code>ZRANGE</code>, <code>ZREMRANGEBYSCORE</code></td>
+                    <td>Leaderboards, priority queues, sliding-window rate limiters scored by timestamp</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Caching API Responses vs. Service-Layer Data</h3>
+            <p>
+              You can cache at the <strong>HTTP response middleware level</strong> (keyed by method + normalized URL) or at the <strong>service/repository level</strong> (caching domain objects like product details or user permissions).
+            </p>
+            <p>
+              Service-layer caching is usually more flexible: multiple endpoints (for example, product detail page, cart validator, and invoice builder) all benefit from the same cached product lookup, and invalidation happens cleanly right where writes occur. HTTP middleware caching works best for public, unauthenticated read endpoints with identical responses for everyone.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Cache Consistency &amp; Common Failure Modes</h3>
+            <ul>
+              <li><strong>Cache Stampede (Thundering Herd):</strong> When a popular key expires, 500 concurrent requests miss at once and all 500 hammer the database simultaneously. Mitigate with <em>TTL jitter</em> (adding random ±10% seconds to TTL), mutex/single-flight locking, or background pre-refresh.</li>
+              <li><strong>Cache Penetration:</strong> Malicious or buggy clients repeatedly request non-existent IDs (<code>/products/invalid-999</code>). Every lookup misses Redis and hits the database. Fix by caching a short-TTL null sentinel (e.g., 30s) or validating ID format before querying.</li>
+              <li><strong>Thundering Eviction:</strong> Under memory pressure, Redis evicts keys according to its <code>maxmemory-policy</code> (commonly <code>allkeys-lru</code> or <code>volatile-lru</code> for pure caches). Never store irreplaceable primary data in a Redis instance configured with an eviction policy.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Cache Hit, Miss, and Invalidation Flow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Normalize Key:</strong> Construct a deterministic key (e.g., <code>v1:product:p_104</code>) before querying Redis.
+            </li>
+            <li>
+              <strong>Attempt Redis Read (Fail-Open):</strong> Call <code>redis.get(key)</code> inside a <code>try/catch</code> with a tight command timeout. If Redis is temporarily unreachable, log a warning and fall through to the database rather than returning 500 errors.
+            </li>
+            <li>
+              <strong>Hit Path:</strong> Parse JSON and return immediately, optionally attaching an observability header like <code>X-Cache: HIT</code> during testing/staging.
+            </li>
+            <li>
+              <strong>Miss Path:</strong> Query the primary database, store the serialized result in Redis with <code>SET key value EX ttlWithJitter</code>, and return the response (<code>X-Cache: MISS</code>).
+            </li>
+            <li>
+              <strong>Write Invalidation:</strong> After a successful <code>PATCH</code> or <code>DELETE</code> commits to the primary database, call <code>redis.del(key)</code> so stale values are cleared immediately.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Caching Pattern Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Cache-Aside Read &amp; Write Invalidation Flow</h3>
+            <p class="diagram-caption">
+              Reads check Redis first and populate on miss; writes update the primary database first and delete the stale cache key afterward.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 240" class="arch-svg" role="img" aria-label="Cache-aside flow showing Express service checking Redis first, falling back to MongoDB on miss, writing to Redis with TTL, and deleting key on updates">
+                <defs>
+                  <marker id="arrow-cache" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="20" y="88" width="128" height="62" rx="10" class="svg-box-blue"></rect>
+                <text x="84" y="115" text-anchor="middle" class="svg-title">Express Service</text>
+                <text x="84" y="133" text-anchor="middle" class="svg-sub">GET /products/:id</text>
+
+                <line x1="148" y1="104" x2="226" y2="54" class="svg-arrow" marker-end="url(#arrow-cache)"></line>
+                <text x="166" y="64" class="svg-sub">1. GET key</text>
+
+                <rect x="230" y="18" width="210" height="64" rx="10" class="svg-box-accent"></rect>
+                <text x="335" y="45" text-anchor="middle" class="svg-title">Redis Cache (RAM)</text>
+                <text x="335" y="63" text-anchor="middle" class="svg-sub">HIT -&gt; Return ~1ms</text>
+
+                <line x1="148" y1="134" x2="226" y2="184" class="svg-arrow" marker-end="url(#arrow-cache)"></line>
+                <text x="150" y="176" class="svg-sub">2. On MISS</text>
+
+                <rect x="230" y="156" width="210" height="64" rx="10" class="svg-box-muted"></rect>
+                <text x="335" y="183" text-anchor="middle" class="svg-title">Primary Database</text>
+                <text x="335" y="201" text-anchor="middle" class="svg-sub">Query Record (~25ms)</text>
+
+                <line x1="335" y1="156" x2="335" y2="86" class="svg-arrow" marker-end="url(#arrow-cache)"></line>
+                <text x="344" y="124" class="svg-sub">3. SET EX ttl</text>
+
+                <rect x="492" y="42" width="248" height="156" rx="10" class="svg-box-muted"></rect>
+                <text x="616" y="76" text-anchor="middle" class="svg-title">On PATCH / DELETE Write</text>
+                <text x="616" y="102" text-anchor="middle" class="svg-sub">Step A: Update Primary DB</text>
+                <text x="616" y="124" text-anchor="middle" class="svg-sub">Step B: DEL v1:product:&lt;id&gt;</text>
+                <text x="616" y="152" text-anchor="middle" class="svg-sub">Next GET misses &amp; reloads</text>
+                <text x="616" y="172" text-anchor="middle" class="svg-sub">fresh state cleanly</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Cache-Aside vs. Read-Through vs. Write-Through</h3>
+            <p class="diagram-caption">
+              In Cache-Aside, application code coordinates Redis and the DB directly; in Read/Write-Through, the cache layer acts as the sole data proxy.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 170" class="arch-svg" role="img" aria-label="Comparison of Cache-Aside where app talks to both cache and DB versus Read-Through and Write-Through where app talks only to the cache provider">
+                <rect x="20" y="22" width="340" height="126" rx="10" class="svg-box-muted"></rect>
+                <text x="190" y="48" text-anchor="middle" class="svg-title">Cache-Aside (App Coordinates)</text>
+                <rect x="40" y="68" width="90" height="58" rx="8" class="svg-box-blue"></rect>
+                <text x="85" y="101" text-anchor="middle" class="svg-sub">App Service</text>
+                <rect x="150" y="62" width="90" height="32" rx="6" class="svg-box-accent"></rect>
+                <text x="195" y="82" text-anchor="middle" class="svg-sub">Redis</text>
+                <rect x="150" y="102" width="90" height="32" rx="6" class="svg-box-muted"></rect>
+                <text x="195" y="122" text-anchor="middle" class="svg-sub">Database</text>
+                <text x="298" y="96" text-anchor="middle" class="svg-sub">Flexible</text>
+                <text x="298" y="113" text-anchor="middle" class="svg-sub">Fail-open</text>
+
+                <rect x="396" y="22" width="344" height="126" rx="10" class="svg-box-muted"></rect>
+                <text x="568" y="48" text-anchor="middle" class="svg-title">Read / Write-Through (Cache Proxies DB)</text>
+                <rect x="416" y="72" width="90" height="50" rx="8" class="svg-box-blue"></rect>
+                <text x="461" y="101" text-anchor="middle" class="svg-sub">App Service</text>
+                <rect x="526" y="72" width="94" height="50" rx="8" class="svg-box-accent"></rect>
+                <text x="573" y="101" text-anchor="middle" class="svg-sub">Cache Layer</text>
+                <rect x="640" y="72" width="84" height="50" rx="8" class="svg-box-muted"></rect>
+                <text x="682" y="101" text-anchor="middle" class="svg-sub">Database</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Adding Redis Cache-Aside to an Express API</h2>
+          <p>
+            Following Day 1's architecture principles, we isolate Redis behind a dedicated <code>CacheService</code> and inject it into our product service. Notice how every Redis operation is wrapped safely so a Redis hiccup never breaks API availability.
+          </p>
+
+          <h3>Step 1: Build a Fault-Tolerant Cache Service with TTL Jitter</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/cache/cache.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { createClient } from 'redis';
+
+export async function createRedisConnection() {
+  const client = createClient({
+    url: process.env.REDIS_URL,
+    socket: {
+      connectTimeout: 3000,
+      reconnectStrategy: (retries) =&gt; Math.min(retries * 100, 3000)
+    }
+  });
+
+  client.on('error', (err) =&gt; {
+    console.error('Redis client error:', err.message);
+  });
+
+  await client.connect();
+  return client;
+}
+
+export class CacheService {
+  constructor(redisClient, namespace = 'v1') {
+    this.redis = redisClient;
+    this.namespace = namespace;
+  }
+
+  buildKey(rawKey) {
+    return `${this.namespace}:${rawKey}`;
+  }
+
+  withJitter(baseTtlSeconds) {
+    const jitterWindow = Math.max(1, Math.floor(baseTtlSeconds * 0.1));
+    const offset = Math.floor(Math.random() * jitterWindow);
+    return baseTtlSeconds + offset;
+  }
+
+  async getJson(rawKey) {
+    if (!this.redis || !this.redis.isReady) {
+      return null;
+    }
+    try {
+      const cached = await this.redis.get(this.buildKey(rawKey));
+      return cached ? JSON.parse(cached) : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async setJson(rawKey, value, ttlSeconds = 300) {
+    if (!this.redis || !this.redis.isReady) {
+      return;
+    }
+    try {
+      const ttl = this.withJitter(ttlSeconds);
+      await this.redis.set(this.buildKey(rawKey), JSON.stringify(value), { EX: ttl });
+    } catch (err) {
+    }
+  }
+
+  async del(rawKey) {
+    if (!this.redis || !this.redis.isReady) {
+      return;
+    }
+    try {
+      await this.redis.del(this.buildKey(rawKey));
+    } catch (err) {
+    }
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Integrate Cache-Aside &amp; Invalidation in the Service Layer</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/products/product.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { AppError } from '../../shared/errors/AppError.js';
+
+export class ProductService {
+  constructor({ productRepository, cacheService }) {
+    this.productRepository = productRepository;
+    this.cacheService = cacheService;
+  }
+
+  productKey(productId) {
+    return `product:${productId}`;
+  }
+
+  async getProductById(productId) {
+    const cacheKey = this.productKey(productId);
+    const cached = await this.cacheService.getJson(cacheKey);
+    if (cached !== null) {
+      if (cached.__notFound) {
+        throw new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND');
+      }
+      return { product: cached, cacheStatus: 'HIT' };
+    }
+
+    const product = await this.productRepository.findById(productId);
+    if (!product) {
+      await this.cacheService.setJson(cacheKey, { __notFound: true }, 30);
+      throw new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND');
+    }
+
+    await this.cacheService.setJson(cacheKey, product, 300);
+    return { product, cacheStatus: 'MISS' };
+  }
+
+  async updateProduct(productId, updates) {
+    const updated = await this.productRepository.updateById(productId, updates);
+    if (!updated) {
+      throw new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND');
+    }
+
+    await this.cacheService.del(this.productKey(productId));
+    return updated;
+  }
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Expose Cache Status cleanly in the Express Controller</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/modules/products/product.controller.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export class ProductController {
+  constructor(productService) {
+    this.productService = productService;
+  }
+
+  getOne = async (req, res, next) =&gt; {
+    try {
+      const { product, cacheStatus } = await this.productService.getProductById(req.params.id);
+      res.set('X-Cache', cacheStatus);
+      res.status(200).json({ status: 'success', data: product });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  patchOne = async (req, res, next) =&gt; {
+    try {
+      const updated = await this.productService.updateProduct(req.params.id, req.body);
+      res.status(200).json({ status: 'success', data: updated });
+    } catch (err) {
+      next(err);
+    }
+  };
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Fail-Open Guard (<code>if (!this.redis || !this.redis.isReady)</code>):</strong> A cache is an optimization, not a single point of failure. If Redis restarts, read traffic safely degrades to database queries.</li>
+              <li><strong>TTL Jitter (<code>withJitter</code>):</strong> Spreads expiration times slightly so 1,000 keys populated during a startup burst do not expire on the exact same second.</li>
+              <li><strong>Negative Caching (<code>{ __notFound: true }</code> for 30s):</strong> Prevents repeated requests for missing product IDs from hammering the database (mitigating cache penetration). Just remember to call <code>del</code> if a missing key is later created!</li>
+              <li><strong>Write-Then-Delete Order:</strong> Updating the database first and deleting the cache key second narrows the window for stale data compared to updating the cache directly.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Pattern Comparison &amp; When to Cache</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Pattern</th>
+                  <th>Read Path</th>
+                  <th>Write Path</th>
+                  <th>Trade-Offs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Cache-Aside</strong></td>
+                  <td>App checks Redis, falls back to DB, populates Redis</td>
+                  <td>App writes DB, deletes cache key</td>
+                  <td>Simple, resilient, only caches requested items; brief window of stale data possible on concurrent writes</td>
+                </tr>
+                <tr>
+                  <td><strong>Read-Through</strong></td>
+                  <td>App queries cache provider; provider loads DB on miss</td>
+                  <td>Depends on write policy (often paired with write-through)</td>
+                  <td>Cleaner app code, requires cache-aware plugin/proxy layer</td>
+                </tr>
+                <tr>
+                  <td><strong>Write-Through</strong></td>
+                  <td>Reads hit warm cache frequently</td>
+                  <td>Cache writes synchronously to DB and updates itself</td>
+                  <td>Stronger cache freshness, slower writes and wastes RAM on rarely read writes unless TTLs prune cold keys</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>Great Candidates for Redis Caching</h3>
+              <ul>
+                <li>Product catalogs, blog posts, public profiles, and configuration settings.</li>
+                <li>Expensive analytics aggregations that can tolerate 1–5 minutes of staleness.</li>
+                <li>Authenticated user permission maps (keyed by <code>userId</code> and invalidated on role changes).</li>
+                <li>External third-party API responses (currency rates, weather, geocoding).</li>
+              </ul>
+            </div>
+            <div class="decision-card">
+              <h3>Poor Candidates (Do NOT Cache Blindly)</h3>
+              <ul>
+                <li>Real-time financial account balances or inventory stock checks during checkout (must be atomic in DB!).</li>
+                <li>Write-heavy data that mutates faster than it is read (cache hit ratio stays near 0%).</li>
+                <li>Sensitive user-private endpoints unless user/tenant ID is explicitly part of the cache key.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes, Security &amp; Reliability</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Running <code>KEYS pattern*</code> to Invalidate Lists in Production</h3>
+              <p><strong>Availability risk:</strong> Redis executes commands sequentially on one main thread. Scanning 1,000,000 keys with <code>KEYS *</code> blocks every Redis client in the entire cluster for hundreds of milliseconds or seconds.</p>
+              <p><strong>Fix:</strong> Track explicit keys, use versioned prefix keys (bump a catalog epoch number stored in Redis), or use non-blocking cursor-based <code>SCAN</code> sparingly.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Omitting User/Tenant ID from Personalized Cache Keys</h3>
+              <p><strong>Critical Security leak:</strong> Caching <code>GET /api/orders</code> under <code>cache:orders:page=1</code> returns User A's private orders to User B!</p>
+              <p><strong>Fix:</strong> Always include <code>userId</code> or <code>tenantId</code> in keys for non-public data, and never apply generic public HTTP cache middleware to authenticated routes without scoping.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Forgetting TTLs or Unbounded Key Growth</h3>
+              <p><strong>Reliability risk:</strong> Keys without expiration accumulate until Redis hits <code>maxmemory</code> and either rejects writes or evicts critical session keys if shared on the same instance.</p>
+              <p><strong>Fix:</strong> Always set explicit TTLs on cache keys and separate ephemeral cache Redis instances from durable session/queue Redis instances when workloads grow.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Caching Unnormalized Query Parameter Combinations</h3>
+              <p><strong>Efficiency risk:</strong> Treating raw <code>req.originalUrl</code> as a key means <code>?sort=asc&amp;page=1</code> and <code>?page=1&amp;sort=asc</code> create duplicate entries and slash your cache hit ratio.</p>
+              <p><strong>Fix:</strong> Whitelist allowed query parameters, apply defaults, and sort parameter names deterministically before building the key.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Implementation Milestone</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Add Redis Cache-Aside to a Catalog Endpoint</h3>
+            <p>
+              In an Express + MongoDB (or mock repository) API containing <code>GET /api/articles/:id</code> and <code>PATCH /api/articles/:id</code>:
+            </p>
+            <ol>
+              <li>Connect a Redis client using <code>process.env.REDIS_URL</code> and build the <code>CacheService</code> wrapper.</li>
+              <li>Implement cache-aside lookup in <code>getArticleById</code> with a 180-second base TTL + jitter, returning <code>X-Cache: HIT</code> or <code>X-Cache: MISS</code>.</li>
+              <li>Invalidate the article key via <code>DEL</code> whenever <code>PATCH</code> or <code>DELETE</code> updates the record.</li>
+              <li>Verify manually with <code>curl -i</code> that the first <code>GET</code> returns <code>X-Cache: MISS</code>, the second returns <code>X-Cache: HIT</code>, and a subsequent <code>PATCH</code> causes the next <code>GET</code> to return <code>X-Cache: MISS</code> with fresh data.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 4 Quiz: Caching with Redis (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for immediate feedback and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="In Cache-Aside, application code checks Redis first, queries the DB only on miss, stores the result with a TTL, and returns it.">
+              <p class="quiz-prompt">1. Which sequence accurately describes a cache miss under the Cache-Aside pattern?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Return HTTP 404 immediately without querying the database.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Query the primary database, store the result in Redis with a TTL, and return the data to the client.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Flush all keys in Redis and restart the Express server.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> Wait for a cron job to populate Redis overnight.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="KEYS * scans the entire keyspace synchronously on Redis's single command thread, stalling all concurrent requests.">
+              <p class="quiz-prompt">2. Why should you avoid running <code>KEYS *</code> in a production Redis instance?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> It permanently deletes all hashes and lists.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Redis does not support string matching.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> It blocks Redis's single-threaded command loop while scanning every key in memory.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> It forces Express to disable gzip compression.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="d" data-explanation="Caching authenticated or user-specific data without user/tenant scope in the cache key leaks User A's private data to User B.">
+              <p class="quiz-prompt">3. What is the security danger of caching <code>GET /api/invoices</code> under the key <code>v1:invoices:page=1</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Redis rejects keys containing colons.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> The JSON payload becomes twice as large.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> MongoDB deletes the invoices collection.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> One user's private invoices may be served to another user who hits the same shared cache key.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="a" data-explanation="Sorted Sets (ZSET) associate each member with a numeric score, making leaderboards and timestamp-scored sliding windows fast and natural.">
+              <p class="quiz-prompt">4. Which Redis data type is best suited for maintaining a real-time top-100 player leaderboard or timestamp-ordered sliding window?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Sorted Set (ZSET)</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Plain String</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Unordered Set</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Local Node Map</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="TTL jitter adds slight randomness to expiration durations so large batches of keys do not expire at the exact same second and trigger a database stampede.">
+              <p class="quiz-prompt">5. Why do production caches add small random jitter to TTL values?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> To encrypt cached values automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> To prevent many keys from expiring simultaneously and overwhelming the database at once.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Because Redis requires odd-numbered TTLs.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> To bypass HTTP CORS checks.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Cache penetration occurs when repeated queries for non-existent keys always miss the cache and hit the DB; negative caching (short-TTL sentinel) mitigates it.">
+              <p class="quiz-prompt">6. How does caching a short-TTL null/not-found sentinel mitigate cache penetration?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> It permanently removes the endpoint from Express.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> It doubles the database connection pool size.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Repeated requests for missing IDs are absorbed by Redis for a short window instead of repeatedly hitting the database.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> It skips schema validation on POST routes.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="d" data-explanation="In Write-Through caching, writes update both the cache and the database synchronously, keeping the cache warm and fresh at the cost of higher write latency.">
+              <p class="quiz-prompt">7. What is a primary trade-off of the Write-Through caching strategy?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Data is never saved to the database.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> It cannot work with TTL expiration.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Reads must bypass the cache entirely.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Write latency increases slightly and rarely-read written items still occupy cache RAM.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="a" data-explanation="Bumping a version prefix like v1: to v2: switches active reads to fresh keys immediately without running expensive mass deletions.">
+              <p class="quiz-prompt">8. Why is including a version prefix (such as <code>v1:</code>) inside Redis keys considered good practice?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> When deploying a breaking cached payload structure, bumping the prefix cleanly isolates new data from old entries.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Redis refuses to store JSON without a prefix.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> It compresses values automatically using Brotli.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> It eliminates the need for TTLs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Read caches should fail open: if Redis is down briefly, log the issue and fall back to querying the database so the API keeps serving users.">
+              <p class="quiz-prompt">9. What should happen when a non-critical Redis read cache temporarily disconnects during a read request?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Crash the Node.js process immediately.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Log the error and gracefully fall back to the primary database (fail-open).</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Return an empty array with HTTP 200.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Disable HTTPS on the load balancer.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Deleting the key after committing the DB write forces the next read to reload authoritative state and avoids out-of-order concurrent cache overwrites.">
+              <p class="quiz-prompt">10. Why do most Cache-Aside implementations call <code>DEL</code> on update rather than calling <code>SET</code> with the new object?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Redis does not allow overwriting an existing key with SET.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> DEL uses 10x less network bandwidth than GET.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Deleting avoids leaving stale cached values if two concurrent updates finish out of order, and avoids caching data nobody reads next.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> SET cannot accept a TTL argument.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Explain the difference between Cache Stampede and Cache Penetration.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A <strong>cache stampede</strong> happens when a popular existing key expires and many concurrent requests miss simultaneously, all querying the database at once to recompute it. <strong>Cache penetration</strong> happens when requests target non-existent keys that are never cached, causing every single request to bypass Redis and hit the database.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. When would you choose a Redis Hash over a serialized JSON String?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Use a Redis <strong>Hash</strong> when you frequently need to read or atomically increment individual fields of an object (like a cart item quantity or user session flags via <code>HINCRBY</code> / <code>HGET</code>) without downloading, parsing, modifying, and re-serializing the entire JSON blob.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should query parameters be sorted and whitelisted before forming a cache key?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Sorting parameters ensures <code>?cat=books&amp;page=2</code> and <code>?page=2&amp;cat=books</code> map to one shared key instead of duplicating cache entries. Whitelisting ignores arbitrary tracking parameters (like <code>?utm_source=...</code> or random cache-buster strings) that would otherwise fragment the cache and allow attackers to fill Redis memory.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why is it risky to host critical job queues and read-only caches inside the exact same Redis instance with <code>allkeys-lru</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Under <code>allkeys-lru</code>, when memory fills up, Redis can evict <em>any</em> key—including active queue jobs, distributed locks, or session tokens! Caches should use eviction policies on dedicated cache instances, while queues and durable state belong on Redis instances configured with <code>noeviction</code> and persistence.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why is checkout stock validation a bad fit for serving solely from a 5-minute Redis cache?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Stock availability changes rapidly and requires strict transactional consistency to prevent overselling. A 5-minute cached stock count would allow customers to purchase items that already sold out seconds earlier; checkout reservations must happen atomically against the primary database.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Broken Cache Key Normalization &amp; Privacy Leak</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A developer added caching middleware to <code>GET /api/orders</code> using <code>const key = `cache:${req.originalUrl}`</code>. Identify the two serious bugs and write a safe key builder function.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function buildOrdersCacheKey({ userId, query }) {
+  const status = typeof query.status === 'string' ? query.status.trim() : 'all';
+  const page = Math.max(1, Number.parseInt(query.page, 10) || 1);
+  const limit = Math.min(50, Math.max(1, Number.parseInt(query.limit, 10) || 20));
+  return `v1:user:${userId}:orders:limit=${limit}:page=${page}:status=${status}`;
+}</code></pre>
+                </div>
+                <p><strong>Bugs fixed:</strong> (1) Scoped key by <code>userId</code> so users never read each other's orders; (2) whitelisted, defaulted, and clamped query parameters in canonical alphabetical order so random query strings cannot pollute Redis memory or lower hit rates.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): In-Process Single-Flight Guard Against Cache Stampedes</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a <code>getOrLoadSingleFlight(key, ttlSeconds, loaderFn)</code> method that deduplicates concurrent cache-miss database calls within a Node.js instance using an in-flight Promise map before writing to Redis.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export class CoalescingCache extends CacheService {
+  constructor(redisClient, namespace = 'v1') {
+    super(redisClient, namespace);
+    this.inFlight = new Map();
+  }
+
+  async getOrLoad(rawKey, ttlSeconds, loaderFn) {
+    const cached = await this.getJson(rawKey);
+    if (cached !== null) {
+      return cached;
+    }
+
+    if (this.inFlight.has(rawKey)) {
+      return this.inFlight.get(rawKey);
+    }
+
+    const loadPromise = (async () =&gt; {
+      try {
+        const freshValue = await loaderFn();
+        await this.setJson(rawKey, freshValue, ttlSeconds);
+        return freshValue;
+      } finally {
+        this.inFlight.delete(rawKey);
+      }
+    })();
+
+    this.inFlight.set(rawKey, loadPromise);
+    return loadPromise;
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Invalidating Paginated List Caches Without <code>KEYS *</code></span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> You cache paginated product lists under keys like <code>v1:products:page=1:sort=price</code>, <code>page=2</code>, and 15 filter combinations. When an admin adds or edits a product, deleting every unknown filter combination is hard. Design an <code>O(1)</code> invalidation approach without <code>KEYS *</code>.</p>
+                <p><strong>Reference Architecture:</strong> Use a <strong>namespace epoch / generation counter</strong> stored in Redis (e.g., <code>epoch:products</code> = <code>17</code>). Every list cache key embeds that epoch: <code>v1:products:e17:page=1:sort=price</code>. When an admin updates or creates any product, execute a single <code>INCR epoch:products</code> (now <code>18</code>). All subsequent list reads automatically look up <code>e18</code> keys and miss cleanly, while old <code>e17</code> keys expire automatically via their TTL!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 4 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Redis</strong> provides fast, shared in-memory storage across stateless Express replicas.</li>
+              <li><strong>Cache-Aside</strong> checks Redis first, loads DB on miss with TTL, and invalidates via <code>DEL</code> on writes.</li>
+              <li><strong>Key design</strong> requires namespace versions, canonical sorted parameters, and explicit user/tenant scoping for private data.</li>
+              <li><strong>Redis types</strong> (<code>String</code>, <code>Hash</code>, <code>List</code>, <code>Set</code>, <code>ZSET</code>) solve distinct caching, counter, and ranking tasks cleanly.</li>
+              <li><strong>Resilience</strong> means failing open if cache is unreachable, adding TTL jitter, guarding against penetration, and never running <code>KEYS *</code> in production.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 4 Redis Caching Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 4 Caching with Redis visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 4 local visual reference (<code>Day 4/image.webp</code>). Review cache-aside hit/miss routing, TTL expiration, and write invalidation.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 3/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 3: Performance Optimization</span>
+          </a>
+          <a href="../Day 5/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 5: Background Jobs &amp; Task Scheduling &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 4/index.html">Day 4: Redis Caching</a></li>
+          <li><a href="../Day 5/index.html">Day 5: Background Jobs</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+

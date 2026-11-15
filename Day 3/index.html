@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 3: Performance Optimization. Learn bottleneck analysis, Node.js event loop implications, avoiding blocking operations, efficient async code, pagination, compression, and profiling.">
+  <title>Day 3: Performance Optimization | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="3">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 3: Performance Optimization</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html" selected>Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 2/index.html" class="nav-step-btn" title="Go to Day 2">Prev</a>
+            <a href="../Day 4/index.html" class="nav-step-btn" title="Go to Day 4">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 3 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 03</span>
+          <span class="category-pill">Performance &amp; Profiling</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="3" aria-pressed="false">Mark Day 3 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Performance Optimization</h1>
+        <p class="lesson-intro">
+          Scaling horizontally onto more servers without optimizing single-instance efficiency wastes infrastructure budget and still leaves slow endpoints fragile. Today you will learn how to measure real backend bottlenecks, keep the Node.js event loop responsive, parallelize independent async work safely, bound response sizes, compress payloads, and benchmark improvements systematically.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Day 2</span>
+            <p>By Little's Law, cutting endpoint latency by 5x reduces concurrent in-flight pressure by 5x—helping every scaled instance serve more users safely.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Golden Rule</span>
+            <p>Measure before optimizing. Intuition frequently targets harmless code while missing the real I/O, serialization, or event-loop bottleneck.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Instrument, profile, and optimize a deliberately slow Express endpoint and verify gains using benchmarking metrics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Optimization Workflow</a>
+            <a href="#diagrams">Event Loop &amp; Waterfall Diagrams</a>
+            <a href="#implementation">Improving a Slow Endpoint</a>
+            <a href="#real-world">Use Cases &amp; Trade-offs</a>
+            <a href="#mistakes-security">Mistakes, Security &amp; Reliability</a>
+            <a href="#practical-task">Benchmarking Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Backend performance optimization is the disciplined process of identifying where time, CPU, memory, or network bandwidth is wasted during request execution and removing those bottlenecks without sacrificing correctness or maintainability.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Pinpoint Real Bottlenecks</h3>
+              <p>Break request latency down into middleware, event-loop delay, database queries, external calls, and payload serialization.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Protect the Node.js Event Loop</h3>
+              <p>Recognize synchronous blocking code, ReDoS patterns, heavy JSON work, and libuv thread-pool saturation.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Optimize Async &amp; Query Patterns</h3>
+              <p>Replace sequential <code>await</code> waterfalls and N+1 loops with batched queries, projections, and bounded concurrency.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Bound &amp; Benchmark Responses</h3>
+              <p>Implement clamped/cursor pagination, response compression, and reproducible load benchmarks.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Performance Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Finding Performance Bottlenecks</h3>
+            <p>
+              Every HTTP request passes through distinct stages: TLS/TCP setup, Express middleware parsing, authentication lookup, business validation, database queries or external API calls, JSON serialization, and network transfer. A slow endpoint is almost always dominated by one or two of these stages.
+            </p>
+            <p>
+              To locate bottlenecks accurately, capture per-stage timings (middleware, DB query time, serialization time) and monitor <strong>event loop lag</strong>. Fixing a 0.2ms array helper while ignoring a 420ms unindexed query yields zero measurable improvement.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. The Node.js Event Loop and Performance Implications</h3>
+            <p>
+              Node.js executes your JavaScript on a <strong>single main thread</strong> managed by the event loop (handling timers, pending callbacks, I/O poll events, <code>setImmediate</code> check handlers, and close callbacks), while delegating non-blocking OS socket I/O to the kernel and certain blocking operations (filesystem I/O, DNS <code>lookup</code>, some <code>crypto</code> and <code>zlib</code> tasks) to the <strong>libuv thread pool</strong> (default size: 4 threads, configurable via <code>UV_THREADPOOL_SIZE</code>).
+            </p>
+            <p>
+              Because one main thread processes callbacks for <em>all</em> connected users, any synchronous operation taking 150ms freezes every other incoming request, health check, and WebSocket heartbeat for 150ms.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Avoiding Blocking Operations</h3>
+            <p>Common event-loop blockers in production Node.js backends include:</p>
+            <ul>
+              <li><strong>Synchronous Node APIs:</strong> <code>fs.readFileSync</code>, <code>crypto.pbkdf2Sync</code>, <code>zlib.gzipSync</code>, or <code>bcrypt.hashSync</code> inside request handlers. Always use their asynchronous equivalents.</li>
+              <li><strong>Large JSON Parsing/Stringifying:</strong> Calling <code>JSON.stringify</code> or <code>JSON.parse</code> on a 15 MB array blocks the main thread for tens or hundreds of milliseconds.</li>
+              <li><strong>Catastrophic Regex Backtracking (ReDoS):</strong> Nested quantifiers like <code>^(a+)+$</code> evaluated on crafted user input can lock the CPU for seconds.</li>
+              <li><strong>Heavy CPU Computation:</strong> Image resizing, PDF generation, CSV exports of 100k rows, or complex aggregations belong in Worker Threads (<code>worker_threads</code>) or background job queues (Day 5).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Efficient Asynchronous Code</h3>
+            <p>
+              Writing <code>async/await</code> carelessly often turns concurrent I/O into slow sequential waterfalls. When fetching three independent resources—such as user profile, recent orders, and notification count—awaiting them one after another sums their latencies (<code>80ms + 90ms + 50ms = 220ms</code>). Executing them concurrently with <code>Promise.all</code> drops total wait time to the slowest single call (<code>~90ms</code>).
+            </p>
+            <p>
+              Use <code>Promise.allSettled</code> when partial failures are acceptable (for example, optional recommendation widgets), and use bounded concurrency (from Day 2) when processing large collections so you do not overwhelm connection pools.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Database Query Performance (API Layer Perspective)</h3>
+            <p>
+              While Day 10 explores indexing and explain plans in depth, three API-level habits immediately cut endpoint latency:
+            </p>
+            <ul>
+              <li><strong>Field Projection:</strong> Request only needed columns/fields (<code>.select('title price status')</code> or SQL explicit columns) instead of transferring large unused descriptions or nested arrays.</li>
+              <li><strong>Avoid N+1 Queries:</strong> Never query a list of 50 orders and then run 50 separate <code>await User.findById(order.userId)</code> queries inside a loop. Collect IDs and batch with <code>$in</code> / <code>WHERE id IN (...)</code> or database joins/lookups.</li>
+              <li><strong>Lightweight Objects:</strong> In Mongoose read endpoints, append <code>.lean()</code> to skip instantiating heavy document wrappers, getters, and change-tracking overhead.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Pagination and Limiting Large Responses</h3>
+            <p>
+              Unbounded endpoints like <code>GET /api/orders</code> that return all rows in a table work during testing with 20 seed records, then crash Node.js with out-of-memory errors once production reaches 200,000 records.
+            </p>
+            <p>
+              Always enforce a default limit and a strict maximum cap (e.g., <code>Math.min(requestedLimit, 100)</code>). For deep datasets or infinite feeds, prefer <strong>cursor (keyset) pagination</strong> (<code>where _id &lt; lastSeenId limit 20</code>) over large offset pagination (<code>skip(50000).limit(20)</code>), because databases still have to scan and discard all skipped rows in offset pagination.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Response Compression and Payload Size</h3>
+            <p>
+              JSON responses compress dramatically—often by <strong>70% to 85%</strong>—using <strong>gzip</strong> or <strong>Brotli</strong>. Enabling Express's <code>compression</code> middleware (or better yet, delegating compression to the reverse proxy/CDN like Nginx or Cloudflare) cuts network transfer time significantly for mobile clients.
+            </p>
+            <p>
+              Two important rules: set a minimum threshold (e.g., <code>1024</code> bytes) so tiny 80-byte responses do not waste CPU on compression headers, and never re-compress already compressed binary formats like <code>.webp</code>, <code>.jpg</code>, <code>.mp4</code>, or <code>.zip</code>.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Profiling and Benchmarking Concepts</h3>
+            <p>
+              Benchmarking measures external behavior (requests/sec, p50/p95/p99 latency, error rate, throughput MB/s) under controlled concurrent load using tools like <code>autocannon</code>, <code>wrk</code>, or <code>k6</code>. Profiling inspects internal execution (CPU flamegraphs via <code>node --prof</code> or <code>node --inspect</code>, heap snapshots, and <code>perf_hooks.monitorEventLoopDelay</code>) to reveal which exact functions consume CPU or allocate excessive memory.
+            </p>
+            <p>
+              Always warm up the JIT compiler and database connection pool for a few seconds before recording benchmark numbers, and test with realistic dataset sizes rather than 5-row tables.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>The Systematic Optimization Workflow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Baseline Measurement:</strong> Run a reproducible load benchmark (e.g., 50 concurrent connections for 15 seconds) and record p50, p95, p99 latency, RPS, and payload bytes.
+            </li>
+            <li>
+              <strong>Instrument &amp; Profile:</strong> Measure DB query duration, external HTTP wait, and event-loop lag to pinpoint whether the endpoint is I/O-bound, DB-bound, or CPU-bound.
+            </li>
+            <li>
+              <strong>Apply Targeted Fix:</strong> Remove synchronous blocks, eliminate N+1 queries, parallelize independent awaits, project fields, and clamp pagination.
+            </li>
+            <li>
+              <strong>Verify Correctness &amp; Re-Benchmark:</strong> Confirm tests still pass and re-run the exact same benchmark under identical conditions to prove measurable improvement.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Event Loop &amp; Request Waterfall Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Why Synchronous Code Starves Concurrent Requests</h3>
+            <p class="diagram-caption">
+              Non-blocking async I/O yields the main thread immediately so multiple requests interleave cleanly; a single 200ms synchronous loop stalls every queued client.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 215" class="arch-svg" role="img" aria-label="Comparison of non-blocking async I/O interleaving versus synchronous CPU blocking stalling requests on the Node.js event loop">
+                <text x="20" y="28" class="svg-title">Healthy Non-Blocking Event Loop</text>
+                <rect x="20" y="42" width="110" height="36" rx="8" class="svg-box-blue"></rect>
+                <text x="75" y="65" text-anchor="middle" class="svg-sub">Req A Start (2ms)</text>
+
+                <rect x="138" y="42" width="110" height="36" rx="8" class="svg-box-accent"></rect>
+                <text x="193" y="65" text-anchor="middle" class="svg-sub">Req B Start (2ms)</text>
+
+                <rect x="256" y="42" width="170" height="36" rx="8" class="svg-box-muted"></rect>
+                <text x="341" y="65" text-anchor="middle" class="svg-sub">OS / DB Async Wait (Parallel)</text>
+
+                <rect x="434" y="42" width="130" height="36" rx="8" class="svg-box-blue"></rect>
+                <text x="499" y="65" text-anchor="middle" class="svg-sub">Req A Done (25ms)</text>
+
+                <rect x="572" y="42" width="130" height="36" rx="8" class="svg-box-accent"></rect>
+                <text x="637" y="65" text-anchor="middle" class="svg-sub">Req B Done (27ms)</text>
+
+                <text x="20" y="122" class="svg-title">Blocked Main Thread (Synchronous CPU / fsSync / ReDoS)</text>
+                <rect x="20" y="136" width="380" height="44" rx="8" class="svg-box-accent"></rect>
+                <text x="210" y="163" text-anchor="middle" class="svg-title">Req A Blocking Loop / JSON.parse (220ms Stall)</text>
+
+                <rect x="408" y="136" width="160" height="44" rx="8" class="svg-box-muted"></rect>
+                <text x="488" y="156" text-anchor="middle" class="svg-sub">Req B Waits 220ms</text>
+                <text x="488" y="171" text-anchor="middle" class="svg-sub">Before Even Starting</text>
+
+                <rect x="576" y="136" width="164" height="44" rx="8" class="svg-box-muted"></rect>
+                <text x="658" y="156" text-anchor="middle" class="svg-sub">Health Check Stalls</text>
+                <text x="658" y="171" text-anchor="middle" class="svg-sub">Tail Latency Spikes</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Eliminating Sequential N+1 Waterfalls</h3>
+            <p class="diagram-caption">
+              Replacing 20 sequential per-item queries with 1 batched query plus concurrent independent calls cuts total database round-trips from 21 down to 2.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 175" class="arch-svg" role="img" aria-label="Before N+1 sequential query waterfall taking 460ms compared to batched query plus Promise.all taking 35ms">
+                <text x="20" y="28" class="svg-title">Before: Sequential N+1 Waterfall (~460ms)</text>
+                <rect x="20" y="40" width="130" height="32" rx="6" class="svg-box-muted"></rect>
+                <text x="85" y="60" text-anchor="middle" class="svg-sub">1. Find 20 Orders</text>
+                <rect x="158" y="40" width="120" height="32" rx="6" class="svg-box-blue"></rect>
+                <text x="218" y="60" text-anchor="middle" class="svg-sub">2. Find User 1</text>
+                <rect x="286" y="40" width="120" height="32" rx="6" class="svg-box-blue"></rect>
+                <text x="346" y="60" text-anchor="middle" class="svg-sub">3. Find User 2</text>
+                <rect x="414" y="40" width="120" height="32" rx="6" class="svg-box-blue"></rect>
+                <text x="474" y="60" text-anchor="middle" class="svg-sub">... 18 more awaits</text>
+                <rect x="542" y="40" width="198" height="32" rx="6" class="svg-box-muted"></rect>
+                <text x="641" y="60" text-anchor="middle" class="svg-sub">Send 450KB Uncompressed JSON</text>
+
+                <text x="20" y="108" class="svg-title">After: Batched + Projected + Compressed (~35ms)</text>
+                <rect x="20" y="120" width="220" height="34" rx="6" class="svg-box-accent"></rect>
+                <text x="130" y="142" text-anchor="middle" class="svg-sub">1. Paginated Orders (.lean + select)</text>
+                <rect x="248" y="120" width="230" height="34" rx="6" class="svg-box-accent"></rect>
+                <text x="363" y="142" text-anchor="middle" class="svg-sub">2. Batched Users ($in) + Stats (Promise.all)</text>
+                <rect x="486" y="120" width="254" height="34" rx="6" class="svg-box-blue"></rect>
+                <text x="613" y="142" text-anchor="middle" class="svg-sub">3. Gzip / Brotli Compressed (~18KB)</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Measuring and Optimizing an Inefficient Express Endpoint</h2>
+          <p>
+            Below is a deliberately inefficient endpoint (<code>GET /api/orders/feed</code>) that suffers from synchronous filesystem reads, an unbounded query, an N+1 user lookup loop, sequential metric fetches, and unprojected documents.
+          </p>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Before: Slow Endpoint with Multiple Bottlenecks</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import fs from 'node:fs';
+import express from 'express';
+
+export function createSlowRouter({ OrderModel, UserModel, StatsService }) {
+  const router = express.Router();
+
+  router.get('/feed', async (req, res, next) =&gt; {
+    try {
+      const featureFlags = JSON.parse(fs.readFileSync('./config/flags.json', 'utf8'));
+      const orders = await OrderModel.find({ status: 'completed' }).sort({ createdAt: -1 });
+
+      const enriched = [];
+      for (const order of orders) {
+        const customer = await UserModel.findById(order.userId);
+        enriched.push({
+          id: order._id,
+          totalCents: order.totalCents,
+          customerName: customer ? customer.name : 'Unknown',
+          rawAuditBlob: order.auditHistory,
+          betaEnabled: featureFlags.showBetaSummary
+        });
+      }
+
+      const dailyRevenue = await StatsService.getDailyRevenue();
+      const activeCount = await StatsService.getActiveCustomerCount();
+
+      res.json({ items: enriched, dailyRevenue, activeCount });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  return router;
+}</code></pre>
+          </div>
+
+          <h3>Step 1: Add Lightweight Timing &amp; Event-Loop Monitoring</h3>
+          <p>
+            Use Node's built-in <code>perf_hooks</code> module to track request duration and detect event-loop stalls during load testing.
+          </p>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/middlewares/perfMonitor.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
+
+export function startEventLoopMonitor() {
+  const histogram = monitorEventLoopDelay({ resolution: 20 });
+  histogram.enable();
+  return () =&gt; ({
+    meanMs: Number((histogram.mean / 1e6).toFixed(2)),
+    p99Ms: Number((histogram.percentile(99) / 1e6).toFixed(2)),
+    maxMs: Number((histogram.max / 1e6).toFixed(2))
+  });
+}
+
+export function requestTimingMiddleware(req, res, next) {
+  const start = performance.now();
+  res.on('finish', () =&gt; {
+    const durationMs = (performance.now() - start).toFixed(2);
+    if (Number(durationMs) &gt; 100) {
+      console.warn(`Slow request: ${req.method} ${req.originalUrl} took ${durationMs}ms`);
+    }
+  });
+  next();
+}</code></pre>
+          </div>
+
+          <h3>Step 2: Optimize Query Scope, Batch Lookups, Parallelize I/O, and Compress</h3>
+          <p>
+            The optimized version loads configuration once at startup (or asynchronously with caching), enforces cursor-based pagination capped at 50 items, projects only required fields with <code>.lean()</code>, batches customer lookups in a single <code>$in</code> query, runs independent calls via <code>Promise.all</code>, and applies response compression.
+          </p>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">After: Optimized Express Router &amp; Compression Setup</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import fs from 'node:fs/promises';
+import express from 'express';
+import compression from 'compression';
+
+export async function createFastFeedApp({ OrderModel, UserModel, StatsService }) {
+  const app = express();
+  const featureFlags = JSON.parse(await fs.readFile('./config/flags.json', 'utf8'));
+
+  app.use(compression({ threshold: 1024 }));
+
+  app.get('/api/orders/feed', async (req, res, next) =&gt; {
+    try {
+      const requestedLimit = Number.parseInt(req.query.limit, 10) || 20;
+      const limit = Math.min(Math.max(requestedLimit, 1), 50);
+      const cursor = req.query.cursor;
+
+      const filter = { status: 'completed' };
+      if (cursor) {
+        filter._id = { $lt: cursor };
+      }
+
+      const [orders, dailyRevenue, activeCount] = await Promise.all([
+        OrderModel.find(filter)
+          .select('_id userId totalCents createdAt')
+          .sort({ _id: -1 })
+          .limit(limit + 1)
+          .lean(),
+        StatsService.getDailyRevenue(),
+        StatsService.getActiveCustomerCount()
+      ]);
+
+      const hasMore = orders.length &gt; limit;
+      const pageItems = hasMore ? orders.slice(0, limit) : orders;
+      const nextCursor = hasMore ? String(pageItems[pageItems.length - 1]._id) : null;
+
+      const userIds = [...new Set(pageItems.map((order) =&gt; String(order.userId)))];
+      const users = userIds.length
+        ? await UserModel.find({ _id: { $in: userIds } }).select('_id name').lean()
+        : [];
+      const userMap = new Map(users.map((user) =&gt; [String(user._id), user.name]));
+
+      const items = pageItems.map((order) =&gt; ({
+        id: order._id,
+        totalCents: order.totalCents,
+        customerName: userMap.get(String(order.userId)) || 'Unknown',
+        betaEnabled: featureFlags.showBetaSummary
+      }));
+
+      res.status(200).json({
+        items,
+        nextCursor,
+        dailyRevenue,
+        activeCount
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  return app;
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>limit + 1</code> Lookahead Trick:</strong> Fetching one extra document tells you accurately whether <code>hasMore</code> is true without executing a second expensive <code>countDocuments()</code> query on the entire collection.</li>
+              <li><strong><code>Set</code> + <code>$in</code> + <code>Map</code> Batching:</strong> Eliminates N+1 loops—even 50 orders across 12 unique customers trigger only 1 batch user lookup, mapped in <code>O(1)</code> memory time.</li>
+              <li><strong>Removed <code>rawAuditBlob</code> &amp; Sync File Read:</strong> Never serialize heavy unused nested fields over the network, and avoid disk reads per request.</li>
+              <li><strong><code>compression({ threshold: 1024 })</code>:</strong> Skips compressing tiny JSON payloads while dramatically shrinking multi-kilobyte list responses.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Pagination Trade-Offs &amp; Optimization Boundaries</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Aspect</th>
+                  <th>Offset Pagination (<code>page</code> / <code>skip</code>)</th>
+                  <th>Cursor / Keyset Pagination (<code>cursor</code> / <code>_id &lt; X</code>)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Deep Page Speed</strong></td>
+                  <td>Degrades linearly — <code>skip(100000)</code> forces DB to walk 100k index entries</td>
+                  <td>Constant <code>O(log N)</code> index seek regardless of page depth</td>
+                </tr>
+                <tr>
+                  <td><strong>Live Inserts Stability</strong></td>
+                  <td>New inserts shift rows, causing duplicates or skipped items across pages</td>
+                  <td>Consistent — anchored to a stable unique cursor value</td>
+                </tr>
+                <tr>
+                  <td><strong>Random Page Jump</strong></td>
+                  <td>Easy ("Jump to Page 14")</td>
+                  <td>Not supported directly (Forward/Backward navigation only)</td>
+                </tr>
+                <tr>
+                  <td><strong>Best Use Case</strong></td>
+                  <td>Small admin tables with explicit page numbers</td>
+                  <td>Activity feeds, order histories, logs, and mobile infinite scroll</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>When to Optimize Immediately</h3>
+              <ul>
+                <li>Endpoints lack pagination caps or projections.</li>
+                <li>Database queries trigger N+1 loops inside <code>for</code>/<code>map</code> iterations.</li>
+                <li>Synchronous file, crypto, or regex operations run inside HTTP handlers.</li>
+                <li>p95/p99 latency or event-loop delay spikes under load tests.</li>
+              </ul>
+            </div>
+            <div class="decision-card">
+              <h3>When NOT to Over-Optimize</h3>
+              <ul>
+                <li>Replacing clear <code>.map()</code>/<code>.filter()</code> logic on 20-item arrays with unreadable manual index tricks.</li>
+                <li>Caching fast 2ms queries prematurely before correctness and invalidation rules are clear.</li>
+                <li>Tuning micro-benchmarks that represent less than 1% of real request duration.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes, Security &amp; Reliability</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Trusting Client-Supplied <code>limit</code> Without an Upper Bound</h3>
+              <p><strong>Security &amp; Availability risk:</strong> Sending <code>?limit=9999999</code> forces the database and Node.js heap to load and JSON-stringify millions of records, crashing the server (Denial of Service).</p>
+              <p><strong>Fix:</strong> Clamp <code>limit</code> strictly on the server (e.g., between <code>1</code> and <code>50</code> or <code>100</code>).</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Running User Input Through Unsafe Regexes (ReDoS)</h3>
+              <p><strong>Security risk:</strong> Patterns with nested ambiguous quantifiers (e.g., <code>/^(a+)+$/</code> or complex email regexes) can lock Node's single main thread for minutes on a 40-character malicious input.</p>
+              <p><strong>Fix:</strong> Use linear-time string checks, battle-tested validators, or escape regex special characters before building search patterns.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Saturating the libuv Thread Pool</h3>
+              <p><strong>Performance risk:</strong> Heavy concurrent <code>bcrypt</code>, <code>crypto.scrypt</code>, or <code>fs</code> operations contend for libuv's default 4 worker threads, stalling unrelated file/DNS tasks.</p>
+              <p><strong>Fix:</strong> Tune <code>UV_THREADPOOL_SIZE</code> carefully alongside CPU core count and offload heavy CPU tasks to dedicated workers.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Benchmarking Only Empty Tables or Cold Single Requests</h3>
+              <p><strong>Reliability risk:</strong> A query that takes 3ms on 50 rows can take 3,000ms on 500,000 rows once collection scans exceed RAM.</p>
+              <p><strong>Fix:</strong> Seed realistic data volumes before benchmarking and compare p95/p99 percentiles, not just single-request DevTools timings.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Benchmarking &amp; Optimization Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Profile and Optimize a Slow Express Endpoint</h3>
+            <p>
+              Set up a small local Express server with a mock or MongoDB dataset of at least 5,000 items. Create two routes side by side: <code>/slow</code> (returning all 5,000 full items with a synchronous 20ms CPU delay and no compression) and <code>/fast</code> (clamped cursor pagination of 25 projected fields, batched lookup, and gzip compression).
+            </p>
+            <ol>
+              <li>Run <code>npx autocannon -c 30 -d 10 http://localhost:3000/slow</code> and record Requests/sec, p95 latency, and MB/sec transferred.</li>
+              <li>Run the same benchmark against <code>http://localhost:3000/fast</code> (with <code>Accept-Encoding: gzip</code> header enabled).</li>
+              <li>Compare event-loop delay between the two runs using <code>monitorEventLoopDelay()</code> and summarize why throughput improved.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 3 Quiz: Performance Optimization (10 Questions)</h2>
+          <p>Select one option per question, then click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="Node.js runs JavaScript callbacks on a single main thread; blocking it synchronously stalls every other client request and health check on that process.">
+              <p class="quiz-prompt">1. Why does a single 200ms synchronous <code>fs.readFileSync</code> call inside a route handler harm all concurrent users?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> It deletes the file after reading it.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> It blocks the single-threaded JavaScript event loop, delaying every other request until the read finishes.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> It forces MongoDB to drop its indexes.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> It disables TLS encryption on the socket.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Independent async I/O operations run concurrently via Promise.all take roughly max(80, 120, 60) = 120ms rather than summing to 260ms.">
+              <p class="quiz-prompt">2. Three independent I/O calls take 80ms, 120ms, and 60ms. Roughly how long does awaiting them via <code>Promise.all</code> take compared to sequential <code>await</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> 260ms vs. 260ms (identical)</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> 60ms vs. 120ms</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> ~120ms vs. ~260ms</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> 0ms vs. 260ms</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="An N+1 query runs 1 query to fetch N parent records followed by N separate queries inside a loop instead of batching with $in / JOIN.">
+              <p class="quiz-prompt">3. What is the N+1 query problem?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Fetching N parent records in 1 query and then executing N extra individual queries inside a loop for related data.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Returning N+1 items when implementing cursor pagination.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Creating more than one database index per collection.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Running Node.js with N+1 worker threads.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Cursor/keyset pagination uses an indexed comparison (e.g., _id < cursor) to seek directly to the next page without scanning and discarding thousands of skipped rows.">
+              <p class="quiz-prompt">4. Why does cursor (keyset) pagination outperform offset (<code>skip</code>) pagination on deep pages?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Cursor pagination stores the entire database in browser cookies.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Cursor pagination disables sorting on the database.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Offset pagination only works on arrays smaller than 100 items.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Cursor pagination seeks directly via an index instead of scanning and discarding skipped rows.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Fetching limit + 1 records lets you check orders.length > limit to know if a next page exists without running a separate countDocuments() scan.">
+              <p class="quiz-prompt">5. Why did the optimized pagination code query <code>limit + 1</code> documents instead of <code>limit</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> Mongoose drops the last element of every query automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> To determine whether another page exists (<code>hasMore</code>) without running a separate total count query.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> To force gzip compression to trigger.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> To avoid sorting by <code>_id</code>.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="ReDoS occurs when malicious input triggers exponential backtracking in poorly constructed regular expressions, freezing the Node.js event loop.">
+              <p class="quiz-prompt">6. How can a poorly written regular expression cause a denial-of-service in Node.js?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> It deletes environment variables from process.env.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> It opens unlimited TCP connections to Redis.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Catastrophic backtracking (ReDoS) consumes 100% of the main event-loop thread for seconds or minutes.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> It bypasses Mongoose schema types automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Setting a threshold avoids spending CPU compressing tiny responses where compression overhead outweighs any negligible byte savings, and binary media files are already compressed.">
+              <p class="quiz-prompt">7. Which statement is best practice when configuring Express response compression?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Set a minimum byte threshold (such as 1 KB) and avoid re-compressing already compressed images or archives.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Compress 10-byte health responses and all <code>.webp</code> images twice.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Always run <code>zlib.gzipSync</code> inside every route handler.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Disable compression on all JSON list endpoints.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="By default libuv uses 4 worker threads for operations like file system calls, dns.lookup, and async crypto hashing/compression.">
+              <p class="quiz-prompt">8. What is the default size of Node.js's libuv thread pool used for async filesystem and certain crypto operations?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> 1 thread</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> 64 threads</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> 100 threads</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> 4 threads</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Mongoose .lean() returns plain JavaScript objects instead of full hydrated Mongoose Documents, cutting memory usage and CPU serialization overhead on read-only queries.">
+              <p class="quiz-prompt">9. What performance benefit does <code>.lean()</code> provide in read-only Mongoose queries?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> It automatically creates compound indexes in MongoDB.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> It skips Mongoose document hydration and change-tracking wrappers, returning lightweight plain objects.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> It caches responses inside Redis automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> It disables TLS verification to the database.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Profiling inspects internal CPU/memory execution (e.g., flamegraphs, heap snapshots), whereas benchmarking measures external throughput and latency under load.">
+              <p class="quiz-prompt">10. How do benchmarking and profiling complement each other during optimization?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Benchmarking replaces unit tests while profiling replaces logging.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Profiling runs only in browsers while benchmarking runs only on databases.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Benchmarking measures overall latency/RPS under load; profiling reveals which internal functions consume CPU or memory.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> They are identical synonyms for running <code>console.log</code>.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is the difference between the Node.js main event-loop thread and the libuv thread pool?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>The main event-loop thread runs all JavaScript code and coordinates non-blocking network I/O via OS primitives (epoll/kqueue/IOCP). The libuv thread pool (4 threads by default) executes operations that lack clean non-blocking OS APIs—such as file system calls, <code>dns.lookup</code>, and CPU-heavy async <code>crypto</code>/<code>zlib</code> tasks—so they do not block the JavaScript thread.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. When should you prefer <code>Promise.allSettled</code> over <code>Promise.all</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Use <code>Promise.all</code> when every call is mandatory and any failure should abort immediately. Use <code>Promise.allSettled</code> when calling independent optional enrichments (e.g., primary order details + optional recommendation banner) where one non-critical failure should not crash the entire response.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why is field projection important even when using pagination?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A single document might contain large embedded arrays, audit logs, or multi-kilobyte descriptions. Returning 25 unprojected documents can still transmit hundreds of extra kilobytes over the network, waste JSON serialization CPU, and accidentally leak internal fields.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why is offloading compression to a reverse proxy (like Nginx) often preferred in production?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Native C/C++ reverse proxies and CDNs compress responses efficiently outside the Node.js process, freeing Node's CPU and libuv threads to focus on application logic while supporting modern Brotli compression and static asset caching cleanly.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Name two precautions needed to run a meaningful backend benchmark.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>First, test against realistic production-sized datasets rather than empty tables so index behavior and payload sizes match reality. Second, warm up connection pools and V8 JIT compilation before measuring, and evaluate p95/p99 latency alongside throughput.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Sequential Loops and Unbounded Payload</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A dashboard endpoint fetches all invoices in the database, runs <code>await PaymentModel.findOne({ invoiceId: inv._id })</code> inside a <code>for...of</code> loop, and returns the entire array. Refactor the handler to clamp pagination, project minimal fields, and batch the payment lookup.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function getInvoiceSummaryHandler(req, res, next) {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit) || 25, 1), 50);
+    const filter = req.query.cursor ? { _id: { $lt: req.query.cursor } } : {};
+
+    const invoices = await InvoiceModel.find(filter)
+      .select('_id number amountCents status')
+      .sort({ _id: -1 })
+      .limit(limit + 1)
+      .lean();
+
+    const hasMore = invoices.length &gt; limit;
+    const page = hasMore ? invoices.slice(0, limit) : invoices;
+    const invoiceIds = page.map((inv) =&gt; inv._id);
+
+    const payments = invoiceIds.length
+      ? await PaymentModel.find({ invoiceId: { $in: invoiceIds } })
+          .select('invoiceId method paidAt')
+          .lean()
+      : [];
+
+    const paymentByInvoice = new Map(
+      payments.map((p) =&gt; [String(p.invoiceId), p])
+    );
+
+    const data = page.map((inv) =&gt; ({
+      ...inv,
+      payment: paymentByInvoice.get(String(inv._id)) || null
+    }));
+
+    res.json({
+      data,
+      nextCursor: hasMore ? String(page[page.length - 1]._id) : null
+    });
+  } catch (err) {
+    next(err);
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Offload Heavy CPU Work with Worker Threads</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Suppose an endpoint must compute a CPU-intensive cryptographic/scoring transform on demand without freezing the main event loop. Write a minimal Node.js helper wrapping <code>worker_threads</code> in a Promise.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>import { Worker } from 'node:worker_threads';
+
+export function runCpuWorker(workerFilePath, workerData) {
+  return new Promise((resolve, reject) =&gt; {
+    const worker = new Worker(workerFilePath, { workerData });
+    worker.once('message', resolve);
+    worker.once('error', reject);
+    worker.once('exit', (code) =&gt; {
+      if (code !== 0) {
+        reject(new Error(`Worker exited with status ${code}`));
+      }
+    });
+  });
+}</code></pre>
+                </div>
+                <p><strong>Production Note:</strong> Creating a brand-new Worker on every request has startup overhead (~20–40ms); in production, reuse a fixed pool of workers or move long tasks to a background job queue (Day 5).</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Diagnose High p99 Latency Despite Low CPU Usage</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Your Express API reports only 15% CPU utilization, yet p99 latency spikes to 4.5 seconds during busy hours. List four plausible causes and how you would verify each.</p>
+                <p><strong>Reference Diagnosis:</strong> (1) <em>Database connection pool queuing</em> — inspect pool wait times and active connections; (2) <em>External third-party API stalls</em> — log outbound HTTP durations and enforce strict timeouts; (3) <em>libuv thread-pool saturation</em> — check concurrent <code>fs</code>/<code>crypto</code> calls and event-loop/async-hook latency; (4) <em>Missing DB index or lock contention</em> — run database explain plans and slow-query logs.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 3 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Measure before optimizing:</strong> Track stage durations, event-loop lag, and p95/p99 latency under realistic load.</li>
+              <li><strong>Protect the event loop:</strong> Eliminate synchronous APIs, ReDoS regexes, massive JSON parsing, and unbounded CPU loops on the main thread.</li>
+              <li><strong>Optimize async &amp; query flow:</strong> Replace sequential awaits with <code>Promise.all</code> and eliminate N+1 loops using batched queries, projections, and <code>.lean()</code>.</li>
+              <li><strong>Control payload size:</strong> Clamp pagination limits, prefer cursor pagination for deep lists, and apply gzip/Brotli compression with sensible thresholds.</li>
+              <li><strong>Profile &amp; benchmark systematically:</strong> Compare before-and-after metrics under identical warmed-up conditions.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 3 Performance Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 3 Performance Optimization visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 3 local visual reference (<code>Day 3/image.webp</code>). Review event-loop safety, batched async execution, pagination, and response compression.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 2/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 2: Scalable Backend Systems</span>
+          </a>
+          <a href="../Day 4/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 4: Caching with Redis &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 3/index.html">Day 3: Performance</a></li>
+          <li><a href="../Day 4/index.html">Day 4: Redis Caching</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

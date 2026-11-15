@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 12: Logging, Monitoring, and Error Tracking. Learn structured JSON logging, log levels, correlation IDs, centralized error handling, health and readiness checks, metrics, alerting, and log redaction.">
+  <title>Day 12: Logging, Monitoring, and Error Tracking | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="12">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 12: Logging &amp; Monitoring</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html" selected>Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 11/index.html" class="nav-step-btn" title="Go to Day 11">Prev</a>
+            <a href="../Day 13/index.html" class="nav-step-btn" title="Go to Day 13">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 12 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 12</span>
+          <span class="category-pill">Observability &amp; Reliability</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="12" aria-pressed="false">Mark Day 12 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Logging, Monitoring, and Error Tracking</h1>
+        <p class="lesson-intro">
+          When an API slows down or fails in production across multiple containers, SSHing into a server to read <code>console.log</code> is impossible. Today you will learn how structured JSON logs, correlation IDs, metrics dashboards, error-tracking aggregators, health and readiness probes, symptom-based alerting, and strict data redaction turn opaque production incidents into fast, diagnosable fixes.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2, 5 &amp; 6</span>
+            <p>Correlation IDs let you trace one user action across scaled HTTP servers, Redis caches, background workers, and async message queues.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Metrics tell you <em>that</em> something is wrong (5xx spike), error trackers group <em>what</em> crashed, and structured logs explain <em>why</em> for a specific request—without leaking secrets.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Instrument an Express API with a Pino structured logger, <code>AsyncLocalStorage</code> request IDs, sensitive-field redaction, <code>/health</code> + <code>/ready</code> endpoints, and centralized error handling.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Observability Lifecycle</a>
+            <a href="#diagrams">Observability Diagrams</a>
+            <a href="#implementation">Express + Pino Implementation</a>
+            <a href="#real-world">Telemetry &amp; Alerting Trade-offs</a>
+            <a href="#mistakes-security">Redaction &amp; Pitfalls</a>
+            <a href="#practical-task">Practical Observability Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            <strong>Observability</strong> is the ability to understand the internal state of a running backend solely from the telemetry it emits: structured logs, numerical metrics, and aggregated exceptions/traces.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Emit Structured Logs</h3>
+              <p>Replace free-text <code>console.log</code> with fast JSON logs carrying consistent fields and severity levels.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Correlate Requests End to End</h3>
+              <p>Propagate <code>requestId</code> and <code>correlationId</code> across services and async queues using <code>AsyncLocalStorage</code>.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Expose Probes &amp; Metrics</h3>
+              <p>Separate <code>/health</code> liveness from <code>/ready</code> dependency checks and track the Four Golden Signals.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Protect Sensitive Data</h3>
+              <p>Redact passwords, tokens, cookies, and PII automatically while alerting on meaningful user symptoms.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Observability &amp; Error Tracking Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Logging vs. Monitoring vs. Error Tracking</h3>
+            <ul>
+              <li><strong>Logging:</strong> Discrete, timestamped records of events (e.g., an HTTP request completing, an order failing validation, or a worker retrying a job). Great for deep per-request debugging.</li>
+              <li><strong>Monitoring (Metrics &amp; Dashboards):</strong> Aggregated numeric time-series measurements collected over intervals—requests/sec, error rate %, p95/p99 latency, CPU, memory, and queue depth. Great for spotting trends and triggering alerts cheaply.</li>
+              <li><strong>Error Tracking:</strong> Dedicated tools (such as Sentry or Bugsnag) that capture unhandled exceptions, group identical stack traces by fingerprint, track affected user counts, tag the deployed release version, and record breadcrumbs leading up to the crash.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Structured Logging &amp; Log Levels</h3>
+            <p>
+              Plain strings like <code>console.log('Order failed for user ' + id)</code> are painful to filter across millions of log lines. <strong>Structured logging</strong> (using fast Node libraries like <code>pino</code> or <code>winston</code>) writes single-line JSON objects to <code>stdout</code>: <code>{"level":"error","time":...,"requestId":"req_8f2","userId":"u_42","durationMs":142,"msg":"Payment timeout"}</code>. Log collectors (Grafana Loki, Datadog, CloudWatch, ELK) index these JSON properties automatically for instant querying.
+            </p>
+            <p>Use log levels intentionally and control verbosity via <code>LOG_LEVEL</code> environment variable:</p>
+            <ul>
+              <li><code>debug</code>: Verbose diagnostic details enabled only in local dev or brief staging debugging.</li>
+              <li><code>info</code>: Normal operational milestones (server started, request completed, job finished).</li>
+              <li><code>warn</code>: Recoverable anomalies (cache connection dropped and fell back to DB, retry attempt 2, client rate-limited).</li>
+              <li><code>error</code> / <code>fatal</code>: Failed operations requiring investigation (<code>500</code> unhandled exception, DB connection pool down, startup secret missing).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Request IDs and Correlation IDs</h3>
+            <p>
+              When 500 requests execute concurrently, log lines interleave randomly. Assigning a unique <strong>Request ID</strong> (reading incoming <code>X-Request-Id</code> or generating a UUID, and echoing it back in the response header) lets you filter all log entries belonging to one HTTP call.
+            </p>
+            <p>
+              A <strong>Correlation ID</strong> spans an entire multi-hop workflow—attached when the API receives a request, passed inside background job metadata (Day 5), event envelopes (Day 6), and outbound HTTP headers so you can trace a failure from HTTP API to worker to broker. Node's built-in <code>AsyncLocalStorage</code> keeps context accessible inside deep services without manually passing <code>req</code> everywhere!
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Centralized Error Handling</h3>
+            <p>
+              Every Express app needs one final four-argument error middleware <code>(err, req, res, next)</code> plus process-level listeners for <code>unhandledRejection</code> and <code>uncaughtException</code>. Distinguish <strong>operational errors</strong> (expected <code>4xx</code> validation, not-found, conflict errors logged at <code>info</code>/<code>warn</code>) from <strong>unexpected programmer/system crashes</strong> (<code>5xx</code> logged at <code>error</code> with full stack trace + <code>requestId</code>, returning only a safe generic message plus <code>requestId</code> to the caller).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Health Checks and Readiness Checks</h3>
+            <ul>
+              <li><strong>Liveness (<code>GET /health</code>):</strong> Fast, zero-dependency check confirming the Node.js process is alive and the event loop is responsive. Never check external APIs or heavy DB queries inside liveness—if Redis blips for 2 seconds, you do not want Kubernetes killing and restarting every API container simultaneously!</li>
+              <li><strong>Readiness (<code>GET /ready</code>):</strong> Verifies critical direct dependencies (lightweight <code>SELECT 1</code> / Mongo ping + Redis ping with tight 1–2s timeouts). Returns <code>200</code> when ready to receive load-balancer traffic, or <code>503 Service Unavailable</code> during startup/shutdown or dependency loss.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Metrics, Dashboards &amp; Alerting Principles</h3>
+            <p>
+              Effective backend dashboards monitor the <strong>Four Golden Signals</strong> (and the <strong>RED method</strong> for APIs):
+            </p>
+            <ul>
+              <li><strong>Traffic / Rate:</strong> Requests per second by route and status class.</li>
+              <li><strong>Errors:</strong> Rate of HTTP <code>5xx</code> responses and failed background jobs.</li>
+              <li><strong>Duration (Latency):</strong> p50, p95, and p99 response times.</li>
+              <li><strong>Saturation:</strong> Event-loop delay, heap memory usage, CPU %, DB connection pool utilization, and queue depth.</li>
+            </ul>
+            <p>
+              <strong>Alerting discipline:</strong> Page engineers only on actionable, user-impacting symptoms (e.g., 5xx error rate &gt; 2% for 5 minutes, p99 latency &gt; 1.5s sustained, readiness probe failing)—not single isolated warnings or <code>404</code> typos that create alert fatigue.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Avoiding Sensitive Data in Logs</h3>
+            <p>
+              Logs are frequently shipped to third-party SaaS platforms and readable by wider engineering/support teams. <strong>Never log</strong> plaintext passwords, JWTs, API keys, session cookies, credit card numbers, or unmasked secrets. Configure automatic logger redaction paths (<code>redact</code>) and avoid dumping raw <code>req.headers</code> or raw <code>req.body</code> blindly into logs.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Request-to-Observability Telemetry Flow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Context Initialization:</strong> Edge middleware extracts or creates <code>requestId</code> and <code>correlationId</code>, opens an <code>AsyncLocalStorage</code> store, sets the response header <code>X-Request-Id</code>, and records start time.
+            </li>
+            <li>
+              <strong>Automatic Context Logging:</strong> Services and repositories call the logger anywhere; Pino's <code>mixin</code> reads <code>AsyncLocalStorage</code> automatically and redacts sensitive keys before writing JSON to <code>stdout</code>.
+            </li>
+            <li>
+              <strong>Metrics &amp; Error Capture:</strong> On response finish, metrics increment status counters and latency histograms. Any unexpected error bubbles to centralized error middleware, logs internally with full stack + <code>requestId</code>, reports to error tracking, and replies safely to the client.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Observability &amp; Probe Architecture Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Request Context &amp; Telemetry Pipeline</h3>
+            <p class="diagram-caption">
+              A single incoming request emits correlated JSON logs, numeric RED metrics, and grouped crash reports while redacting secrets at the logger boundary.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 210" class="arch-svg" role="img" aria-label="Express request passing through AsyncLocalStorage context middleware, routing through service layer, emitting redacted JSON logs, metrics, and grouped error tracking">
+                <defs>
+                  <marker id="arrow-obs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="72" width="146" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="91" y="100" text-anchor="middle" class="svg-title">Context Middleware</text>
+                <text x="91" y="119" text-anchor="middle" class="svg-sub">ALS + X-Request-Id</text>
+
+                <line x1="164" y1="106" x2="216" y2="106" class="svg-arrow" marker-end="url(#arrow-obs)"></line>
+
+                <rect x="220" y="64" width="186" height="84" rx="10" class="svg-box-accent"></rect>
+                <text x="313" y="96" text-anchor="middle" class="svg-title">Service + Error Handler</text>
+                <text x="313" y="115" text-anchor="middle" class="svg-sub">Auto-attaches requestId</text>
+                <text x="313" y="132" text-anchor="middle" class="svg-sub">Redacts tokens/passwords</text>
+
+                <line x1="406" y1="84" x2="480" y2="42" class="svg-arrow" marker-end="url(#arrow-obs)"></line>
+                <line x1="406" y1="106" x2="480" y2="106" class="svg-arrow" marker-end="url(#arrow-obs)"></line>
+                <line x1="406" y1="128" x2="480" y2="170" class="svg-arrow" marker-end="url(#arrow-obs)"></line>
+
+                <rect x="484" y="16" width="256" height="48" rx="8" class="svg-box-muted"></rect>
+                <text x="612" y="38" text-anchor="middle" class="svg-title">JSON Logs (stdout)</text>
+                <text x="612" y="54" text-anchor="middle" class="svg-sub">Searchable by requestId</text>
+
+                <rect x="484" y="82" width="256" height="48" rx="8" class="svg-box-muted"></rect>
+                <text x="612" y="104" text-anchor="middle" class="svg-title">RED Metrics + Alerts</text>
+                <text x="612" y="120" text-anchor="middle" class="svg-sub">Rate, 5xx Errors, p95/p99</text>
+
+                <rect x="484" y="148" width="256" height="48" rx="8" class="svg-box-muted"></rect>
+                <text x="612" y="170" text-anchor="middle" class="svg-title">Error Tracker (5xx)</text>
+                <text x="612" y="186" text-anchor="middle" class="svg-sub">Stack traces + Release tag</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Liveness (/health) vs. Readiness (/ready) Probes</h3>
+            <p class="diagram-caption">
+              Liveness restarts frozen processes; readiness stops the load balancer from sending user requests until critical dependencies respond cleanly.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 155" class="arch-svg" role="img" aria-label="Orchestrator calling /health for liveness process check and load balancer calling /ready for DB and Redis dependency check">
+                <rect x="20" y="20" width="340" height="115" rx="10" class="svg-box-muted"></rect>
+                <text x="190" y="48" text-anchor="middle" class="svg-title">Liveness Probe: GET /health</text>
+                <text x="190" y="74" text-anchor="middle" class="svg-sub">Zero external DB/Redis calls</text>
+                <text x="190" y="96" text-anchor="middle" class="svg-sub">200 OK -&gt; Node event loop alive</text>
+                <text x="190" y="116" text-anchor="middle" class="svg-sub">Timeout -&gt; Restart container</text>
+
+                <rect x="396" y="20" width="344" height="115" rx="10" class="svg-box-accent"></rect>
+                <text x="568" y="48" text-anchor="middle" class="svg-title">Readiness Probe: GET /ready</text>
+                <text x="568" y="74" text-anchor="middle" class="svg-sub">Timeout-bounded DB + Redis ping</text>
+                <text x="568" y="96" text-anchor="middle" class="svg-sub">200 OK -&gt; Route live LB traffic</text>
+                <text x="568" y="116" text-anchor="middle" class="svg-sub">503 -&gt; Remove from LB pool temporarily</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Adding Structured Logging, Health Checks &amp; Error Handling</h2>
+
+          <h3>Step 1: Structured Redacting Logger + AsyncLocalStorage Context</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/observability/logger.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { AsyncLocalStorage } from 'node:async_hooks';
+import pino from 'pino';
+
+export const requestContext = new AsyncLocalStorage();
+
+export const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  base: {
+    service: process.env.SERVICE_NAME || 'api-server',
+    env: process.env.NODE_ENV || 'development'
+  },
+  redact: {
+    paths: [
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'password',
+      'token',
+      'refreshToken',
+      'secret',
+      '*.password',
+      '*.token',
+      '*.secret'
+    ],
+    censor: '[REDACTED]'
+  },
+  mixin() {
+    const store = requestContext.getStore();
+    return store
+      ? { requestId: store.requestId, correlationId: store.correlationId, userId: store.userId }
+      : {};
+  }
+});</code></pre>
+          </div>
+
+          <h3>Step 2: Request/Correlation ID &amp; HTTP Access Logging Middleware</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/middlewares/requestTelemetry.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import crypto from 'node:crypto';
+import { performance } from 'node:perf_hooks';
+import { logger, requestContext } from '../observability/logger.js';
+
+export function requestTelemetryMiddleware(req, res, next) {
+  const requestId = req.get('X-Request-Id') || crypto.randomUUID();
+  const correlationId = req.get('X-Correlation-Id') || requestId;
+
+  req.id = requestId;
+  req.correlationId = correlationId;
+  res.setHeader('X-Request-Id', requestId);
+  res.setHeader('X-Correlation-Id', correlationId);
+
+  const start = performance.now();
+  const store = { requestId, correlationId, userId: null };
+
+  requestContext.run(store, () =&gt; {
+    res.on('finish', () =&gt; {
+      if (req.user?.id) {
+        store.userId = req.user.id;
+      }
+      const durationMs = Number((performance.now() - start).toFixed(2));
+      const logLevel = res.statusCode &gt;= 500 ? 'error' : res.statusCode &gt;= 400 ? 'warn' : 'info';
+      logger[logLevel](
+        {
+          method: req.method,
+          path: req.route ? req.baseUrl + req.route.path : req.path,
+          statusCode: res.statusCode,
+          durationMs
+        },
+        'http_request_completed'
+      );
+    });
+    next();
+  });
+}</code></pre>
+          </div>
+
+          <h3>Step 3: Health, Readiness &amp; Centralized Error Handler</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/shared/routes/healthAndErrors.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+import { logger } from '../observability/logger.js';
+
+function withTimeout(promise, ms, label) {
+  let timer;
+  const timeout = new Promise((_, reject) =&gt; {
+    timer = setTimeout(() =&gt; reject(new Error(`${label}_TIMEOUT`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() =&gt; clearTimeout(timer));
+}
+
+export function createHealthRouter({ checkDb, checkRedis }) {
+  const router = express.Router();
+
+  router.get('/health', (req, res) =&gt; {
+    res.status(200).json({
+      status: 'ok',
+      uptimeSeconds: Math.round(process.uptime())
+    });
+  });
+
+  router.get('/ready', async (req, res) =&gt; {
+    const checks = {};
+    let allHealthy = true;
+
+    try {
+      await withTimeout(checkDb(), 1500, 'DB');
+      checks.database = 'up';
+    } catch (err) {
+      checks.database = 'down';
+      allHealthy = false;
+    }
+
+    try {
+      await withTimeout(checkRedis(), 1000, 'REDIS');
+      checks.redis = 'up';
+    } catch (err) {
+      checks.redis = 'down';
+      allHealthy = false;
+    }
+
+    res.status(allHealthy ? 200 : 503).json({
+      status: allHealthy ? 'ready' : 'not_ready',
+      checks
+    });
+  });
+
+  return router;
+}
+
+export function createErrorHandler({ errorTracker }) {
+  return (err, req, res, next) =&gt; {
+    const isOperational = Boolean(err && err.isOperational);
+    const statusCode = isOperational ? err.statusCode : 500;
+
+    if (!isOperational || statusCode &gt;= 500) {
+      logger.error({ err, path: req.path, method: req.method }, 'unhandled_server_error');
+      if (errorTracker) {
+        errorTracker.captureException(err, { requestId: req.id, path: req.path });
+      }
+    } else {
+      logger.warn({ code: err.code, statusCode, message: err.message }, 'operational_client_error');
+    }
+
+    res.status(statusCode).json({
+      status: 'error',
+      code: isOperational ? err.code : 'INTERNAL_ERROR',
+      message: isOperational ? err.message : 'An unexpected error occurred',
+      requestId: req.id || null
+    });
+  };
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>redact: { paths: [...], censor: '[REDACTED]' }</code>:</strong> Strips sensitive credentials automatically before JSON hits <code>stdout</code>.</li>
+              <li><strong><code>AsyncLocalStorage</code> Mixin:</strong> Attaches <code>requestId</code> and <code>correlationId</code> to deep service/repository logs automatically without altering function signatures.</li>
+              <li><strong>Normalized Route Path (<code>req.route ? req.baseUrl + req.route.path : req.path</code>):</strong> Prevents high-cardinality unique IDs (<code>/users/123</code>, <code>/users/124</code>) from exploding metric/log grouping dashboards; groups under <code>/users/:id</code> instead!</li>
+              <li><strong><code>withTimeout</code> on <code>/ready</code>:</strong> Ensures a hung database socket does not stall the readiness endpoint for 30 seconds while the load balancer waits.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Telemetry Roles &amp; Alerting Comparison</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Pillar</th>
+                  <th>Primary Question Answered</th>
+                  <th>Storage Cost / Volume</th>
+                  <th>Example Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Metrics</strong></td>
+                  <td>"Is the system degraded right now, and how much?"</td>
+                  <td>Very low (numeric counters/histograms)</td>
+                  <td>Alert when 5xx error ratio exceeds 2% or p99 &gt; 1.2s</td>
+                </tr>
+                <tr>
+                  <td><strong>Error Tracking</strong></td>
+                  <td>"Which exception occurred, how often, and in which release?"</td>
+                  <td>Low-moderate (grouped by stack fingerprint)</td>
+                  <td>Link crash spike to commit deployed 10 minutes ago</td>
+                </tr>
+                <tr>
+                  <td><strong>Structured Logs</strong></td>
+                  <td>"What exact sequence happened for <code>requestId</code> X?"</td>
+                  <td>High at scale (sample or filter <code>debug</code> in prod)</td>
+                  <td>Inspect validation &amp; external timeout context for failing order</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Observability &amp; Security Mistakes</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Logging Entire <code>req.body</code> or <code>req.headers</code></h3>
+              <p><strong>Security breach:</strong> Logging login/signup bodies or full headers saves plaintext passwords, Bearer JWTs, and session cookies into centralized log archives.</p>
+              <p><strong>Fix:</strong> Log explicit safe fields only and enforce logger-level redaction paths on sensitive keys.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Using <code>/ready</code> Logic Inside <code>/health</code> Liveness</h3>
+              <p><strong>Cascading outage:</strong> Restarting every Node container whenever a database briefly stalls amplifies recovery delays and drops healthy cached traffic.</p>
+              <p><strong>Fix:</strong> Keep <code>/health</code> strictly process-local; check DB/Redis inside <code>/ready</code>.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Using Unbounded Dynamic URLs in Metric Labels</h3>
+              <p><strong>Memory crash:</strong> Recording metrics tagged by raw <code>req.originalUrl</code> (including <code>/orders/uuid-1</code>, <code>/orders/uuid-2</code>) creates millions of unique time-series keys that crash Prometheus/Node memory.</p>
+              <p><strong>Fix:</strong> Always label metrics by matched Express route template (<code>/orders/:id</code>).</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Paging On-Call Engineers on Every Single Error</h3>
+              <p><strong>Alert fatigue:</strong> Sending Slack/PagerDuty alerts for every <code>404</code> or transient retry trains engineers to ignore real outages.</p>
+              <p><strong>Fix:</strong> Alert on sustained symptom thresholds (error-rate burn, queue depth growth, readiness outage) and log <code>4xx</code> client errors as <code>info</code>/<code>warn</code>.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Observability Task</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Instrument an Express API</h3>
+            <p>
+              Add production observability to an existing Express API:
+            </p>
+            <ol>
+              <li>Install <code>pino</code> and attach <code>requestTelemetryMiddleware</code> using <code>AsyncLocalStorage</code> so every log line includes <code>requestId</code> and <code>correlationId</code>.</li>
+              <li>Configure logger redaction for <code>authorization</code>, <code>cookie</code>, <code>password</code>, and <code>token</code>, and verify with a test login call that `[REDACTED]` appears instead of secrets.</li>
+              <li>Add <code>GET /health</code> and <code>GET /ready</code> (checking DB/Redis with a 1.5s timeout).</li>
+              <li>Attach <code>createErrorHandler</code> so throwing an unexpected error returns a safe 500 JSON payload containing <code>requestId</code> while logging the stack trace internally.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 12 Quiz: Logging, Monitoring &amp; Errors (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="Structured JSON logs allow log aggregators to index, filter, and search exact fields like requestId, statusCode, and durationMs across distributed nodes.">
+              <p class="quiz-prompt">1. Why is structured JSON logging preferred over plain <code>console.log('User 5 failed')</code> strings in production?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> JSON logs run on the browser GPU.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Machine-parseable JSON fields let log aggregators filter, correlate, and query incidents accurately at scale.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Node.js deletes console.log output in production automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> JSON logs automatically fix syntax errors.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Liveness checks only verify the process itself is alive; checking external dependencies in liveness can trigger destructive mass container restarts during a brief DB blip.">
+              <p class="quiz-prompt">2. Why should a liveness endpoint (<code>/health</code>) avoid querying external databases or third-party APIs?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Express forbids async functions on /health.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Databases reject connections from GET routes.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> A brief DB/Redis hiccup would fail liveness and force orchestrators to restart healthy API containers unnecessarily.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Liveness endpoints must return HTTP 503.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="AsyncLocalStorage preserves per-request metadata (requestId, correlationId) across async awaits without manually passing req down to every service/repository.">
+              <p class="quiz-prompt">3. What problem does Node's <code>AsyncLocalStorage</code> solve for structured request logging?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> It automatically carries requestId/correlationId across async call chains so deep services log context without passing <code>req</code> everywhere.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> It replaces Redis caching with browser localStorage.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> It compresses HTTP response headers.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> It executes SQL migrations automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Logging Authorization headers, cookies, or login bodies risks storing credentials and JWTs in plaintext across log aggregators.">
+              <p class="quiz-prompt">4. Which rule prevents critical credential leaks in backend observability pipelines?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Log the full req.headers and req.body on every request for debugging.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Send stack traces and DB passwords in 500 JSON responses.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Store JWTs inside metric labels.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Redact authorization headers, cookies, passwords, and tokens before logs leave the application.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="The Four Golden Signals are Latency, Traffic, Errors, and Saturation.">
+              <p class="quiz-prompt">5. Which set represents the Four Golden Signals of backend monitoring?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> HTML, CSS, JavaScript, JSON</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> Latency, Traffic, Errors, Saturation</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> GET, POST, PUT, DELETE</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Unit, Integration, E2E, Manual</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Raw URLs with unique IDs create unbounded cardinality in metric stores; normalized route patterns (/orders/:id) keep series bounded.">
+              <p class="quiz-prompt">6. Why should latency metrics use normalized route templates (<code>/orders/:id</code>) instead of raw URLs (<code>/orders/9f8a21...</code>)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Express throws an error when reading req.originalUrl.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Route templates encrypt user IDs automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Unique IDs cause high-cardinality metric explosions that can exhaust memory and break dashboards.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Metric tools reject strings containing slashes.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Returning requestId in the safe 500 JSON payload lets support or clients report a lookup ID that maps directly to the full internal stack trace in logs.">
+              <p class="quiz-prompt">7. Why is returning <code>requestId</code> in a safe generic 500 error response helpful?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Support or clients can share the requestId so engineers immediately locate the full internal stack trace in logs without exposing internals publicly.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> It forces the browser to automatically retry the request 10 times.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> It fixes the underlying database bug.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> It converts 500 errors into 200 OK.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Alerting should target sustained, user-impacting symptom thresholds rather than isolated minor events to avoid alert fatigue.">
+              <p class="quiz-prompt">8. Which alert rule follows healthy production alerting principles?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Send an immediate SMS page every time any client receives HTTP 404.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Page an engineer whenever CPU briefly touches 40% for 2 seconds.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> Email the whole company on every debug log line.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Alert when sustained 5xx error rate exceeds 2% over 5 minutes or p99 latency breaches SLO thresholds.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Error tracking tools deduplicate identical crashes by stack fingerprint, track affected users and release tags, and alert on regressions.">
+              <p class="quiz-prompt">9. What capability do dedicated error-tracking tools (like Sentry) provide beyond raw log files?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Hosting relational SQL databases</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Grouping duplicate stack traces by fingerprint, tracking release versions, breadcrumbs, and affected user counts</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Terminating TLS on load balancers</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Compressing static images to WebP</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Readiness probes return 503 when essential dependencies fail or time out so load balancers stop routing traffic to unready instances.">
+              <p class="quiz-prompt">10. What status code should <code>GET /ready</code> return when the database dependency check times out?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> 200 OK</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> 304 Not Modified</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> 503 Service Unavailable</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> 201 Created</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is the difference between a <code>requestId</code> and a <code>correlationId</code>?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A <code>requestId</code> identifies a single HTTP call to one service instance. A <code>correlationId</code> identifies an entire end-to-end business workflow across multiple services, background jobs, and message queue consumers.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Why should production Node.js apps log JSON to <code>stdout</code> rather than managing rotating log files inside containers?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Containers have ephemeral filesystems and scale dynamically. Writing structured JSON to <code>stdout</code> follows the Twelve-Factor App principle so platform log collectors (Docker, Kubernetes, cloud agents) ship logs reliably without filling container disks.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Explain the difference between operational errors and programmer errors in Express error handling.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Operational errors</strong> are expected runtime failures (bad user input, missing record, conflict) handled cleanly with safe <code>4xx</code> messages. <strong>Programmer/unexpected errors</strong> (null dereference, driver crash) return generic <code>500</code> responses while logging full stack traces and triggering alerts.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why is setting a timeout (e.g., 1.5s) inside <code>/ready</code> dependency checks important?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>If the database is silently dropping packets, a default TCP timeout can hang for 30+ seconds—longer than the load balancer's probe timeout. Bounding checks with <code>Promise.race</code> returns an explicit <code>503</code> JSON response promptly.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why does alert fatigue happen and how do you avoid it?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Alert fatigue happens when teams trigger noisy notifications for non-actionable events (single transient retries, normal 404s, short CPU blips), leading engineers to mute channels. Avoid it by alerting only on sustained user-impacting SLO symptoms that require human action.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Sensitive Data Leak &amp; Missing Async Context</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A developer logs <code>console.log('Login attempt:', req.body, req.headers);</code> inside auth middleware and loses request IDs inside <code>OrderService</code>. Fix both issues.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function logAuthAttempt(email) {
+  const maskedEmail = email.replace(/(^.).*(@.*$)/, '$1***$2');
+  logger.info({ maskedEmail }, 'auth_login_attempted');
+}</code></pre>
+                </div>
+                <p><strong>Fixes:</strong> Never dump raw <code>req.body</code> or <code>req.headers</code>; log masked identifiers via Pino configured with <code>redact</code> and <code>AsyncLocalStorage</code> mixin so <code>requestId</code> appears automatically in every service log.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Propagate Correlation ID into Background Jobs</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> From Day 5, when Express enqueues a BullMQ job and a worker runs it later, <code>AsyncLocalStorage</code> from the HTTP request is gone. Show how to pass and restore <code>correlationId</code> in the worker.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function enqueueWithContext(queue, name, payload) {
+  const ctx = requestContext.getStore();
+  return queue.add(name, {
+    ...payload,
+    correlationId: ctx?.correlationId || crypto.randomUUID()
+  });
+}
+
+export async function runJobWithContext(job, handler) {
+  const store = {
+    requestId: `job:${job.id}`,
+    correlationId: job.data.correlationId || `job:${job.id}`,
+    userId: job.data.userId || null
+  };
+  return requestContext.run(store, () =&gt; handler(job));
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Designing Dashboards &amp; Process Crash Safety</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Outline what happens when an <code>unhandledRejection</code> fires outside Express middleware in Node.js, and list the top 5 panels you would put on an Express API production dashboard.</p>
+                <p><strong>Reference Architecture:</strong> Attach a process-level <code>process.on('unhandledRejection', ...)</code> handler that logs a <code>fatal</code> error, flushes the error tracker, triggers graceful shutdown (draining HTTP server with a short timeout), and exits cleanly so the container orchestrator restarts a healthy process rather than running in a corrupted state. Top 5 dashboard panels: (1) Request Rate by route/status, (2) 5xx Error % Rate, (3) p50/p95/p99 Latency, (4) Event-Loop Delay &amp; Heap Usage, and (5) DB Pool Wait Time + Queue Waiting Depth.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 12 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Three pillars:</strong> Metrics show system health trends, error trackers group crashes, and structured JSON logs explain individual failures.</li>
+              <li><strong>Context propagation:</strong> <code>AsyncLocalStorage</code> and <code>X-Correlation-Id</code> link HTTP, worker, and broker logs cleanly.</li>
+              <li><strong>Probes:</strong> Keep <code>/health</code> lightweight for process liveness and <code>/ready</code> timeout-bounded for dependency readiness.</li>
+              <li><strong>Centralized errors:</strong> Return safe operational errors + <code>requestId</code> to clients while logging full <code>5xx</code> details internally.</li>
+              <li><strong>Zero secret leaks:</strong> Redact auth headers, cookies, tokens, and passwords automatically inside the logger.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 12 Observability Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 12 Logging, Monitoring, and Error Tracking visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 12 local visual reference (<code>Day 12/image.webp</code>). Review structured logging, correlation IDs, probes, RED metrics, and redaction.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 11/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 11: Cloud File Storage</span>
+          </a>
+          <a href="../Day 13/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 13: Advanced Backend Testing &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 11/index.html">Day 11: Cloud Storage</a></li>
+          <li><a href="../Day 12/index.html">Day 12: Observability</a></li>
+          <li><a href="../Day 13/index.html">Day 13: Backend Testing</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

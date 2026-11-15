@@ -1,0 +1,1103 @@
+Here are all three separate complete files for Day 11: Cloud File Storage, ready
+to copy and save into your Phase 6/Day 11/ folder.
+
+1. Phase 6/Day 11/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 11: Cloud File Storage. Learn object storage concepts, upload/download workflows, presigned URLs, file validation, metadata, CDN delivery, lifecycle policies, and safe upload handling.">
+  <title>Day 11: Cloud File Storage | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="11">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="../index.html" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 11: Cloud File Storage</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html" selected>Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 10/index.html" class="nav-step-btn" title="Go to Day 10">Prev</a>
+            <a href="../Day 12/index.html" class="nav-step-btn" title="Go to Day 12">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 11 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 11</span>
+          <span class="category-pill">Object Storage &amp; Media Delivery</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="11" aria-pressed="false">Mark Day 11 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Cloud File Storage</h1>
+        <p class="lesson-intro">
+          Saving user avatars, PDFs, or videos onto a Node.js server's local filesystem breaks horizontal scaling, gets wiped on container restarts, and saturates Express bandwidth on large transfers. Today you will learn how cloud object storage works, how presigned upload and download URLs offload heavy file bytes, how to validate and isolate untrusted uploads safely, and how CDNs and lifecycle policies optimize cost and speed.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 2 &amp; 8</span>
+            <p>External object storage keeps API replicas stateless, while server-issued presigned URLs let you enforce strict user ownership before granting temporary read/write access.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Keep buckets private by default, store file metadata in your primary database, validate file content rather than extensions, and let clients transfer bytes directly to object storage.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Implement an S3-compatible presigned upload/download workflow (with a clearly separated local development adapter) and metadata confirmation endpoint.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Presigned Upload Lifecycle</a>
+            <a href="#diagrams">Storage &amp; Security Diagrams</a>
+            <a href="#implementation">S3 + Local Dev Implementation</a>
+            <a href="#real-world">Workflows &amp; Trade-offs</a>
+            <a href="#mistakes-security">Safe Upload Handling</a>
+            <a href="#practical-task">Practical Storage Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            Cloud object storage (AWS S3, Cloudflare R2, Google Cloud Storage, Azure Blob, or self-hosted MinIO for local development) provides durable, virtually unlimited storage decoupled from application compute nodes.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Compare Local vs. Object Storage</h3>
+              <p>Understand buckets, flat key namespaces, durability, and why local server disks fail in scaled backends.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design Upload &amp; Download Flows</h3>
+              <p>Compare Express-proxied streaming against direct-to-storage presigned URL workflows.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Enforce File Validation &amp; Security</h3>
+              <p>Verify magic bytes, enforce byte limits, prevent path traversal, and isolate untrusted SVG/HTML uploads.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Apply CDNs &amp; Lifecycle Rules</h3>
+              <p>Serve cacheable assets globally via CDNs and automate expiration or archival with bucket lifecycle rules.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Cloud File Storage Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Local Storage vs. Object Storage</h3>
+            <p>
+              <strong>Local filesystem storage</strong> (<code>./uploads/avatar.png</code>) ties files to a single machine's disk. As covered in Day 2, another container instance cannot read that file, container deployments wipe ephemeral disks, and scaling disk capacity independently is rigid.
+            </p>
+            <p>
+              <strong>Object storage</strong> stores immutable blobs ("objects") inside logical containers called <strong>buckets</strong>, identified by a flat string <strong>key</strong> such as <code>uploads/tenants/t_9/2026/uuid-invoice.pdf</code>. Slashes in keys simulate folder organization visually, while the store scales horizontally across redundant drives with high durability.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Upload and Download Workflows</h3>
+            <ul>
+              <li><strong>API-Proxied Upload:</strong> Client sends <code>multipart/form-data</code> to Express (e.g., via <code>multer</code> memory/stream), Express validates bytes/magic header, and streams to S3. Simple for tiny files (&lt; 2 MB), but ties up Node.js memory/sockets for large files.</li>
+              <li><strong>Direct Presigned Upload:</strong> Client asks Express <code>POST /api/files/upload-intent</code>; Express authenticates, checks quota, creates a <code>pending</code> metadata row in DB, and returns a short-lived <strong>Presigned PUT URL</strong>. The browser uploads bytes <em>directly</em> to object storage, then notifies Express to mark the metadata record <code>ready</code> (or S3 triggers a webhook/queue job).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Secure File Access &amp; Signed URLs</h3>
+            <p>
+              Private user documents (invoices, tax PDFs, ID scans) must live in a <strong>private bucket</strong> with public listing/reading disabled. When an authorized user requests a download (<code>GET /api/files/:id/download</code>), your backend verifies ownership (Day 8) and generates a <strong>Presigned GET URL</strong> valid for a short window (for example, 60–300 seconds). Anyone holding that signed URL during its brief window can download that specific object without needing AWS credentials.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. File Metadata in Your Database</h3>
+            <p>
+              Object storage is optimized for retrieving objects by exact key—not searching by owner, status, or page. Store structured metadata in MongoDB or PostgreSQL: <code>fileId</code>, <code>ownerId</code>, <code>objectKey</code>, <code>originalFilename</code>, <code>mimeType</code>, <code>sizeBytes</code>, <code>status</code> (<code>pending</code> | <code>ready</code> | <code>deleted</code>), and optional SHA-256 checksum. Never use user-supplied filenames directly as storage keys—generate random UUID keys!
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. File Size and Type Validation</h3>
+            <p>
+              Never trust <code>file.originalname</code> (<code>malware.exe.png</code>) or the HTTP <code>Content-Type</code> header—clients can forge both trivially.
+            </p>
+            <ul>
+              <li><strong>Server-Enforced Size Caps:</strong> Reject oversized requests early (in Express stream limits or S3 presigned <code>POST</code> policy <code>content-length-range</code> conditions, plus checking actual stored <code>HeadObject</code> size afterward).</li>
+              <li><strong>Magic-Byte Signature Inspection:</strong> Read the leading bytes of the file (for example, PNG starts with <code>89 50 4E 47</code>, PDF with <code>25 50 44 46</code>) via libraries like <code>file-type</code> to confirm the true binary format.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. CDN Basics</h3>
+            <p>
+              A <strong>Content Delivery Network (CDN)</strong> caches static and public media (product images, avatars, public assets) at geographically distributed edge servers close to users, cutting latency and saving expensive origin object-storage egress fees. Assign immutable versioned keys (e.g., <code>avatars/u_42/v3-a91f.webp</code>) so you can safely set long <code>Cache-Control: public, max-age=31536000, immutable</code> headers without stale-cache headaches.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Storage Permissions and Lifecycle Policies</h3>
+            <ul>
+              <li><strong>Least-Privilege Bucket Policies:</strong> Grant the backend IAM role access only to the specific application bucket and required actions (<code>s3:PutObject</code>, <code>s3:GetObject</code>, <code>s3:DeleteObject</code>)—never wildcard admin permissions across all buckets.</li>
+              <li><strong>CORS Configuration:</strong> Direct browser uploads require allowing your frontend origin for <code>PUT</code>/<code>POST</code> on the bucket's CORS policy.</li>
+              <li><strong>Lifecycle Policies:</strong> Automatically abort incomplete multipart uploads after 1–3 days, delete abandoned <code>pending</code> temp prefixes, or archive old compliance logs to cold storage tiers.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Safe Handling of User-Uploaded Files</h3>
+            <p>
+              User-uploaded files are untrusted input:
+            </p>
+            <ul>
+              <li><strong>Prevent XSS via SVG/HTML Uploads:</strong> Serving a user-uploaded <code>.svg</code> or <code>.html</code> inline from your main app domain (<code>app.example.com/uploads/evil.svg</code>) executes embedded <code>&lt;script&gt;</code> tags with your origin's privileges! Serve user uploads from an isolated sandbox domain (or object-storage CDN domain), enforce <code>Content-Disposition: attachment</code> for downloads, and set <code>X-Content-Type-Options: nosniff</code>.</li>
+              <li><strong>Path Traversal Defense:</strong> Always generate UUID object keys on the server; never concatenate <code>req.body.filename</code> (like <code>../../etc/passwd</code>) into local or bucket paths.</li>
+              <li><strong>Async Malware Scanning &amp; Re-Encoding:</strong> For sensitive workflows, quarantine uploads in a <code>staging/</code> prefix until a background worker (Day 5) scans or re-encodes images (which also strips hidden EXIF GPS metadata).</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Direct Presigned Upload &amp; Verification Workflow</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Request Upload Intent:</strong> Browser sends file name, declared MIME type, and byte size to <code>POST /api/files/upload-url</code>.
+            </li>
+            <li>
+              <strong>Server Validates &amp; Signs:</strong> Backend verifies authentication, checks allowed MIME/size limits, generates a UUID <code>objectKey</code>, saves a <code>pending</code> metadata record, and returns a 2-minute presigned <code>PUT</code> URL.
+            </li>
+            <li>
+              <strong>Direct Byte Transfer:</strong> Browser uploads the file straight to cloud object storage (or local dev storage endpoint), bypassing Node.js RAM completely.
+            </li>
+            <li>
+              <strong>Confirmation &amp; Inspection:</strong> Browser calls <code>POST /api/files/:id/confirm</code>; backend calls <code>HeadObject</code> / checks magic bytes to verify size &amp; true file format before flipping status to <code>ready</code>.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Upload Workflows &amp; Safe File Access Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: API-Proxied Upload vs. Direct Presigned Upload</h3>
+            <p class="diagram-caption">
+              Direct presigned uploads keep heavy megabyte streams off your Express containers while retaining full server authorization and metadata control.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 205" class="arch-svg" role="img" aria-label="Comparison of API-proxied file upload flowing through Express versus direct presigned URL upload straight from browser to object storage">
+                <defs>
+                  <marker id="arrow-s3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="20" y="24" width="126" height="156" rx="10" class="svg-box-blue"></rect>
+                <text x="83" y="96" text-anchor="middle" class="svg-title">Browser Client</text>
+                <text x="83" y="114" text-anchor="middle" class="svg-sub">File Input (15 MB)</text>
+
+                <line x1="146" y1="54" x2="266" y2="54" class="svg-arrow" marker-end="url(#arrow-s3)"></line>
+                <text x="206" y="45" text-anchor="middle" class="svg-sub">1. POST /upload-url</text>
+
+                <rect x="270" y="24" width="186" height="72" rx="10" class="svg-box-muted"></rect>
+                <text x="363" y="54" text-anchor="middle" class="svg-title">Express API + DB</text>
+                <text x="363" y="72" text-anchor="middle" class="svg-sub">Save pending + Sign PUT URL</text>
+
+                <line x1="266" y1="80" x2="146" y2="80" class="svg-arrow" marker-end="url(#arrow-s3)"></line>
+                <text x="206" y="96" text-anchor="middle" class="svg-sub">2. Return Signed URL</text>
+
+                <line x1="146" y1="142" x2="526" y2="142" class="svg-arrow" marker-end="url(#arrow-s3)"></line>
+                <text x="336" y="132" text-anchor="middle" class="svg-sub">3. Direct PUT bytes (Express untouched!)</text>
+
+                <rect x="530" y="98" width="210" height="82" rx="10" class="svg-box-accent"></rect>
+                <text x="635" y="130" text-anchor="middle" class="svg-title">Cloud Object Storage</text>
+                <text x="635" y="149" text-anchor="middle" class="svg-sub">S3 / R2 / MinIO (Private)</text>
+
+                <line x1="456" y1="60" x2="600" y2="96" class="svg-arrow" marker-end="url(#arrow-s3)"></line>
+                <text x="560" y="64" text-anchor="middle" class="svg-sub">4. HeadObject verify</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Private Download Authorization &amp; Safe Headers</h3>
+            <p class="diagram-caption">
+              Private documents never sit at predictable public URLs; ownership is checked on every download request before issuing a short-lived signed GET URL.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 140" class="arch-svg" role="img" aria-label="Authorized GET download flow checking user ownership, issuing a 120-second presigned GET URL with Content-Disposition attachment, and streaming directly from storage">
+                <defs>
+                  <marker id="arrow-s3-dl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="34" width="150" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="93" y="63" text-anchor="middle" class="svg-title">GET /files/:id</text>
+                <text x="93" y="81" text-anchor="middle" class="svg-sub">Auth Token</text>
+
+                <line x1="168" y1="68" x2="210" y2="68" class="svg-arrow" marker-end="url(#arrow-s3-dl)"></line>
+
+                <rect x="214" y="34" width="176" height="68" rx="10" class="svg-box-blue"></rect>
+                <text x="302" y="63" text-anchor="middle" class="svg-title">Ownership Check</text>
+                <text x="302" y="81" text-anchor="middle" class="svg-sub">ownerId === req.user.id</text>
+
+                <line x1="390" y1="68" x2="432" y2="68" class="svg-arrow" marker-end="url(#arrow-s3-dl)"></line>
+
+                <rect x="436" y="34" width="160" height="68" rx="10" class="svg-box-accent"></rect>
+                <text x="516" y="63" text-anchor="middle" class="svg-title">Presigned GET</text>
+                <text x="516" y="81" text-anchor="middle" class="svg-sub">TTL 120s + Attachment</text>
+
+                <line x1="596" y1="68" x2="628" y2="68" class="svg-arrow" marker-end="url(#arrow-s3-dl)"></line>
+
+                <rect x="632" y="34" width="110" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="687" y="63" text-anchor="middle" class="svg-title">Bucket / CDN</text>
+                <text x="687" y="81" text-anchor="middle" class="svg-sub">Direct Download</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Controlled File Upload Workflow (Cloud S3 &amp; Local Dev Adapter)</h2>
+          <p>
+            Using Day 1's Dependency Injection pattern, we define a clean <code>S3StorageProvider</code> for production/MinIO and a clearly marked <code>LocalDevStorageProvider</code> for offline local testing—without changing <code>FileService</code> at all!
+          </p>
+
+          <h3>Part A — Server-Side S3 Provider &amp; Local Development Substitute</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Server-Side: src/shared/storage/s3StorageProvider.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+export class S3StorageProvider {
+  constructor() {
+    this.bucket = process.env.STORAGE_BUCKET;
+    this.client = new S3Client({
+      region: process.env.STORAGE_REGION || 'us-east-1',
+      endpoint: process.env.STORAGE_ENDPOINT || undefined,
+      forcePathStyle: Boolean(process.env.STORAGE_ENDPOINT)
+    });
+  }
+
+  async createPresignedUploadUrl({ key, contentType, expiresInSeconds = 120 }) {
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+      ContentType: contentType
+    });
+    return getSignedUrl(this.client, command, { expiresIn: expiresInSeconds });
+  }
+
+  async createPresignedDownloadUrl({ key, downloadName, expiresInSeconds = 120 }) {
+    const safeName = downloadName.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+      ResponseContentDisposition: `attachment; filename="${safeName}"`
+    });
+    return getSignedUrl(this.client, command, { expiresIn: expiresInSeconds });
+  }
+
+  async headObject(key) {
+    const res = await this.client.send(
+      new HeadObjectCommand({ Bucket: this.bucket, Key: key })
+    );
+    return {
+      sizeBytes: Number(res.ContentLength || 0),
+      contentType: res.ContentType || ''
+    };
+  }
+
+  async readFirstBytes(key, byteCount = 16) {
+    const res = await this.client.send(
+      new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Range: `bytes=0-${byteCount - 1}`
+      })
+    );
+    const chunks = [];
+    for await (const chunk of res.Body) {
+      chunks.push(chunk);
+    }
+    return Buffer.concat(chunks);
+  }
+}</code></pre>
+          </div>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Server-Side (Local Dev Substitute Only): src/shared/storage/localDevStorageProvider.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import fs from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+export class LocalDevStorageProvider {
+  constructor(baseDir = path.resolve(process.cwd(), '.local_dev_storage')) {
+    this.baseDir = baseDir;
+  }
+
+  resolveSafePath(key) {
+    const normalized = path.normalize(key).replace(/^(\.\.(\/|\\|$))+/, '');
+    const target = path.resolve(this.baseDir, normalized);
+    if (!target.startsWith(this.baseDir + path.sep)) {
+      throw new Error('INVALID_STORAGE_KEY');
+    }
+    return target;
+  }
+
+  signDevToken(key, action, expiresAtMs) {
+    const secret = process.env.LOCAL_DEV_SIGNING_KEY || 'dev-only-local-key';
+    return crypto
+      .createHmac('sha256', secret)
+      .update(`${action}:${key}:${expiresAtMs}`)
+      .digest('hex');
+  }
+
+  async createPresignedUploadUrl({ key, expiresInSeconds = 120 }) {
+    const exp = Date.now() + expiresInSeconds * 1000;
+    const sig = this.signDevToken(key, 'put', exp);
+    return `/api/dev-storage/upload?key=${encodeURIComponent(key)}&amp;exp=${exp}&amp;sig=${sig}`;
+  }
+
+  async createPresignedDownloadUrl({ key, expiresInSeconds = 120 }) {
+    const exp = Date.now() + expiresInSeconds * 1000;
+    const sig = this.signDevToken(key, 'get', exp);
+    return `/api/dev-storage/download?key=${encodeURIComponent(key)}&amp;exp=${exp}&amp;sig=${sig}`;
+  }
+
+  async headObject(key) {
+    const filePath = this.resolveSafePath(key);
+    const stats = await fs.stat(filePath);
+    return { sizeBytes: stats.size, contentType: 'application/octet-stream' };
+  }
+
+  async readFirstBytes(key, byteCount = 16) {
+    const filePath = this.resolveSafePath(key);
+    const handle = await fs.open(filePath, 'r');
+    try {
+      const buf = Buffer.alloc(byteCount);
+      const { bytesRead } = await handle.read(buf, 0, byteCount, 0);
+      return buf.subarray(0, bytesRead);
+    } finally {
+      await handle.close();
+    }
+  }
+}</code></pre>
+          </div>
+
+          <h3>Part B — Server-Side FileService with Validation &amp; Magic-Byte Check</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Server-Side: src/modules/files/file.service.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import crypto from 'node:crypto';
+import { AppError } from '../../shared/errors/AppError.js';
+
+const MAX_BYTES = 10 * 1024 * 1024;
+const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp', 'application/pdf']);
+
+function matchesMagicBytes(buf, mimeType) {
+  if (mimeType === 'image/png') {
+    return buf.length &gt;= 4 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47;
+  }
+  if (mimeType === 'image/jpeg') {
+    return buf.length &gt;= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff;
+  }
+  if (mimeType === 'application/pdf') {
+    return buf.subarray(0, 4).toString('ascii') === '%PDF';
+  }
+  if (mimeType === 'image/webp') {
+    return buf.length &gt;= 12 && buf.subarray(0, 4).toString('ascii') === 'RIFF' && buf.subarray(8, 12).toString('ascii') === 'WEBP';
+  }
+  return false;
+}
+
+export class FileService {
+  constructor({ fileRepo, storageProvider }) {
+    this.fileRepo = fileRepo;
+    this.storage = storageProvider;
+  }
+
+  async createUploadIntent({ userId, originalName, mimeType, sizeBytes }) {
+    if (!ALLOWED_TYPES.has(mimeType)) {
+      throw new AppError('Unsupported file type', 400, 'INVALID_FILE_TYPE');
+    }
+    if (!Number.isInteger(sizeBytes) || sizeBytes &lt;= 0 || sizeBytes &gt; MAX_BYTES) {
+      throw new AppError('File exceeds 10 MB limit', 400, 'INVALID_FILE_SIZE');
+    }
+
+    const objectKey = `uploads/${userId}/${crypto.randomUUID()}`;
+    const record = await this.fileRepo.create({
+      ownerId: userId,
+      objectKey,
+      originalName: String(originalName).slice(0, 120),
+      mimeType,
+      declaredSizeBytes: sizeBytes,
+      status: 'pending'
+    });
+
+    const uploadUrl = await this.storage.createPresignedUploadUrl({
+      key: objectKey,
+      contentType: mimeType,
+      expiresInSeconds: 120
+    });
+
+    return { fileId: record._id, uploadUrl };
+  }
+
+  async confirmUpload({ fileId, userId }) {
+    const file = await this.fileRepo.findById(fileId);
+    if (!file) {
+      throw new AppError('File record not found', 404, 'FILE_NOT_FOUND');
+    }
+    if (String(file.ownerId) !== String(userId)) {
+      throw new AppError('Forbidden', 403, 'FORBIDDEN');
+    }
+
+    const meta = await this.storage.headObject(file.objectKey);
+    if (meta.sizeBytes &lt;= 0 || meta.sizeBytes &gt; MAX_BYTES) {
+      throw new AppError('Uploaded object violates size limit', 400, 'INVALID_UPLOADED_SIZE');
+    }
+
+    const headerBytes = await this.storage.readFirstBytes(file.objectKey, 16);
+    if (!matchesMagicBytes(headerBytes, file.mimeType)) {
+      throw new AppError('File signature does not match declared type', 400, 'SIGNATURE_MISMATCH');
+    }
+
+    return this.fileRepo.markReady(fileId, meta.sizeBytes);
+  }
+
+  async getSignedDownload({ fileId, userId }) {
+    const file = await this.fileRepo.findById(fileId);
+    if (!file || file.status !== 'ready') {
+      throw new AppError('File not available', 404, 'FILE_NOT_FOUND');
+    }
+    if (String(file.ownerId) !== String(userId)) {
+      throw new AppError('Forbidden', 403, 'FORBIDDEN');
+    }
+
+    const downloadUrl = await this.storage.createPresignedDownloadUrl({
+      key: file.objectKey,
+      downloadName: file.originalName,
+      expiresInSeconds: 120
+    });
+    return { downloadUrl };
+  }
+}</code></pre>
+          </div>
+
+          <h3>Part C — Browser-Side Direct Upload Script</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Browser-Side: client/uploadFile.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>export async function uploadSelectedFile(file, accessToken) {
+  const intentRes = await fetch('/api/files/upload-url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      originalName: file.name,
+      mimeType: file.type,
+      sizeBytes: file.size
+    })
+  });
+  if (!intentRes.ok) {
+    throw new Error('Failed to create upload URL');
+  }
+  const { data } = await intentRes.json();
+
+  const uploadRes = await fetch(data.uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': file.type },
+    body: file
+  });
+  if (!uploadRes.ok) {
+    throw new Error('Direct storage upload failed');
+  }
+
+  const confirmRes = await fetch(`/api/files/${data.fileId}/confirm`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  if (!confirmRes.ok) {
+    throw new Error('File verification failed');
+  }
+  return confirmRes.json();
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong>Server-Generated UUID <code>objectKey</code>:</strong> Ignores user filenames for storage paths, eliminating filename collisions and path traversal.</li>
+              <li><strong><code>readFirstBytes</code> Magic-Byte Check:</strong> Verifies actual binary headers inside the uploaded object (e.g., rejecting an <code>.exe</code> or <code>&lt;script&gt;</code> HTML file renamed to <code>photo.png</code>).</li>
+              <li><strong><code>ResponseContentDisposition: 'attachment; filename="..."'</code>:</strong> Forces browsers to download private files safely rather than executing them inline inside the browser tab.</li>
+              <li><strong><code>LocalDevStorageProvider</code> Boundary Check:</strong> Normalizes keys and verifies <code>target.startsWith(this.baseDir + path.sep)</code> to prevent directory traversal in local testing.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Storage Workflow Comparison</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Approach</th>
+                  <th>Server Load</th>
+                  <th>Security &amp; Validation</th>
+                  <th>Best Fit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Local Disk Storage</strong></td>
+                  <td>High; breaks stateless horizontal scaling</td>
+                  <td>Risk of path traversal &amp; accidental static hosting XSS</td>
+                  <td>Local dev substitute or throwaway single-node experiments only</td>
+                </tr>
+                <tr>
+                  <td><strong>API-Proxied Stream to S3</strong></td>
+                  <td>Node.js buffers/streams full file bytes</td>
+                  <td>Easy inline virus/magic-byte check before saving to bucket</td>
+                  <td>Small uploads (&lt; 2 MB) where inline inspection is desired</td>
+                </tr>
+                <tr>
+                  <td><strong>Direct Presigned URL + Confirm + CDN</strong></td>
+                  <td>Zero media bandwidth through Node.js</td>
+                  <td>Requires <code>HeadObject</code> + async/post-upload byte checks</td>
+                  <td>Large files, high-traffic mobile/web apps, scalable media platforms</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common File Handling &amp; Security Mistakes</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Serving User-Uploaded SVGs or HTML Inline on Your Main Domain</h3>
+              <p><strong>Critical XSS Vulnerability:</strong> SVG files are XML documents capable of running embedded JavaScript. Serving them inline on <code>app.example.com</code> allows Stored XSS.</p>
+              <p><strong>Fix:</strong> Never allow untrusted SVG/HTML in image allowlists without strict sanitization, serve uploads from an isolated sandbox domain, and use <code>Content-Disposition: attachment</code> + <code>X-Content-Type-Options: nosniff</code>.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Making the Whole Bucket Public-Read</h3>
+              <p><strong>Privacy leak:</strong> Storing invoices or ID documents in a public bucket allows anyone who guesses or leaks a URL to read sensitive files forever.</p>
+              <p><strong>Fix:</strong> Keep buckets private by default; issue short-lived presigned GET URLs only after ownership authorization.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Never Cleaning Up Abandoned <code>pending</code> Uploads</h3>
+              <p><strong>Cost leak:</strong> Users cancel uploads midway or never call <code>/confirm</code>, leaving orphan blobs and incomplete multipart parts billing monthly storage.</p>
+              <p><strong>Fix:</strong> Configure bucket lifecycle rules for incomplete multipart uploads and schedule a cleanup job for stale <code>pending</code> files.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Trusting Declared Size in Presigned <code>PUT</code> Without Verification</h3>
+              <p><strong>Abuse risk:</strong> A client declares <code>sizeBytes: 5000</code> to get a presigned PUT URL, then uploads a 2 GB file unless enforced by S3 policy conditions or verified immediately afterward.</p>
+              <p><strong>Fix:</strong> Use S3 presigned <code>POST</code> policies with <code>content-length-range</code> or check <code>HeadObject</code> size and delete violations immediately.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical File Upload Milestone</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Build a Controlled Document Upload &amp; Download Flow</h3>
+            <p>
+              Wire the <code>FileService</code> into an Express router protected by Day 8's authentication middleware using either MinIO (local S3-compatible container) or <code>LocalDevStorageProvider</code>:
+            </p>
+            <ol>
+              <li>Expose <code>POST /api/files/upload-url</code>, <code>POST /api/files/:id/confirm</code>, and <code>GET /api/files/:id/download</code>.</li>
+              <li>Store file metadata in MongoDB/PostgreSQL with <code>status: 'pending'</code> until confirmation verifies size limits and magic bytes.</li>
+              <li>Ensure User B receives <code>403 Forbidden</code> when trying to confirm or download User A's file.</li>
+              <li>Verify that uploading a renamed <code>.txt</code> file disguised as <code>image/png</code> fails signature validation on confirm.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 11 Quiz: Cloud File Storage (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="Direct presigned URL uploads offload large binary transfers straight from the client to cloud object storage, freeing Node.js RAM and socket bandwidth.">
+              <p class="quiz-prompt">1. What is the main scalability benefit of direct presigned upload URLs compared to proxying 50 MB uploads through Express?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Presigned URLs encrypt files inside browser localStorage.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Heavy file bytes bypass Node.js API servers completely, preventing memory and socket saturation.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Object storage automatically validates user passwords.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> It eliminates the need for CORS configuration.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Clients can easily spoof both filenames and Content-Type headers; inspecting binary magic bytes confirms the actual file format.">
+              <p class="quiz-prompt">2. Why is checking <code>file.originalname</code> and HTTP <code>Content-Type</code> insufficient for validating uploaded files?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Express strips headers from multipart uploads.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> S3 rejects files containing dots in names.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Attackers can trivially rename scripts or executables to .png and forge Content-Type; magic-byte signatures verify actual content.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> Object storage converts all files to PNG automatically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="SVG files can contain inline script elements; serving them inline on your primary origin allows Stored XSS.">
+              <p class="quiz-prompt">3. Why is allowing untrusted users to upload <code>.svg</code> files and serving them inline from your main web app origin risky?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> SVGs are XML and can execute embedded JavaScript in browsers (Stored XSS) if served inline on your app origin.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> SVGs always exceed 100 MB.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Browsers cannot cache SVG files.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> SVGs corrupt MongoDB BSON indexes.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Keeping buckets private and minting short-lived presigned GET URLs only after checking authorization protects private files.">
+              <p class="quiz-prompt">4. How should an API serve private user invoices stored in S3?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Make the entire bucket public-read and use sequential IDs.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Embed AWS secret keys inside frontend React code.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Store the raw PDF binary inside JWT payloads.</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Keep the bucket private, verify user ownership in the backend, and issue a short-lived presigned GET URL.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="Server-generated UUID object keys prevent path traversal attacks and key collisions across users.">
+              <p class="quiz-prompt">5. Why should object storage keys be generated using server-side UUIDs rather than raw user-submitted filenames?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> Object storage forbids lowercase letters in keys.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> It prevents filename collisions, overwrites, and path traversal characters (<code>../</code>).</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> UUID keys automatically compress files by 50%.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> Browsers require UUIDs to render JPEG images.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Setting Content-Disposition: attachment instructs browsers to save the file rather than rendering potentially dangerous content inline.">
+              <p class="quiz-prompt">6. What does adding <code>Content-Disposition: attachment</code> on a presigned download URL accomplish?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> It deletes the file from S3 after 1 download.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> It converts PDFs into WebP images.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> It instructs the browser to download the file rather than executing or rendering it inline in the page tab.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> It bypasses HTTPS certificate checks.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Immutable unique keys let CDNs cache public assets aggressively with max-age=31536000, immutable without risking stale overwrites.">
+              <p class="quiz-prompt">7. Why do CDN-backed public media uploads pair well with immutable versioned keys (such as <code>avatars/u42/v3.webp</code>)?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Updates create a brand-new key, allowing aggressive long-TTL edge caching with zero stale-cache invalidation bugs.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> CDNs cannot cache files unless keys start with v3.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Immutable keys bypass IAM permissions.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> It eliminates database metadata storage.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Lifecycle rules automate cleaning up failed multipart fragments and expiring temporary/archived objects to control storage bills.">
+              <p class="quiz-prompt">8. What problem do cloud bucket lifecycle policies solve?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Verifying JWT expiration on Express routes</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Running MongoDB aggregation pipelines</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> Compiling JavaScript code inside browsers</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Automatically aborting incomplete multipart uploads and transitioning or expiring old/temporary objects</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Databases provide fast indexed querying by ownerId, status, and pagination, while holding original filenames and sizes cleanly.">
+              <p class="quiz-prompt">9. Why store file metadata in MongoDB or PostgreSQL instead of listing the S3 bucket directly for user file dashboards?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> S3 cannot store files larger than 1 KB.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Object stores lack rich indexed queries, joins, pagination, and domain ownership attributes that databases handle efficiently.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> S3 deletes files if metadata is not in SQL.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Databases store raw video frames faster than CDNs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="A presigned PUT URL only signs Content-Type unless policy constraints or HeadObject verification enforce actual uploaded byte size.">
+              <p class="quiz-prompt">10. Why does the <code>confirmUpload</code> step call <code>HeadObject</code> after a client finishes a direct presigned <code>PUT</code> upload?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> To convert the file into base64 inside cookies.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Because S3 deletes objects unless HeadObject is called.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> To confirm the object actually arrived in storage and verify its true byte size against server limits.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> To disable CORS headers on the bucket.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why does local disk storage fail when an Express API scales horizontally to 3 containers?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Files saved onto Container 1's local filesystem are invisible to Containers 2 and 3, causing 404 errors behind a load balancer, and container restarts or deployments wipe ephemeral container storage.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Explain why image re-encoding in a background worker improves both security and privacy.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Re-encoding uploaded images into clean WebP/JPEG via Sharp strips embedded EXIF metadata (such as smartphone GPS coordinates and camera serials) and destroys malformed payload chunks or polyglot image exploits.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. What bucket CORS setting is needed for direct browser presigned <code>PUT</code> uploads?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>The bucket's CORS rule must explicitly allow your web application's origin (never <code>*</code> unnecessarily for private workflows), allow <code>PUT</code> (and <code>HEAD</code>/<code>GET</code> if needed), and allow required headers such as <code>Content-Type</code>.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why should presigned URLs have short expiration times like 60–300 seconds?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Anyone who obtains a presigned URL (via browser history, logs, or link sharing) can access that specific object until it expires. Keeping TTLs short minimizes the exposure window if a link leaks.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. How can you swap AWS S3 for MinIO or Cloudflare R2 in local or production environments cleanly?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Both MinIO and Cloudflare R2 implement the S3 API protocol. Configuring <code>endpoint</code>, <code>region</code>, and <code>forcePathStyle</code> via environment variables inside an injected <code>StorageProvider</code> lets the exact same Node.js service code run against MinIO locally and S3/R2 in production.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix Path Traversal &amp; Unsafe Inline Serving</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A local dev endpoint runs <code>res.sendFile(path.join('./uploads', req.query.name))</code>. Explain two vulnerabilities and write a safe replacement.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function safeLocalDownload(baseDir, storedKey, originalName, res) {
+  const safeRoot = path.resolve(baseDir);
+  const resolved = path.resolve(safeRoot, storedKey);
+  if (!resolved.startsWith(safeRoot + path.sep)) {
+    return res.status(400).json({ error: 'Invalid path' });
+  }
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.download(resolved, path.basename(originalName));
+}</code></pre>
+                </div>
+                <p><strong>Vulnerabilities fixed:</strong> (1) Path traversal (<code>../../etc/passwd</code>) blocked via prefix containment check on server-owned <code>storedKey</code>; (2) MIME sniffing &amp; inline script execution mitigated via <code>X-Content-Type-Options: nosniff</code> and <code>res.download</code> (<code>Content-Disposition: attachment</code>).</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Enforcing Strict Presigned POST Size Limits</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Unlike <code>PutObjectCommand</code> signed URLs, S3 <code>createPresignedPost</code> lets S3 itself reject oversized uploads mid-stream before storing them. Write a small function using <code>@aws-sdk/s3-presigned-post</code> capping uploads between 1 byte and 5 MB with fixed MIME type.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+
+export async function createBoundedUploadPost(s3Client, { bucket, key, contentType }) {
+  return createPresignedPost(s3Client, {
+    Bucket: bucket,
+    Key: key,
+    Expires: 120,
+    Conditions: [
+      ['content-length-range', 1, 5 * 1024 * 1024],
+      ['eq', '$Content-Type', contentType]
+    ],
+    Fields: {
+      'Content-Type': contentType
+    }
+  });
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Designing an Async Media Quarantine &amp; Processing Pipeline</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Users upload profile avatars and PDF attachments. Design an end-to-end architecture combining Days 5, 6, and 11 so uploads never expose unscanned files, scale effortlessly, and clean up failed uploads.</p>
+                <p><strong>Reference Architecture:</strong> Client uploads via presigned URL into a private <code>quarantine/</code> bucket prefix (<code>status: 'pending'</code>). S3 object-created event (or confirm API) enqueues a background job (Day 5/6). A worker validates magic bytes, scans/re-encodes images into clean WebP (stripping EXIF), writes the safe derivative to a public CDN-backed <code>media/</code> prefix under an immutable key, updates DB metadata to <code>ready</code>, and notifies the client via WebSocket (Day 7). A 24-hour bucket lifecycle rule purges unprocessed <code>quarantine/</code> objects automatically.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 11 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Object storage</strong> decouples files from ephemeral compute nodes and preserves stateless horizontal scaling.</li>
+              <li><strong>Presigned URLs</strong> offload upload/download byte transfers directly between clients and storage while keeping buckets private.</li>
+              <li><strong>Metadata &amp; validation</strong> live in your backend: store ownership/keys in DB, generate UUID keys, enforce size limits, and verify magic bytes.</li>
+              <li><strong>Defensive headers &amp; isolation</strong> protect against Stored XSS (<code>Content-Disposition: attachment</code>, <code>nosniff</code>, isolated media origins).</li>
+              <li><strong>CDNs &amp; lifecycle policies</strong> accelerate public reads with immutable keys and prune orphaned/temporary storage automatically.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 11 Cloud File Storage Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 11 Cloud File Storage visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 11 local visual reference (<code>Day 11/image.webp</code>). Review presigned uploads, magic-byte validation, private signed downloads, and CDN caching.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 10/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 10: Advanced Database Optimization</span>
+          </a>
+          <a href="../Day 12/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 12: Logging, Monitoring, and Error Tracking &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 11/index.html">Day 11: Cloud Storage</a></li>
+          <li><a href="../Day 12/index.html">Day 12: Observability</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+

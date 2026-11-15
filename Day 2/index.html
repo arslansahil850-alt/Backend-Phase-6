@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 2: Scalable Backend Systems. Learn vertical vs horizontal scaling, stateless backend design, load balancing, concurrency, bottlenecks, capacity planning, and shared state.">
+  <title>Day 2: Scalable Backend Systems | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="2">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 2: Scalable Systems</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html" selected>Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html">Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 1/index.html" class="nav-step-btn" title="Go to Day 1">Prev</a>
+            <a href="../Day 3/index.html" class="nav-step-btn" title="Go to Day 3">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 2 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 02</span>
+          <span class="category-pill">Scalability &amp; Distributed Design</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="2" aria-pressed="false">Mark Day 2 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Scalable Backend Systems</h1>
+        <p class="lesson-intro">
+          An API that responds in 25ms for a single developer on localhost can grind to a halt—or corrupt user sessions—when traffic spikes to thousands of concurrent requests across multiple servers. Today you will learn how scalable backends handle growing load through stateless design, load balancing, shared state, capacity planning, and database scaling awareness.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Day 1</span>
+            <p>Layered separation and Dependency Injection allow you to swap local in-memory adapters for shared Redis or cloud storage without rewriting business services.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Mental Shift</span>
+            <p>Never assume only one Node.js process is running, or that a server's local RAM and disk will still exist on the next request.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Audit a sample Express API, pinpoint every state and concurrency bottleneck preventing horizontal scaling, and design stateless replacements.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Scaled Request Lifecycle</a>
+            <a href="#diagrams">Architecture Diagrams</a>
+            <a href="#implementation">Analyzing &amp; Fixing an API</a>
+            <a href="#real-world">Use Cases &amp; Trade-offs</a>
+            <a href="#mistakes-security">Mistakes, Security &amp; Reliability</a>
+            <a href="#practical-task">Practical Audit Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            <strong>Scalability</strong> is not simply "being fast today." A scalable system maintains acceptable response times and reliability as workload, concurrent users, or stored data volume increase—ideally by adding resources proportionally rather than rewriting the application.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Compare Scaling Models</h3>
+              <p>Evaluate vertical scaling versus horizontal scaling and understand when each reaches practical limits.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Design Stateless Backends</h3>
+              <p>Eliminate server-local memory, sessions, and local disk assumptions so any instance can serve any request.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Understand Load Balancing</h3>
+              <p>Apply L4/L7 routing algorithms, health checks, proxy header trust, and graceful instance shutdown.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Plan Capacity &amp; Spot Bottlenecks</h3>
+              <p>Trace concurrency saturation across Node workers, external APIs, and database connection pools.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Scalability Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Scalability Fundamentals: Throughput, Latency &amp; Tail Behavior</h3>
+            <p>
+              To reason about scale, separate three core metrics:
+            </p>
+            <ul>
+              <li><strong>Throughput (RPS / QPS):</strong> How many requests or queries the system completes per second.</li>
+              <li><strong>Latency:</strong> How long a single request takes from arrival to response. Always inspect percentiles such as <strong>p95</strong> and <strong>p99</strong> (the slowest 5% or 1% of requests), not just averages, because averages hide severe queuing stalls.</li>
+              <li><strong>Concurrency:</strong> How many requests are actively in-flight at the exact same instant.</li>
+            </ul>
+            <p>
+              When load exceeds capacity, requests queue up, latency climbs exponentially, and timeouts trigger client retries that multiply load further—a phenomenon known as a <strong>cascading overload</strong>.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Vertical Scaling vs. Horizontal Scaling</h3>
+            <p>
+              <strong>Vertical scaling (scaling up)</strong> adds more CPU cores, RAM, or faster NVMe storage to a single server. It requires almost zero code changes and keeps data local, making it very attractive early on. However, a single Node.js process is single-threaded for JavaScript execution—simply buying a 32-core machine will not help a single Node process unless you run multiple worker processes (e.g., via PM2, containers, or orchestration). Vertical scaling also hits hardware ceilings and leaves a single point of failure.
+            </p>
+            <p>
+              <strong>Horizontal scaling (scaling out)</strong> runs multiple identical backend instances behind a load balancer. It improves fault tolerance (if one node crashes, others continue serving) and enables elastic autoscaling, but requires every backend instance to be <strong>stateless</strong>.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Stateless Backend Design</h3>
+            <p>
+              A backend instance is <strong>stateless</strong> when it stores no client-specific session data, user uploads, rate-limit counters, or job state in its own process memory or local filesystem between requests. Every HTTP request contains everything needed to identify and authorize the caller (such as a token or session ID), and any persistent or shared ephemeral state lives in an external store (PostgreSQL, MongoDB, Redis, or S3-compatible object storage).
+            </p>
+            <p>
+              If an API relies on local RAM—for example, <code>const activeSessions = new Map()</code>—it fails immediately once you run two instances behind a round-robin load balancer: Request 1 logs the user in on Instance A, and Request 2 hits Instance B, which rejects the user as unauthenticated.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Load Balancing Concepts</h3>
+            <p>
+              A <strong>load balancer</strong> sits between clients and your pool of backend instances, distributing incoming traffic and removing unhealthy instances automatically.
+            </p>
+            <ul>
+              <li><strong>Layer 4 (Transport) vs. Layer 7 (Application):</strong> L4 balances raw TCP/UDP connections quickly without inspecting HTTP payloads. L7 inspects HTTP paths, headers, and cookies, enabling TLS termination, path-based routing, and request-level distribution.</li>
+              <li><strong>Distribution Algorithms:</strong> <em>Round-robin</em> cycles evenly across servers; <em>Least connections</em> routes to the instance with the fewest active requests (better when request durations vary widely); <em>IP Hash</em> tries to pin a client IP to one server.</li>
+              <li><strong>Health Checks &amp; Draining:</strong> Load balancers poll endpoints such as <code>GET /health</code> or <code>GET /ready</code>. Before shutting down an instance during deployment, the server must stop accepting new connections while finishing in-flight requests (graceful shutdown).</li>
+              <li><strong>Proxy Headers:</strong> Behind a load balancer, <code>req.ip</code> sees the balancer's private IP unless Express enables <code>trust proxy</code> and reads <code>X-Forwarded-For</code> / <code>X-Forwarded-Proto</code> safely.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Handling Concurrent Requests</h3>
+            <p>
+              Node.js handles high I/O concurrency efficiently via its non-blocking event loop, but concurrency still creates subtle scaling bugs:
+            </p>
+            <ul>
+              <li><strong>Check-Then-Act Race Conditions:</strong> Reading a balance or coupon count in one query and updating it in another fails when two requests execute concurrently across two Node instances. Use atomic database operations or transactions.</li>
+              <li><strong>Unbounded Fan-Out:</strong> Calling <code>Promise.all(items.map(fetchExternal))</code> on 5,000 items simultaneously can exhaust sockets or trigger upstream rate bans. Bound concurrency using pools or queues.</li>
+              <li><strong>Duplicate Retries:</strong> Mobile clients and load balancers retry timed-out requests. Write endpoints like payments or order creation need <strong>idempotency keys</strong> so retries do not duplicate side effects.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Bottlenecks and Capacity Planning</h3>
+            <p>
+              A system is only as fast as its narrowest bottleneck. Doubling from 4 to 8 Express containers often improves throughput by 0% if all 8 containers share a saturated database CPU, an unindexed collection scan, or a tiny connection pool.
+            </p>
+            <p>
+              Capacity planning estimates peak load before failure occurs using concrete numbers:
+            </p>
+            <div class="callout-box">
+              <h3>Applying Little's Law Conceptually</h3>
+              <p>
+                <strong>Concurrency (L) = Arrival Rate (λ) &times; Average Processing Time (W)</strong>. If your endpoint receives <code>500 requests/sec</code> and each request takes <code>0.2 seconds</code> (200ms) end to end, your backend holds <code>500 &times; 0.2 = 100</code> requests concurrently in flight. Reducing average latency from 200ms to 40ms drops concurrent in-flight pressure from 100 down to 20—freeing database connections and memory without buying extra servers.
+              </p>
+            </div>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Database and Application Scaling Considerations</h3>
+            <p>
+              Stateless Express servers are trivial to scale out; databases are the hardest tier to scale because they hold durable state.
+            </p>
+            <ul>
+              <li><strong>Connection Pooling:</strong> Opening a fresh TCP + TLS + auth handshake per query destroys performance. Each Node instance keeps a bounded connection pool (e.g., 10–20 connections). Watch the math: 20 Express instances &times; 50 pool size = 1,000 database connections, which can overwhelm PostgreSQL unless capped or routed through a pooler like PgBouncer.</li>
+              <li><strong>Read Replicas:</strong> Most applications are read-heavy (e.g., 80–95% reads). Route read queries to follower replicas while directing writes to the primary node, keeping <strong>replication lag</strong> in mind (a user reading their own just-created record might briefly miss it on an asynchronous replica).</li>
+              <li><strong>Vertical Scaling, Caching, and Sharding:</strong> Optimize indexes and queries first, offload hot reads to Redis (Day 4), scale the DB vertically, and consider horizontal sharding/partitioning only when single-node write throughput or storage capacity is truly exhausted.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>8. Stateless Sessions and Shared State</h3>
+            <p>
+              Every piece of state an application needs falls into one of three categories and must live in the right tier:
+            </p>
+            <ul>
+              <li><strong>Signed/Encrypted Client Tokens (JWT):</strong> Stateless authentication claims carried in headers or secure cookies—zero lookup per request, though revocation requires short TTLs or a shared denylist (covered in Day 8).</li>
+              <li><strong>Shared Ephemeral State (Redis):</strong> Server-side session stores, distributed rate-limit counters, verification codes, and WebSocket pub/sub adapters.</li>
+              <li><strong>Shared Durable State (Database &amp; Object Storage):</strong> Relational/document records in primary databases and user-uploaded images/PDFs in S3-compatible object storage rather than local server folders.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>How a Horizontally Scaled Request Travels</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>DNS &amp; Edge Routing:</strong> Client resolves the API domain to the load balancer's public IP address.
+            </li>
+            <li>
+              <strong>TLS Termination &amp; Forwarding:</strong> Load balancer terminates HTTPS, attaches <code>X-Forwarded-For</code> and <code>X-Forwarded-Proto</code>, and picks a healthy Node.js instance via least-connections.
+            </li>
+            <li>
+              <strong>Stateless Processing:</strong> The chosen Express instance validates the token/session against shared Redis (or verifies JWT signature locally), executes business rules, and avoids touching local disk or process-wide mutable caches.
+            </li>
+            <li>
+              <strong>Shared Data Tier:</strong> Database queries use bounded connection pools; uploaded files stream directly to object storage; background tasks push jobs to a shared queue instead of running inside the web process.
+            </li>
+            <li>
+              <strong>Health &amp; Autoscaling Loop:</strong> Metrics (CPU, memory, event-loop lag, HTTP 5xx rate) inform the orchestrator when to add or drain instances cleanly.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Scalability Architecture Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Stateless Horizontal Cluster with Shared State</h3>
+            <p class="diagram-caption">
+              Any Express instance can handle any consecutive user request because sessions, rate limits, files, and durable data live outside the web nodes.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 250" class="arch-svg" role="img" aria-label="Clients routing through Load Balancer to three stateless Node instances connected to shared Redis, Primary DB, Read Replica, and Object Storage">
+                <defs>
+                  <marker id="arrow-scale" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="18" y="92" width="90" height="62" rx="10" class="svg-box-muted"></rect>
+                <text x="63" y="119" text-anchor="middle" class="svg-title">Clients</text>
+                <text x="63" y="137" text-anchor="middle" class="svg-sub">Web / Mobile</text>
+
+                <line x1="108" y1="123" x2="144" y2="123" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+
+                <rect x="148" y="84" width="128" height="78" rx="10" class="svg-box-accent"></rect>
+                <text x="212" y="114" text-anchor="middle" class="svg-title">Load Balancer</text>
+                <text x="212" y="133" text-anchor="middle" class="svg-sub">TLS + Health Check</text>
+                <text x="212" y="149" text-anchor="middle" class="svg-sub">Least Connections</text>
+
+                <line x1="276" y1="105" x2="332" y2="48" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+                <line x1="276" y1="123" x2="332" y2="123" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+                <line x1="276" y1="141" x2="332" y2="198" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+
+                <rect x="336" y="20" width="150" height="52" rx="10" class="svg-box-blue"></rect>
+                <text x="411" y="43" text-anchor="middle" class="svg-title">API Instance 1</text>
+                <text x="411" y="60" text-anchor="middle" class="svg-sub">Stateless Node.js</text>
+
+                <rect x="336" y="97" width="150" height="52" rx="10" class="svg-box-blue"></rect>
+                <text x="411" y="120" text-anchor="middle" class="svg-title">API Instance 2</text>
+                <text x="411" y="137" text-anchor="middle" class="svg-sub">Stateless Node.js</text>
+
+                <rect x="336" y="174" width="150" height="52" rx="10" class="svg-box-blue"></rect>
+                <text x="411" y="197" text-anchor="middle" class="svg-title">API Instance 3</text>
+                <text x="411" y="214" text-anchor="middle" class="svg-sub">Stateless Node.js</text>
+
+                <line x1="486" y1="46" x2="554" y2="46" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+                <line x1="486" y1="123" x2="554" y2="123" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+                <line x1="486" y1="200" x2="554" y2="200" class="svg-arrow" marker-end="url(#arrow-scale)"></line>
+
+                <rect x="558" y="18" width="182" height="56" rx="10" class="svg-box-accent"></rect>
+                <text x="649" y="42" text-anchor="middle" class="svg-title">Shared Redis</text>
+                <text x="649" y="60" text-anchor="middle" class="svg-sub">Sessions / Rate Limits</text>
+
+                <rect x="558" y="94" width="182" height="58" rx="10" class="svg-box-muted"></rect>
+                <text x="649" y="119" text-anchor="middle" class="svg-title">Primary DB + Replicas</text>
+                <text x="649" y="137" text-anchor="middle" class="svg-sub">Pooled Connections</text>
+
+                <rect x="558" y="172" width="182" height="56" rx="10" class="svg-box-muted"></rect>
+                <text x="649" y="196" text-anchor="middle" class="svg-title">Object Storage</text>
+                <text x="649" y="214" text-anchor="middle" class="svg-sub">Shared File Uploads</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: Why Local State Breaks Multi-Instance Scaling</h3>
+            <p class="diagram-caption">
+              Without shared state, Instance 1 holds session or upload state in local memory/disk that Instance 2 cannot see on the next request.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 180" class="arch-svg" role="img" aria-label="Failure mode when user logs in on Instance 1 with local memory and gets rejected on Instance 2">
+                <rect x="20" y="55" width="120" height="68" rx="10" class="svg-box-muted"></rect>
+                <text x="80" y="85" text-anchor="middle" class="svg-title">User Request 1</text>
+                <text x="80" y="104" text-anchor="middle" class="svg-sub">POST /login</text>
+
+                <line x1="140" y1="89" x2="188" y2="48" class="svg-arrow"></line>
+                <rect x="192" y="18" width="230" height="58" rx="10" class="svg-box-blue"></rect>
+                <text x="307" y="43" text-anchor="middle" class="svg-title">Instance 1 (Local Map)</text>
+                <text x="307" y="61" text-anchor="middle" class="svg-sub">Saves session sid_91 in RAM</text>
+
+                <rect x="20" y="132" width="120" height="36" rx="8" class="svg-box-muted"></rect>
+                <text x="80" y="155" text-anchor="middle" class="svg-sub">Req 2: GET /profile</text>
+
+                <line x1="140" y1="150" x2="188" y2="136" class="svg-arrow"></line>
+                <rect x="192" y="102" width="230" height="58" rx="10" class="svg-box-accent"></rect>
+                <text x="307" y="127" text-anchor="middle" class="svg-title">Instance 2 (Empty Map)</text>
+                <text x="307" y="145" text-anchor="middle" class="svg-sub">sid_91 missing -&gt; 401 Error</text>
+
+                <rect x="462" y="42" width="276" height="96" rx="10" class="svg-box-muted"></rect>
+                <text x="600" y="74" text-anchor="middle" class="svg-title">Same Failure Happens For:</text>
+                <text x="600" y="96" text-anchor="middle" class="svg-sub">1. Local disk ./uploads/ files</text>
+                <text x="600" y="114" text-anchor="middle" class="svg-sub">2. In-memory rate-limit counters</text>
+                <text x="600" y="132" text-anchor="middle" class="svg-sub">3. Per-process node-cron jobs</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Code Audit</span>
+          <h2>Identifying &amp; Fixing Scalability Blockers in Express</h2>
+          <p>
+            Inspect the sample Express server below. On a developer laptop with one process and 5 requests per minute, everything passes tests. Under production scaling across 4 containers, multiple components fail or bottleneck severely.
+          </p>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">Anti-Pattern: Non-Scalable Express API</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const app = express();
+app.use(express.json());
+
+const sessions = new Map();
+const requestCounts = new Map();
+
+app.use((req, res, next) =&gt; {
+  const ip = req.socket.remoteAddress;
+  const count = (requestCounts.get(ip) || 0) + 1;
+  requestCounts.set(ip, count);
+  if (count &gt; 100) {
+    return res.status(429).json({ error: 'Too many requests' });
+  }
+  next();
+});
+
+app.post('/login', (req, res) =&gt; {
+  const sessionId = crypto.randomUUID();
+  sessions.set(sessionId, { userId: req.body.userId, createdAt: Date.now() });
+  res.cookie('sid', sessionId, { httpOnly: true }).json({ ok: true });
+});
+
+app.post('/avatar', async (req, res) =&gt; {
+  const filePath = path.join(process.cwd(), 'uploads', `${Date.now()}.bin`);
+  await fs.writeFile(filePath, Buffer.from(req.body.base64, 'base64'));
+  res.json({ filePath });
+});
+
+app.get('/reports/summary', (req, res) =&gt; {
+  let total = 0;
+  for (let i = 0; i &lt; 2e9; i += 1) {
+    total += i % 7;
+  }
+  res.json({ total });
+});
+
+setInterval(() =&gt; {
+  console.log('Running daily billing cleanup...');
+}, 86400000);
+
+app.listen(process.env.PORT || 3000);</code></pre>
+          </div>
+
+          <h3>What Prevents This API from Scaling?</h3>
+          <ol>
+            <li><strong>In-memory <code>sessions</code> Map:</strong> Breaks across multiple instances and loses all logged-in users on restart or deployment. It also leaks memory forever because old entries never expire.</li>
+            <li><strong>In-memory <code>requestCounts</code> Map &amp; raw <code>remoteAddress</code>:</strong> Behind a load balancer, <code>req.socket.remoteAddress</code> is the load balancer's IP, so every user shares one counter and locks everyone out after 100 requests. Even with real client IPs, each server counts separately and leaks memory endlessly.</li>
+            <li><strong>Local filesystem <code>./uploads/</code> write:</strong> An avatar saved on Instance 1 returns <code>404</code> when requested from Instance 2, and container restarts wipe ephemeral disks.</li>
+            <li><strong>Synchronous CPU loop in <code>/reports/summary</code>:</strong> Blocks the Node.js event loop for seconds, freezing health checks and unrelated routes on the same instance.</li>
+            <li><strong>Inline <code>setInterval</code> billing job:</strong> Scaling to 6 web instances runs the billing cleanup 6 times simultaneously, risking duplicate charges.</li>
+            <li><strong>Missing graceful shutdown &amp; readiness probe:</strong> Rolling deployments kill active HTTP connections mid-flight.</li>
+          </ol>
+
+          <h3>Refactored Stateless &amp; Load-Balancer-Ready Express Setup</h3>
+          <p>
+            Below is the refactored application shell showing proxy trust, shared Redis session/rate-limit interfaces (via Day 1 dependency injection), readiness health checks, and graceful <code>SIGTERM</code> draining.
+          </p>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">src/server.js — Stateless, Proxy-Aware, Graceful Shutdown</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import express from 'express';
+import session from 'express-session';
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
+
+export async function createScalableApp({ dbPool, objectStorage }) {
+  const app = express();
+
+  app.set('trust proxy', 1);
+  app.use(express.json({ limit: '1mb' }));
+
+  const redisClient = createClient({ url: process.env.REDIS_URL });
+  await redisClient.connect();
+
+  app.use(
+    session({
+      store: new RedisStore({ client: redisClient, prefix: 'sess:' }),
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 24
+      }
+    })
+  );
+
+  app.get('/health', (req, res) =&gt; {
+    res.status(200).json({ status: 'ok' });
+  });
+
+  app.get('/ready', async (req, res) =&gt; {
+    try {
+      await redisClient.ping();
+      await dbPool.query('SELECT 1');
+      res.status(200).json({ status: 'ready' });
+    } catch (err) {
+      res.status(503).json({ status: 'not_ready' });
+    }
+  });
+
+  app.post('/avatar-upload-url', async (req, res, next) =&gt; {
+    try {
+      const signedUrl = await objectStorage.createPresignedUpload({
+        userId: req.session.userId,
+        contentType: req.body.contentType
+      });
+      res.status(200).json({ uploadUrl: signedUrl });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  return { app, redisClient };
+}
+
+export function attachGracefulShutdown(server, { redisClient, dbPool }) {
+  const shutdown = async (signal) =&gt; {
+    console.log(`Received ${signal}, draining connections...`);
+    server.close(async () =&gt; {
+      await redisClient.quit();
+      await dbPool.end();
+      process.exit(0);
+    });
+
+    setTimeout(() =&gt; {
+      process.exit(1);
+    }, 10000).unref();
+  };
+
+  process.on('SIGTERM', () =&gt; shutdown('SIGTERM'));
+  process.on('SIGINT', () =&gt; shutdown('SIGINT'));
+}</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>app.set('trust proxy', 1)</code>:</strong> Tells Express to trust the first reverse proxy hop (the load balancer) so <code>req.ip</code>, <code>req.protocol</code>, and secure cookies work accurately. Never set <code>trust proxy</code> blindly to <code>true</code> on internet-exposed servers without a trusted proxy, or clients can spoof <code>X-Forwarded-For</code>.</li>
+              <li><strong><code>/health</code> vs. <code>/ready</code>:</strong> Liveness (<code>/health</code>) confirms the process event loop is alive; readiness (<code>/ready</code>) checks critical dependencies (Redis/DB) before the load balancer sends live traffic.</li>
+              <li><strong>Graceful <code>SIGTERM</code> Shutdown:</strong> <code>server.close()</code> stops accepting new TCP connections while allowing in-flight requests to finish before closing Redis and DB pools.</li>
+              <li><strong>Presigned Object Storage URL:</strong> Offloads heavy binary file bytes away from Node.js API servers directly to cloud object storage.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Use Cases, Alternatives, and Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Vertical Scaling (Scale Up)</th>
+                  <th>Horizontal Scaling (Scale Out)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Application Complexity</strong></td>
+                  <td>Low — works even with single-node memory caches</td>
+                  <td>Higher — requires stateless design, shared Redis, external files</td>
+                </tr>
+                <tr>
+                  <td><strong>Availability &amp; Fault Tolerance</strong></td>
+                  <td>Single machine = single point of failure</td>
+                  <td>High — surviving instances absorb traffic if one node fails</td>
+                </tr>
+                <tr>
+                  <td><strong>Cost &amp; Elasticity</strong></td>
+                  <td>Steep hardware cost jumps; downtime during resize</td>
+                  <td>Pay-as-you-go autoscaling during traffic peaks and troughs</td>
+                </tr>
+                <tr>
+                  <td><strong>Node.js Suitability</strong></td>
+                  <td>Requires cluster/multi-process workers to use multiple CPU cores</td>
+                  <td>Natural fit via containerized stateless replicas behind a load balancer</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>Sticky Sessions vs. Shared Stateless Sessions</h3>
+              <p>
+                <strong>Sticky sessions</strong> (session affinity) force a load balancer to route a user back to the same backend instance via a cookie or IP hash. Avoid relying on sticky sessions for REST APIs: they create uneven load distribution, fail when an instance restarts or scales down, and mask stateful bugs. Reserve session affinity only for legacy apps or specialized WebSocket handshakes when no shared adapter exists.
+              </p>
+            </div>
+            <div class="decision-card">
+              <h3>When to Optimize Before Scaling Out</h3>
+              <p>
+                Adding 10 extra Express instances to fix an N+1 query or missing database index wastes money and punishes the database harder. Always profile slow endpoints (Day 3) and add indexes/caching (Days 4 and 10) alongside horizontal scaling.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Mistakes, Security &amp; Reliability</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Blindly Setting <code>app.set('trust proxy', true)</code></h3>
+              <p><strong>Security risk:</strong> If your server can also be reached bypassing the load balancer, an attacker can forge <code>X-Forwarded-For</code> headers to bypass IP rate limiters.</p>
+              <p><strong>Fix:</strong> Specify the exact proxy hop count (e.g., <code>1</code>) or trusted subnet CIDR, and restrict direct public access to backend instances using firewall/VPC rules.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Exhausting Database Connections Across Scaled Replicas</h3>
+              <p><strong>Reliability risk:</strong> Increasing API containers from 2 to 20 multiplies total connection pool slots by 10x, crashing PostgreSQL or exhausting MongoDB connection limits.</p>
+              <p><strong>Fix:</strong> Calculate <code>maxInstances &times; poolSize &lt; dbMaxConnections</code> and use connection poolers where appropriate.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Running Scheduled Cron Jobs Inside Every Web Container</h3>
+              <p><strong>Data integrity risk:</strong> Every scaled replica triggers the same email, invoice, or cleanup job simultaneously.</p>
+              <p><strong>Fix:</strong> Separate scheduled workers from HTTP web processes, or use distributed locks / centralized job queues (Day 5).</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Missing Timeouts on Outbound Calls</h3>
+              <p><strong>Availability risk:</strong> A slow third-party payment or webhook API hangs Node promises indefinitely, exhausting memory and socket descriptors across all instances.</p>
+              <p><strong>Fix:</strong> Set explicit connect and request timeouts (e.g., <code>AbortSignal.timeout(5000)</code>) and bound concurrency.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Audit Exercise</h2>
+
+          <div class="task-card">
+            <h3>Scalability Audit: Multi-Instance Readiness Review</h3>
+            <p>
+              Suppose a teammate proposes deploying an e-commerce Express API onto 5 autoscaling cloud instances behind an Application Load Balancer. The current codebase includes:
+            </p>
+            <ol>
+              <li>A <code>POST /checkout</code> endpoint that checks <code>product.stock &gt;= qty</code> in JS, waits 1.2s for a PDF invoice generator inline, saves the PDF to <code>./invoices/</code>, and sends email synchronously before returning <code>200 OK</code>.</li>
+              <li>An authentication middleware that caches user roles in a module-level <code>const roleCache = {}</code> object with no TTL.</li>
+              <li>A MongoDB pool configured with <code>maxPoolSize: 100</code> per Node process while the managed database tier caps total connections at <code>300</code>.</li>
+            </ol>
+            <p>
+              <strong>Your task:</strong> Write down every scaling, correctness, and availability blocker in this architecture and map each one to its stateless fix (atomic updates, object storage, background worker, shared Redis cache with TTL, and safe pool sizing <code>300 / 5</code> with headroom).
+            </p>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 2 Quiz: Scalable Backend Systems (10 Questions)</h2>
+          <p>Select one answer per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="c" data-explanation="A stateless instance stores no user session, local upload, or per-client state in local RAM or disk, allowing any healthy instance behind a load balancer to handle any request.">
+              <p class="quiz-prompt">1. What makes a backend API instance truly stateless?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> It does not connect to any database at all.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> It disables HTTPS and authentication headers.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> It retains no client session or persistent state in local process memory or local disk between requests.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> It only supports GET endpoints.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="b" data-explanation="A single Node.js process executes JavaScript on a single main thread; running one process on a 16-core machine leaves 15 cores unused unless multiple worker processes/containers are run.">
+              <p class="quiz-prompt">2. Why does upgrading from a 2-core server to a 16-core server fail to speed up a single Node.js process?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Linux limits Node.js to 128 MB of RAM.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> A single Node.js process runs JavaScript on one main event-loop thread unless scaled across multiple processes/instances.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Express automatically throttles CPU usage to 10%.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> TCP sockets cannot bind on multi-core CPUs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="d" data-explanation="Without trusting the reverse proxy, req.ip / req.socket.remoteAddress resolves to the load balancer's internal IP, causing all users to share one rate-limit bucket.">
+              <p class="quiz-prompt">3. What breaks when an IP rate limiter uses <code>req.socket.remoteAddress</code> behind a load balancer without proxy configuration?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> Requests are automatically encrypted twice.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Express drops all JSON request bodies.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Node.js crashes with an EADDRINUSE error.</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Every user appears to have the load balancer's IP address, triggering false rate-limit blocks across all users.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="a" data-explanation="Least Connections avoids piling long-running requests onto a busy node when request processing durations vary significantly.">
+              <p class="quiz-prompt">4. When request durations vary widely (some take 10ms, others take 800ms), which load balancing algorithm distributes load more evenly than strict round-robin?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> Least connections</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Static single-node pinning</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> Local file locking</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> Alphabetical path routing</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="c" data-explanation="By Little's Law (L = λ * W), 400 req/s * 0.25s = 100 concurrent in-flight requests.">
+              <p class="quiz-prompt">5. Using Little's Law, if an API handles 400 requests/second and average latency is 250ms (0.25s), roughly how many requests are concurrently in flight?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> 25</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> 1,600</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> 100</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> 400</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="b" data-explanation="Sticky sessions fail when instances scale down or restart, cause uneven load distribution, and hide stateful bugs.">
+              <p class="quiz-prompt">6. Why is relying on load-balancer sticky sessions discouraged for general REST API scaling?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> HTTP/1.1 forbids cookies on load balancers.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> If the pinned instance crashes or scales down, users lose state, and traffic can skew unevenly across nodes.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Sticky sessions bypass TLS encryption.</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Sticky sessions prevent databases from using indexes.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="d" data-explanation="12 instances * 50 connections = 600 potential connections, exceeding the database limit of 250 and causing connection rejections.">
+              <p class="quiz-prompt">7. A database supports 250 max connections. You autoscale from 2 to 12 API instances, each with a pool size of 50. What is the likely failure?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> Redis automatically deletes session keys.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Load balancer stops terminating TLS.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Express routes return HTTP 304 Not Modified.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Total potential connections (600) exceed the database cap (250), causing connection errors under load.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="a" data-explanation="Graceful shutdown via server.close() stops new connections while allowing active HTTP requests to complete before tearing down DB and Redis connections.">
+              <p class="quiz-prompt">8. What is the purpose of handling <code>SIGTERM</code> with <code>server.close()</code> in a scaled Node.js service?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> To finish in-flight requests cleanly before exiting during deployments or scale-in events.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> To restart the database server on every deploy.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> To clear browser localStorage remotely.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> To increase the Node.js heap limit dynamically.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="c" data-explanation="Read replicas receive updates asynchronously in most setups, so an immediate read right after a write might hit a replica that has not yet applied the write.">
+              <p class="quiz-prompt">9. What subtle issue must you account for when routing read queries to database read replicas?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Read replicas cannot store string columns.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Read replicas delete records after 60 seconds.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Replication lag can cause stale reads immediately after a user performs a write on the primary.</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Read replicas only work with GraphQL APIs.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="b" data-explanation="Average latency hides slow tail outliers; p95 and p99 capture the latency experienced by the slowest 5% and 1% of requests, where queuing and timeout bugs appear first.">
+              <p class="quiz-prompt">10. Why do backend engineers track p95 and p99 latency rather than relying solely on average latency?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Averages cannot be computed in JavaScript.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Averages mask severe tail-latency spikes experienced by users during lock contention or GC pauses.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> p99 measures disk space instead of time.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> Load balancers reject requests based on average latency.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. What is the difference between L4 and L7 load balancing?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Layer 4 (Transport)</strong> load balancing routes packets based on IP addresses and TCP/UDP ports with very low overhead. <strong>Layer 7 (Application)</strong> load balancing parses HTTP headers, URLs, and cookies, enabling TLS termination, path-based microservice routing, and intelligent HTTP health checks.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Why should user-uploaded files go to object storage instead of an Express container's local disk?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Other horizontally scaled instances cannot read files saved to one container's local disk, and container restarts or redeployments erase ephemeral storage. Object storage (e.g., S3-compatible buckets) provides durable, globally addressable storage across all instances.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Explain the difference between a <code>/health</code> (liveness) endpoint and a <code>/ready</code> (readiness) endpoint.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A <strong>liveness</strong> probe checks whether the Node.js process is running and responsive so the orchestrator knows if it needs restarting. A <strong>readiness</strong> probe checks whether downstream dependencies (database pool, Redis) are reachable so the load balancer only routes live traffic once the instance can actually serve requests.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. Why does adding more API instances sometimes make a system slower instead of faster?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>If the true bottleneck is a saturated database, lock contention, or an overloaded third-party API, extra web instances generate more concurrent queries and open more connection pools, increasing lock waits and timeouts on the shared bottleneck.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. What is an idempotency key and how does it help under high concurrency and retries?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>An idempotency key is a unique client-generated token sent with a mutating request (e.g., <code>Idempotency-Key</code> header). The backend stores the key and outcome in a shared store (Redis/DB) so if network timeouts cause the client or load balancer to retry the exact request, the server returns the original outcome without charging or creating duplicate records.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Unbounded Concurrency Fan-Out</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> A batch sync endpoint runs <code>await Promise.all(users.map((u) =&gt; fetchCrmProfile(u.id)))</code> for 2,500 users at once, causing socket exhaustion and 502 errors from the CRM. Rewrite a bounded-concurrency helper in plain JavaScript that caps simultaneous in-flight promises to <code>concurrency = 10</code>.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function mapWithConcurrency(items, concurrency, workerFn) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+
+  async function runWorker() {
+    while (nextIndex &lt; items.length) {
+      const current = nextIndex;
+      nextIndex += 1;
+      results[current] = await workerFn(items[current], current);
+    }
+  }
+
+  const workerCount = Math.min(concurrency, items.length);
+  const workers = Array.from({ length: workerCount }, () =&gt; runWorker());
+  await Promise.all(workers);
+  return results;
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Shared Redis Idempotency Middleware</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Sketch an Express middleware using an injected Redis client that checks an <code>Idempotency-Key</code> header for <code>POST /payments</code>, prevents concurrent duplicate execution using atomic <code>SET ... NX EX</code>, and caches the JSON response for 10 minutes.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export function createIdempotencyMiddleware(redisClient, ttlSeconds = 600) {
+  return async (req, res, next) =&gt; {
+    const key = req.get('Idempotency-Key');
+    if (!key) {
+      return res.status(400).json({ error: 'Idempotency-Key header required' });
+    }
+
+    const storageKey = `idem:${req.user.id}:${key}`;
+    const existing = await redisClient.get(storageKey);
+    if (existing) {
+      const parsed = JSON.parse(existing);
+      if (parsed.status === 'processing') {
+        return res.status(409).json({ error: 'Request already in progress' });
+      }
+      return res.status(parsed.httpStatus).json(parsed.body);
+    }
+
+    const locked = await redisClient.set(
+      storageKey,
+      JSON.stringify({ status: 'processing' }),
+      { NX: true, EX: 60 }
+    );
+    if (!locked) {
+      return res.status(409).json({ error: 'Concurrent duplicate request' });
+    }
+
+    const originalJson = res.json.bind(res);
+    res.json = (body) =&gt; {
+      redisClient
+        .set(
+          storageKey,
+          JSON.stringify({ status: 'done', httpStatus: res.statusCode, body }),
+          { EX: ttlSeconds }
+        )
+        .catch(() =&gt; {});
+      return originalJson(body);
+    };
+
+    next();
+  };
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Capacity Planning for a Sudden Traffic Spike</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Your API normally serves 150 req/sec on 2 containers (pool size 15 each). An upcoming campaign expects 1,200 req/sec (80% reads, 20% writes). Your PostgreSQL primary maxes out at 200 connections. Design a scaling plan.</p>
+                <p><strong>Reference Architecture:</strong> (1) Profile and cache top hot read endpoints in Redis (absorbing a large fraction of the 960 read req/s before hitting DB), (2) attach 1–2 PostgreSQL read replicas for uncached read traffic, (3) place a connection pooler like PgBouncer in transaction mode between scaled containers and PostgreSQL so 10–12 stateless Express containers stay safely beneath the 200-connection limit, and (4) configure autoscaling triggers on CPU, event-loop delay, and request latency with a readiness probe and graceful shutdown.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 2 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Vertical scaling</strong> buys simplicity early; <strong>horizontal scaling</strong> delivers resilience and elasticity once instances are stateless.</li>
+              <li><strong>Stateless backends</strong> move sessions and counters to Redis, files to object storage, and durable records to shared databases.</li>
+              <li><strong>Load balancers</strong> need proper health/readiness probes, trusted proxy configuration, and graceful <code>SIGTERM</code> connection draining.</li>
+              <li><strong>Concurrency safety</strong> requires atomic DB updates, bounded outbound concurrency, timeouts, and idempotency keys.</li>
+              <li><strong>Database tier limits</strong> (connection pool math, read replicas, replication lag) usually become the primary bottleneck as web nodes scale out.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 2 Scalability Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 2 Scalable Backend Systems visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 2 local visual reference (<code>Day 2/image.webp</code>). Review how stateless Express nodes, load balancers, shared Redis, and database pools interact under load.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 1/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 1: Architecture &amp; Patterns</span>
+          </a>
+          <a href="../Day 3/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 3: Performance Optimization &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 2/index.html">Day 2: Scalability</a></li>
+          <li><a href="../Day 4/index.html">Day 4: Redis Caching</a></li>
+          <li><a href="../Day 10/index.html">Day 10: DB Optimization</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

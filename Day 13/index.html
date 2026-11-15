@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Day 13: Advanced Backend Testing. Learn unit, integration, and E2E testing, Supertest API tests, mocking vs real test databases, auth and IDOR testing, edge cases, and test coverage limits.">
+  <title>Day 13: Advanced Backend Testing | Phase 6 | Arslan Weblab</title>
+  <link rel="icon" type="image/webp" href="../logo.webp">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('arslan_phase6_theme') || 'system';
+        var resolved = saved;
+        if (saved === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-day="13">
+  <a class="skip-link" href="#main-content">Skip to lesson content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="top-navbar" id="top-navbar">
+      <div class="container top-navbar-inner">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="30" height="30">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <nav class="top-brand-links" aria-label="Arslan Weblab external links">
+          <a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a>
+          <a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:arslansahil850@gmail.com">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="main-navbar" id="main-navbar">
+      <div class="container main-navbar-inner">
+        <div class="course-nav-left">
+          <a href="../index.html" class="course-identity">
+            <span class="phase-pill">Phase 6</span>
+            <span class="course-nav-title">Day 13: Advanced Backend Testing</span>
+          </a>
+        </div>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="course-nav-controls" aria-label="Toggle course navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="course-nav-controls" id="course-nav-controls" aria-label="Course navigation">
+          <a href="../index.html" class="nav-home-link">Home</a>
+
+          <div class="nav-control-group">
+            <label for="day-selector" class="sr-only">Jump to lesson</label>
+            <select id="day-selector" class="nav-select" aria-label="Select page or lesson day">
+              <option value="../index.html">Home Page</option>
+              <option value="../Day 1/index.html">Day 1: Architecture &amp; Design Patterns</option>
+              <option value="../Day 2/index.html">Day 2: Scalable Backend Systems</option>
+              <option value="../Day 3/index.html">Day 3: Performance Optimization</option>
+              <option value="../Day 4/index.html">Day 4: Caching with Redis</option>
+              <option value="../Day 5/index.html">Day 5: Background Jobs &amp; Scheduling</option>
+              <option value="../Day 6/index.html">Day 6: Message Queues &amp; Events</option>
+              <option value="../Day 7/index.html">Day 7: Real-Time WebSockets</option>
+              <option value="../Day 8/index.html">Day 8: Advanced Auth &amp; Authorization</option>
+              <option value="../Day 9/index.html">Day 9: API Design &amp; Versioning</option>
+              <option value="../Day 10/index.html">Day 10: Database Optimization</option>
+              <option value="../Day 11/index.html">Day 11: Cloud File Storage</option>
+              <option value="../Day 12/index.html">Day 12: Logging, Monitoring &amp; Errors</option>
+              <option value="../Day 13/index.html" selected>Day 13: Advanced Backend Testing</option>
+              <option value="../Day 14/index.html">Day 14: Rate Limiting &amp; API Security</option>
+              <option value="../Day 15/index.html">Day 15: Docker &amp; Containerization</option>
+              <option value="../Day 16/index.html">Day 16: CI/CD &amp; Deployment</option>
+              <option value="../Day 17/index.html">Day 17: Production Backend Architecture</option>
+              <option value="../Day 18/index.html">Day 18: Revision &amp; Final Assessment</option>
+            </select>
+          </div>
+
+          <div class="nav-prev-next">
+            <a href="../Day 12/index.html" class="nav-step-btn" title="Go to Day 12">Prev</a>
+            <a href="../Day 14/index.html" class="nav-step-btn" title="Go to Day 14">Next</a>
+          </div>
+
+          <div class="nav-control-group">
+            <label for="theme-selector" class="sr-only">Color theme</label>
+            <select id="theme-selector" class="nav-select theme-select" aria-label="Select color theme">
+              <option value="system">Theme: System</option>
+              <option value="dark">Theme: Dark</option>
+              <option value="light">Theme: Light</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="lesson-hero">
+      <div class="lesson-hero-ambient" aria-hidden="true"></div>
+      <div class="container lesson-hero-inner">
+        <div class="lesson-breadcrumb">
+          <a href="../index.html">Phase 6 Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Day 13 of 18</span>
+        </div>
+
+        <div class="lesson-badge-row">
+          <span class="day-pill">Day 13</span>
+          <span class="category-pill">Quality Assurance &amp; Verification</span>
+          <button type="button" class="mark-complete-btn" id="lesson-complete-btn" data-day="13" aria-pressed="false">Mark Day 13 Complete</button>
+        </div>
+
+        <h1 class="lesson-title">Advanced Backend Testing</h1>
+        <p class="lesson-intro">
+          Manual curl checks do not catch subtle regressions in authorization boundaries, atomic database updates, error formatting, or edge-case failures weeks later. Today you will learn how unit, integration, and end-to-end tests work together, how to mock external gateways while testing real database queries, how to enforce test isolation, and how to test authentication, RBAC, and ownership flows reliably.
+        </p>
+
+        <div class="lesson-meta-grid">
+          <div class="meta-card">
+            <span class="meta-label">Connection to Days 1 &amp; 8</span>
+            <p>Day 1's Dependency Injection makes service unit tests effortless, while Day 8's auth/IDOR gates become mandatory integration test assertions.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Core Principle</span>
+            <p>Test observable behavior and failure paths against realistic boundaries—do not mock everything until tests only verify your own mocks.</p>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Practical Output</span>
+            <p>Write a clean Node.js test suite combining fast DI unit tests and Supertest API integration tests with isolated test database cleanup and auth checks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container lesson-layout">
+      <aside class="lesson-sidebar" aria-label="Lesson section navigation">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <h2>Lesson Outline</h2>
+            <button type="button" class="toc-toggle-btn" id="toc-toggle-btn" aria-expanded="true" aria-controls="toc-list">Hide</button>
+          </div>
+          <nav id="toc-list" class="toc-list">
+            <a href="#objectives">Learning Objectives</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#how-it-works">Test Suite Lifecycle</a>
+            <a href="#diagrams">Testing Strategy Diagrams</a>
+            <a href="#implementation">Node Test + Supertest Suite</a>
+            <a href="#real-world">Test Levels &amp; Trade-offs</a>
+            <a href="#mistakes-security">Common Testing Mistakes</a>
+            <a href="#practical-task">Practical Testing Task</a>
+            <a href="#quiz">10-Question MCQ Quiz</a>
+            <a href="#short-answers">Short-Answer Drills</a>
+            <a href="#challenges">Coding &amp; Design Challenges</a>
+            <a href="#summary">Revision Summary</a>
+            <a href="#visual-recap">Lesson Diagram Asset</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="lesson-content">
+        <section id="objectives" class="lesson-section">
+          <span class="section-tag">01. Foundation</span>
+          <h2>What You Will Learn &amp; Objectives</h2>
+          <p>
+            A reliable backend test suite gives engineers confidence to refactor architecture, upgrade dependencies, and ship daily without breaking production contracts or security rules.
+          </p>
+          <div class="objectives-grid">
+            <div class="objective-item">
+              <h3>Balance Test Layers</h3>
+              <p>Combine fast unit tests, high-value API/DB integration tests, and targeted end-to-end checks.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Mock &amp; Isolate Properly</h3>
+              <p>Stub flaky external HTTP providers while running real database queries against isolated test databases.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Verify Auth &amp; Edge Cases</h3>
+              <p>Assert <code>401</code>, <code>403</code> ownership blocks, validation rejections, race conditions, and timeouts.</p>
+            </div>
+            <div class="objective-item">
+              <h3>Avoid Coverage Traps</h3>
+              <p>Recognize why 95% line coverage can still miss real bugs and integrate fast tests into CI.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="core-concepts" class="lesson-section">
+          <span class="section-tag">02. Deep Dive</span>
+          <h2>Core Backend Testing Concepts</h2>
+
+          <div class="concept-block">
+            <h3>1. Unit, Integration, and End-to-End Testing</h3>
+            <ul>
+              <li><strong>Unit Tests:</strong> Verify a single pure helper or injected service class in isolation (milliseconds, zero network/disk I/O). Great for pricing rules, state transitions, parsers, and edge-case business branches.</li>
+              <li><strong>Integration Tests:</strong> Exercise multiple real components working together—for example, sending a real HTTP request through Express routing, validation middleware, controller, service, repository, and a real test database. For APIs, integration tests catch the bugs unit tests miss (broken middleware ordering, Mongoose/SQL query typos, serialization errors).</li>
+              <li><strong>End-to-End (E2E) Tests:</strong> Exercise complete multi-step user journeys (register &rarr; login &rarr; upload &rarr; background worker &rarr; webhook) across a fully running environment. Keep E2E tests focused on critical flows because they are slowest and most sensitive to timing.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Testing Controllers, Services, and Database Operations</h3>
+            <p>
+              Export your configured Express <code>app</code> separately from <code>server.listen()</code> so tests can pass <code>app</code> directly to <code>supertest(app)</code> without port conflicts. Test business logic directly via fast service unit tests (injecting in-memory repositories), and verify real Express middleware, status codes, JSON envelopes, and MongoDB/SQL queries via Supertest integration tests.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Mocking and Stubbing Boundaries</h3>
+            <p>
+              A <strong>stub</strong> provides canned responses (e.g., making a fake payment gateway return <code>{ approved: false }</code>); a <strong>mock</strong> also records/asserts interactions. Mock <em>external boundaries you do not own</em>—third-party payment gateways, SMTP emailers, SMS providers, or S3 in fast suites—so tests stay deterministic and offline-capable.
+            </p>
+            <p>
+              <em>Warning:</em> Avoid mocking Mongoose/PostgreSQL inside integration tests. If you mock every database call, your suite will pass even when a query contains a syntax error or fails an index/unique constraint!
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>4. Test Databases and Test Isolation</h3>
+            <p>
+              Every test must run cleanly in isolation—whether executed alone, in reverse order, or in parallel:
+            </p>
+            <ul>
+              <li><strong>Dedicated Ephemeral DB:</strong> Never run automated tests against development or production databases! Use a separate local/Docker test database, Testcontainers, or <code>mongodb-memory-server</code>.</li>
+              <li><strong>Clean State Hooks:</strong> Truncate/clear collections in <code>beforeEach</code> or wrap SQL tests in rolled-back transactions, and create unique user/fixture records per test rather than relying on fragile shared global seed state.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>5. Authentication and Authorization Tests</h3>
+            <p>
+              Every protected endpoint needs explicit negative security assertions:
+            </p>
+            <ul>
+              <li>Unauthenticated request &rarr; <code>401 Unauthorized</code>.</li>
+              <li>Expired or tampered token &rarr; <code>401 Unauthorized</code>.</li>
+              <li>Authenticated user lacking required role/permission &rarr; <code>403 Forbidden</code>.</li>
+              <li>Authenticated User B requesting or editing User A's private resource (IDOR check) &rarr; <code>403 Forbidden</code> (or safe <code>404</code>).</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>6. Edge Cases, Failure Scenarios &amp; Coverage Limits</h3>
+            <p>
+              Happy-path tests ("POST returns 201") catch less than half of real bugs. Explicitly test boundary limits (<code>limit=0</code>, <code>limit=99999</code>), missing/wrong-type fields, duplicate unique keys (<code>409</code>), downstream timeouts, and concurrent conflicting writes (<code>Promise.all</code>).
+            </p>
+            <p>
+              <strong>Test Coverage Limits:</strong> Code coverage (e.g., <code>node --test --experimental-test-coverage</code> or Jest <code>--coverage</code>) only proves a line <em>executed</em>—not that you asserted the right behavior, checked authorization, or handled empty/concurrent inputs. Treat coverage as a tool to spot untested branches, never as a vanity target that encourages assertion-free tests.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>7. Continuous Testing Concepts</h3>
+            <p>
+              Tests only protect teams when they run automatically on every commit and pull request (Day 16 CI pipelines). Keep fast unit and integration suites under 1–2 minutes so developers run them locally before pushing and CI blocks broken merges immediately.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="lesson-section">
+          <span class="section-tag">03. Mechanics</span>
+          <h2>Anatomy of an Isolated API Integration Test Run</h2>
+          <ol class="flow-steps">
+            <li>
+              <strong>Suite Boot (<code>before</code>):</strong> Connect to a dedicated isolated test database (or ephemeral container), apply schema/indexes, and build the Express <code>app</code> with stubbed external email/payment gateways.
+            </li>
+            <li>
+              <strong>Per-Test Reset (<code>beforeEach</code>):</strong> Clear collections/tables and reset stub call histories so Test 2 never sees rows inserted by Test 1.
+            </li>
+            <li>
+              <strong>Arrange, Act, Assert:</strong> Create test user fixtures/tokens (Arrange), send HTTP calls via <code>supertest(app)</code> (Act), and verify HTTP status, JSON response shape, and persisted database state (Assert).
+            </li>
+            <li>
+              <strong>Teardown (<code>after</code>):</strong> Close DB connections, Redis clients, and worker pools cleanly so the test runner exits with code <code>0</code> without hanging open handles.
+            </li>
+          </ol>
+        </section>
+
+        <section id="diagrams" class="lesson-section">
+          <span class="section-tag">04. Visual Models</span>
+          <h2>Testing Strategy &amp; Boundary Diagrams</h2>
+
+          <div class="diagram-card">
+            <h3>Diagram 1: Practical Backend Testing Pyramid</h3>
+            <p class="diagram-caption">
+              Balance fast unit tests for pure domain rules with substantial API + real-database integration tests, topped by selective E2E journeys.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 190" class="arch-svg" role="img" aria-label="Backend testing pyramid showing fast unit tests at the base, API and test database integration tests in the middle, and selective E2E tests at the top">
+                <polygon points="380,18 465,70 295,70" class="svg-box-muted"></polygon>
+                <text x="380" y="56" text-anchor="middle" class="svg-title">E2E</text>
+
+                <polygon points="290,76 470,76 545,126 215,126" class="svg-box-accent"></polygon>
+                <text x="380" y="106" text-anchor="middle" class="svg-title">API &amp; DB Integration (Supertest)</text>
+
+                <polygon points="210,132 550,132 625,176 135,176" class="svg-box-blue"></polygon>
+                <text x="380" y="159" text-anchor="middle" class="svg-title">Unit Tests (Services, Validators, Policies)</text>
+
+                <text x="650" y="52" text-anchor="start" class="svg-sub">Slowest / Few</text>
+                <text x="650" y="106" text-anchor="start" class="svg-sub">High ROI</text>
+                <text x="650" y="159" text-anchor="start" class="svg-sub">Fastest (ms)</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="diagram-card">
+            <h3>Diagram 2: What to Run Real vs. Stub in API Integration Tests</h3>
+            <p class="diagram-caption">
+              Keep routing, auth middleware, validation, services, and test database real; stub third-party SaaS APIs so tests stay deterministic and fast.
+            </p>
+            <div class="diagram-scroll">
+              <svg viewBox="0 0 760 165" class="arch-svg" role="img" aria-label="Supertest calling real Express routes, auth middleware, service layer, and isolated test database while stubbing external email and payment gateways">
+                <defs>
+                  <marker id="arrow-test" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee"></path>
+                  </marker>
+                </defs>
+
+                <rect x="20" y="50" width="128" height="62" rx="10" class="svg-box-blue"></rect>
+                <text x="84" y="77" text-anchor="middle" class="svg-title">Supertest</text>
+                <text x="84" y="95" text-anchor="middle" class="svg-sub">HTTP Assertions</text>
+
+                <line x1="148" y1="81" x2="188" y2="81" class="svg-arrow" marker-end="url(#arrow-test)"></line>
+
+                <rect x="192" y="42" width="220" height="78" rx="10" class="svg-box-accent"></rect>
+                <text x="302" y="70" text-anchor="middle" class="svg-title">Real Express App</text>
+                <text x="302" y="89" text-anchor="middle" class="svg-sub">Auth + RBAC + Validation</text>
+                <text x="302" y="106" text-anchor="middle" class="svg-sub">Services + Repositories</text>
+
+                <line x1="412" y1="64" x2="480" y2="42" class="svg-arrow" marker-end="url(#arrow-test)"></line>
+                <line x1="412" y1="98" x2="480" y2="122" class="svg-arrow" marker-end="url(#arrow-test)"></line>
+
+                <rect x="484" y="16" width="256" height="54" rx="8" class="svg-box-blue"></rect>
+                <text x="612" y="40" text-anchor="middle" class="svg-title">Isolated Test DB (Real)</text>
+                <text x="612" y="57" text-anchor="middle" class="svg-sub">Indexes, queries, constraints</text>
+
+                <rect x="484" y="94" width="256" height="54" rx="8" class="svg-box-muted"></rect>
+                <text x="612" y="118" text-anchor="middle" class="svg-title">External Gateways (Stub)</text>
+                <text x="612" y="135" text-anchor="middle" class="svg-sub">Fake Mailer / Payment Stub</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section id="implementation" class="lesson-section">
+          <span class="section-tag">05. Step-by-Step Implementation</span>
+          <h2>Building a Node.js Unit &amp; Supertest Integration Suite</h2>
+          <p>
+            Using Node.js's built-in <code>node:test</code> runner and <code>node:assert/strict</code> (with Jest/Vitest following nearly identical <code>describe</code>/<code>it</code> structure) plus <code>supertest</code> keeps dependencies minimal and fast.
+          </p>
+
+          <h3>Step 1: Fast Unit Tests for Service Logic &amp; Edge Cases</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">tests/unit/order.service.test.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { OrderService } from '../../src/modules/orders/order.service.js';
+
+function createFakeRepos({ stock = 5, priceCents = 1500 } = {}) {
+  const products = new Map([['prod_1', { _id: 'prod_1', stock, priceCents }]]);
+  const orders = [];
+  return {
+    productRepository: {
+      async findById(id) {
+        return products.get(id) || null;
+      },
+      async reserveStock(id, qty) {
+        const item = products.get(id);
+        if (!item || item.stock &lt; qty) {
+          return null;
+        }
+        item.stock -= qty;
+        return { ...item };
+      }
+    },
+    orderRepository: {
+      async create(data) {
+        const created = { _id: `ord_${orders.length + 1}`, ...data };
+        orders.push(created);
+        return created;
+      },
+      async findByUserId(userId) {
+        return orders.filter((o) =&gt; o.userId === userId);
+      }
+    }
+  };
+}
+
+describe('OrderService unit tests', () =&gt; {
+  it('places an order and computes integer totalCents accurately', async () =&gt; {
+    const repos = createFakeRepos({ stock: 5, priceCents: 1999 });
+    const service = new OrderService(repos);
+
+    const order = await service.placeOrder({
+      userId: 'user_1',
+      productId: 'prod_1',
+      quantity: 3
+    });
+
+    assert.equal(order.totalCents, 5997);
+    assert.equal(order.status, 'confirmed');
+  });
+
+  it('rejects insufficient stock with 409 operational error', async () =&gt; {
+    const repos = createFakeRepos({ stock: 1, priceCents: 1000 });
+    const service = new OrderService(repos);
+
+    await assert.rejects(
+      () =&gt; service.placeOrder({ userId: 'user_1', productId: 'prod_1', quantity: 2 }),
+      (err) =&gt; err.statusCode === 409 &amp;&amp; err.code === 'INSUFFICIENT_STOCK'
+    );
+  });
+
+  it('prevents concurrent overselling when two requests race for last item', async () =&gt; {
+    const repos = createFakeRepos({ stock: 1, priceCents: 1000 });
+    const service = new OrderService(repos);
+
+    const results = await Promise.allSettled([
+      service.placeOrder({ userId: 'u1', productId: 'prod_1', quantity: 1 }),
+      service.placeOrder({ userId: 'u2', productId: 'prod_1', quantity: 1 })
+    ]);
+
+    const fulfilled = results.filter((r) =&gt; r.status === 'fulfilled');
+    const rejected = results.filter((r) =&gt; r.status === 'rejected');
+    assert.equal(fulfilled.length, 1);
+    assert.equal(rejected.length, 1);
+    assert.equal(rejected[0].reason.statusCode, 409);
+  });
+});</code></pre>
+          </div>
+
+          <h3>Step 2: Isolated Supertest Integration Tests (AuthN, AuthZ, IDOR &amp; DB)</h3>
+          <div class="code-card">
+            <div class="code-header">
+              <span class="code-title">tests/integration/documents.api.test.js</span>
+              <button type="button" class="copy-code-btn">Copy</button>
+            </div>
+            <pre><code>import { describe, it, before, beforeEach, after } from 'node:test';
+import assert from 'node:assert/strict';
+import request from 'supertest';
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { createApp } from '../../src/app.js';
+
+function signTestToken(userId, roles = ['editor']) {
+  return jwt.sign(
+    { roles, tv: 1 },
+    process.env.JWT_ACCESS_SECRET,
+    {
+      algorithm: 'HS256',
+      subject: userId,
+      issuer: process.env.JWT_ISSUER,
+      audience: process.env.JWT_AUDIENCE,
+      expiresIn: '5m'
+    }
+  );
+}
+
+describe('Documents API integration tests', () =&gt; {
+  let app;
+
+  before(async () =&gt; {
+    await mongoose.connect(process.env.TEST_MONGO_URI);
+    app = createApp({
+      mailerStub: { send: async () =&gt; ({ queued: true }) }
+    });
+  });
+
+  beforeEach(async () =&gt; {
+    const collections = await mongoose.connection.db.collections();
+    for (const col of collections) {
+      await col.deleteMany({});
+    }
+  });
+
+  after(async () =&gt; {
+    await mongoose.disconnect();
+  });
+
+  it('returns 401 when Authorization header is missing', async () =&gt; {
+    const res = await request(app).get('/api/v1/documents');
+    assert.equal(res.status, 401);
+  });
+
+  it('returns 403 when viewer role attempts to create a document', async () =&gt; {
+    const viewerToken = signTestToken('65f000000000000000000001', ['viewer']);
+    const res = await request(app)
+      .post('/api/v1/documents')
+      .set('Authorization', `Bearer ${viewerToken}`)
+      .send({ title: 'Spec Draft' });
+
+    assert.equal(res.status, 403);
+  });
+
+  it('blocks User B from editing User A document (IDOR check)', async () =&gt; {
+    const userAToken = signTestToken('65f000000000000000000001', ['editor']);
+    const userBToken = signTestToken('65f000000000000000000002', ['editor']);
+
+    const created = await request(app)
+      .post('/api/v1/documents')
+      .set('Authorization', `Bearer ${userAToken}`)
+      .send({ title: 'Private Roadmap' });
+    assert.equal(created.status, 201);
+
+    const docId = created.body.data.id;
+    const hijackAttempt = await request(app)
+      .patch(`/api/v1/documents/${docId}`)
+      .set('Authorization', `Bearer ${userBToken}`)
+      .send({ title: 'Tampered' });
+
+    assert.equal(hijackAttempt.status, 403);
+  });
+});</code></pre>
+          </div>
+
+          <div class="callout-box">
+            <h3>Key Code Sections Explained</h3>
+            <ul>
+              <li><strong><code>Promise.allSettled</code> Concurrency Test:</strong> Actively verifies that racing two checkouts for the last unit yields 1 success and 1 clean <code>409</code> rejection.</li>
+              <li><strong><code>beforeEach</code> Collection Cleanup:</strong> Guarantees zero shared state leaks between tests so any test can run standalone or in any order.</li>
+              <li><strong><code>after(() =&gt; mongoose.disconnect())</code>:</strong> Closes database sockets cleanly so CI test runs never hang after finishing.</li>
+              <li><strong>Negative Security Assertions:</strong> Explicitly checks <code>401</code> missing auth, <code>403</code> insufficient role permission, and <code>403</code> cross-user IDOR attempts.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="lesson-section">
+          <span class="section-tag">06. Engineering Judgment</span>
+          <h2>Test Types &amp; Framework Trade-Offs</h2>
+
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Test Level</th>
+                  <th>Speed</th>
+                  <th>What It Verifies</th>
+                  <th>Mock / External Strategy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Unit Test</strong></td>
+                  <td>~1–5ms per test</td>
+                  <td>Business calculations, state machines, validators, policy functions</td>
+                  <td>Inject in-memory fake repositories and stub gateways</td>
+                </tr>
+                <tr>
+                  <td><strong>API Integration Test</strong></td>
+                  <td>~20–100ms per test</td>
+                  <td>Express routes, middleware order, auth, DB queries, error serialization</td>
+                  <td>Real Express app + real isolated test DB; stub external HTTP SaaS APIs</td>
+                </tr>
+                <tr>
+                  <td><strong>End-to-End (E2E)</strong></td>
+                  <td>Seconds per flow</td>
+                  <td>Full multi-service deployment (API + worker + broker + storage)</td>
+                  <td>Ephemeral Docker Compose stack or staging sandbox</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="decision-card">
+              <h3>Node Built-in Test Runner vs. Jest / Vitest</h3>
+              <p>
+                <code>node --test</code> requires zero extra dependencies, starts instantly, and ships built-in coverage/mocking in modern Node.js. <strong>Jest</strong> and <strong>Vitest</strong> add rich snapshot matchers, parallel worker pools, module mocking ergonomics, and watch dashboards—pick whichever integrates cleanest with your team and CI pipeline.
+              </p>
+            </div>
+            <div class="decision-card">
+              <h3>Test Coverage Philosophy</h3>
+              <p>
+                Focus coverage on critical paths: money calculations, auth/ownership gates, state transitions, and failure fallbacks. A 75% suite testing real invariants and negative security boundaries beats a brittle 98% suite full of trivial getter tests.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="mistakes-security" class="lesson-section">
+          <span class="section-tag">07. Production Readiness</span>
+          <h2>Common Testing Mistakes &amp; Flakiness Traps</h2>
+
+          <div class="mistakes-list">
+            <div class="mistake-item">
+              <h3>Mistake 1: Order-Dependent Tests Sharing State</h3>
+              <p><strong>Flakiness risk:</strong> Test 2 relies on a user created by Test 1—running Test 2 alone or in parallel fails unpredictably.</p>
+              <p><strong>Fix:</strong> Reset test database state before each test and create explicit test fixtures inside each test case.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 2: Mocking the Database in Integration Tests</h3>
+              <p><strong>False confidence:</strong> Stubbing <code>OrderModel.find</code> hides broken query filters, missing required fields, unique constraint crashes, and aggregation bugs.</p>
+              <p><strong>Fix:</strong> Mock databases in fast unit tests; hit a real isolated test database in API integration tests.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 3: Using Hardcoded <code>setTimeout(500)</code> for Async Tests</h3>
+              <p><strong>Flakiness risk:</strong> Tests pass on a fast laptop and flake intermittently on slower CI runners when a worker takes 650ms.</p>
+              <p><strong>Fix:</strong> Poll with bounded retry helpers (e.g., check every 20ms up to 3s) or await deterministic promises/events directly.</p>
+            </div>
+            <div class="mistake-item">
+              <h3>Mistake 4: Pointing Test Config at Development or Production Databases</h3>
+              <p><strong>Data loss disaster:</strong> Running <code>beforeEach</code> cleanup against a shared database wipes real data!</p>
+              <p><strong>Fix:</strong> Guard test cleanup helpers explicitly (abort if <code>NODE_ENV !== 'test'</code> or if DB name lacks <code>_test</code>).</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="practical-task" class="lesson-section">
+          <span class="section-tag">08. Hands-On Practice</span>
+          <h2>Practical Test Suite Milestone</h2>
+
+          <div class="task-card">
+            <h3>Milestone Task: Build a Complete Test Suite for an API</h3>
+            <p>
+              Create a test suite covering a Tasks or Orders Express API using <code>node:test</code> (or Jest/Vitest) and <code>supertest</code>:
+            </p>
+            <ol>
+              <li>Write 4+ unit tests for your service layer using an in-memory repository, verifying pricing/validation logic and failure branches.</li>
+              <li>Write 5+ integration tests against <code>createApp()</code> and an isolated test database (guarding <code>NODE_ENV === 'test'</code> before truncation).</li>
+              <li>Include negative security tests for <code>401</code> unauthenticated, <code>403</code> wrong role, and <code>403</code> cross-user IDOR access.</li>
+              <li>Add a test verifying stubbed external email/payment failure handling returns clean error responses and cleans up resources on exit.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="quiz" class="lesson-section">
+          <span class="section-tag">09. Knowledge Check</span>
+          <h2>Day 13 Quiz: Advanced Backend Testing (10 Questions)</h2>
+          <p>Select one option per question and click <strong>Check Quiz Answers</strong> for explanations and scoring.</p>
+
+          <form id="day-quiz-form" class="quiz-form" novalidate>
+            <div class="quiz-question" data-q="1" data-answer="b" data-explanation="Exporting the configured Express app separately from server.listen() lets Supertest test routes in-memory without port collisions.">
+              <p class="quiz-prompt">1. Why should Express applications export <code>app</code> separately from calling <code>app.listen(port)</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> Express throws an error if app.listen() is in the same project.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> Supertest can import and execute requests against <code>app</code> directly without binding fixed ports or leaking servers.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> Node.js disables JSON parsing when app.listen() is exported.</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> It automatically connects to production MongoDB.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="2" data-answer="c" data-explanation="Mocking every database call in integration tests hides broken ORM queries, constraint violations, and serialization bugs.">
+              <p class="quiz-prompt">2. What is the risk of mocking all Mongoose or SQL database queries inside API integration tests?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> Integration tests become too slow.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> Supertest refuses to run without MongoDB.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> Tests pass even when real query filters, schema constraints, or joins are broken.</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> It deletes indexes on production servers.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="3" data-answer="a" data-explanation="Third-party SaaS gateways (Stripe, SMTP, Twilio) are slow, rate-limited, and external; stubbing them keeps tests deterministic and offline.">
+              <p class="quiz-prompt">3. Which collaborators are the BEST candidates to mock or stub during automated API integration tests?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> External third-party APIs you do not control (payment gateways, email/SMS providers)</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> Your own Express validation middleware</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> Your own authorization permission helpers</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> Every single JavaScript helper function</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="4" data-answer="d" data-explanation="Test isolation ensures every test starts from clean state and creates its own fixtures so tests never depend on execution order.">
+              <p class="quiz-prompt">4. Why do well-engineered test suites clear collections or roll back transactions in <code>beforeEach</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> To increase production database CPU usage</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> Because Node.js cannot store arrays in memory</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> To skip testing HTTP status codes</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> To ensure strict test isolation so tests never fail or pass depending on execution order</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="5" data-answer="b" data-explanation="High line coverage only tells you lines executed; it cannot prove meaningful assertions, security checks, or edge-case behavior were tested.">
+              <p class="quiz-prompt">5. Why is 95% code coverage NOT a guarantee that a backend is bug-free?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> Coverage tools skip async functions completely.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> Coverage measures executed lines, not whether assertions verify edge cases, race conditions, or authorization boundaries.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> Coverage only runs in production containers.</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> JavaScript code cannot exceed 50% coverage.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="6" data-answer="c" data-explanation="Cross-user IDOR tests verify that an authenticated User B receives 403/404 when attempting to access or mutate User A's private resource.">
+              <p class="quiz-prompt">6. Which test case directly catches Broken Object Level Authorization (IDOR) regressions?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> Verifying GET /health returns 200 OK</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> Verifying User A can create their own document</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> Authenticating as User B and asserting that PATCH /documents/:userADocId returns 403 Forbidden</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> Checking that gzip compression reduces JSON size</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="7" data-answer="a" data-explanation="Fixed arbitrary sleeps make suites slow and flaky on loaded CI machines; deterministic awaits or bounded polling are much more reliable.">
+              <p class="quiz-prompt">7. Why is putting <code>await delay(500)</code> inside async integration tests considered an anti-pattern?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> It slows down fast runs and flakes intermittently when CI machines take slightly longer than 500ms.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> Node.js forbids setTimeout inside tests.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> Delays reset database indexes.</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> Supertest ignores assertions after delays.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="8" data-answer="d" data-explanation="Unclosed MongoDB, Redis, or timer handles keep Node's event loop alive after tests finish, causing test runners to hang.">
+              <p class="quiz-prompt">8. Why should test suites close database and Redis connections inside an <code>after</code> teardown hook?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> Otherwise Express deletes route files.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> Otherwise assertions run in reverse.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> To clear browser cookies automatically.</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> Open sockets keep the Node.js event loop alive, causing CI test runners to hang or fail to exit cleanly.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="9" data-answer="b" data-explanation="Guarding destructive truncation scripts with explicit test environment checks protects real databases against accidental misconfiguration.">
+              <p class="quiz-prompt">9. What safeguard should wrap any test helper that calls <code>deleteMany({})</code> or <code>TRUNCATE</code>?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> Run it only inside GET /health</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> Assert that <code>NODE_ENV === 'test'</code> and the connection URI points explicitly to a dedicated test database</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> Disable TLS on the database</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> Store passwords inside git commits</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-question" data-q="10" data-answer="c" data-explanation="Testing concurrent Promise.allSettled requests verifies atomic database stock/balance updates hold under parallel races.">
+              <p class="quiz-prompt">10. How can an automated test verify that a stock-reservation endpoint resists concurrent overselling?</p>
+              <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> Send one request and check HTTP 200.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> Mock the entire Express router.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> Seed stock=1, fire two parallel purchase requests via <code>Promise.allSettled</code>, and assert 1 succeeds while 1 fails with 409.</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> Run prettier formatting checks.</label>
+              </div>
+              <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-actions">
+              <button type="submit" class="btn btn-primary" id="quiz-submit-btn">Check Quiz Answers</button>
+              <button type="button" class="btn btn-secondary" id="quiz-retry-btn">Retry Quiz</button>
+            </div>
+
+            <div class="quiz-result-banner" id="quiz-result-banner" hidden aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="short-answers" class="lesson-section">
+          <span class="section-tag">10. Active Recall</span>
+          <h2>Short-Answer Review Questions</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>1. Why are API integration tests often the highest-ROI layer for Express backends?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Most backend bugs occur at boundaries: route validation schemas, auth middleware order, JSON serialization, error mapping, and database queries. Supertest integration tests exercise that full vertical slice in tens of milliseconds.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>2. Explain the difference between a stub and a mock.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>A <strong>stub</strong> provides predetermined canned return values or errors to control test inputs (e.g., simulating a gateway timeout). A <strong>mock</strong> also records how it was called so tests can verify specific interactions.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>3. Why should tests assert observable outputs and database state rather than internal private method calls?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Tests coupled to internal private function calls break every time you refactor clean code even though external behavior stayed 100% valid. Testing HTTP contracts and persisted state lets you refactor internals confidently.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>4. List four negative test cases every authenticated resource endpoint should have.</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>(1) Missing/invalid token returns <code>401</code>; (2) valid token lacking required role/permission returns <code>403</code>; (3) valid user targeting another user's resource (IDOR) returns <code>403</code>/<code>404</code>; (4) invalid request payload fails validation cleanly with <code>400</code>/<code>422</code>.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>5. Why should End-to-End (E2E) tests be fewer in number than unit and API integration tests?</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p>Full E2E suites require spinning up multiple services, workers, or browsers, making them much slower, harder to debug when a step fails, and more prone to timing flakiness. Cover core user journeys with E2E and push edge cases down into integration and unit tests.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="lesson-section">
+          <span class="section-tag">11. Engineering Drills</span>
+          <h2>Coding, Debugging &amp; System-Design Challenges</h2>
+
+          <div class="accordion-list">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 1 (Debugging): Fix a Flaky Order-Dependent Test Pair</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Test A creates a user <code>ali@test.com</code> and asserts <code>201</code>. Test B assumes <code>ali@test.com</code> already exists and logs in. When Test B runs first or alone, it fails with <code>401</code>! How do you fix it cleanly?</p>
+                <p><strong>Reference Solution:</strong> Make each test self-contained: wipe the DB in <code>beforeEach</code>, create a fresh fixture helper <code>createAndLoginUser(app, overrides)</code> called explicitly inside Test B's Arrange phase, and avoid implicit cross-test dependencies.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 2 (Coding): Deterministic Bounded Polling Helper for Async Worker Tests</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> Write a clean async helper <code>waitUntil(predicateFn, { timeoutMs = 3000, intervalMs = 25 })</code> that replaces flaky fixed <code>setTimeout</code> waits when testing eventual background job completion.</p>
+                <div class="code-card">
+                  <div class="code-header">
+                    <span class="code-title">Reference Solution</span>
+                    <button type="button" class="copy-code-btn">Copy</button>
+                  </div>
+                  <pre><code>export async function waitUntil(predicateFn, { timeoutMs = 3000, intervalMs = 25 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() &lt; deadline) {
+    const result = await predicateFn();
+    if (result) {
+      return result;
+    }
+    await new Promise((resolve) =&gt; setTimeout(resolve, intervalMs));
+  }
+  throw new Error(`Condition not met within ${timeoutMs}ms`);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">
+                <span>Challenge 3 (Design): Testing Webhook &amp; Payment Failure Scenarios</span>
+                <span class="accordion-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="accordion-panel" hidden>
+                <p><strong>Problem:</strong> You integrate an external Stripe-like payment API. List 4 edge/failure scenarios your automated suite should test using a stubbed gateway without ever hitting the real payment provider.</p>
+                <p><strong>Reference Test Cases:</strong> (1) Gateway declines card &rarr; order stays unpaid, stock reservation rolls back, API returns <code>402</code>; (2) Gateway times out after 5s &rarr; safe <code>503</code>/<code>504</code> without crashing Express; (3) Client retries with identical <code>Idempotency-Key</code> &rarr; gateway stub called only <em>once</em> and same receipt returned; (4) Invalid webhook HMAC signature &rarr; rejected with <code>401</code> before mutating order state.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary" class="lesson-section">
+          <span class="section-tag">12. Takeaways</span>
+          <h2>Day 13 Revision Summary</h2>
+          <div class="summary-box">
+            <ul>
+              <li><strong>Testing layers:</strong> Fast unit tests guard domain rules; Supertest + real test DB integration tests guard routes, auth, and queries; E2E covers critical journeys.</li>
+              <li><strong>Smart mocking:</strong> Stub external third-party APIs; avoid mocking your own database inside integration tests.</li>
+              <li><strong>Strict isolation:</strong> Reset test DB state in <code>beforeEach</code>, guard against non-test URIs, and close all sockets in <code>after</code>.</li>
+              <li><strong>Security &amp; edge cases:</strong> Explicitly test <code>401</code>, <code>403</code> RBAC, IDOR ownership, validation errors, timeouts, and concurrent races.</li>
+              <li><strong>Coverage realism:</strong> Use coverage reports to spot missed branches, not as a substitute for strong assertions.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="visual-recap" class="lesson-section">
+          <span class="section-tag">13. Visual Reference</span>
+          <h2>Day 13 Backend Testing Visual Reference</h2>
+          <figure class="lesson-image-figure">
+            <img src="image.webp" alt="Day 13 Advanced Backend Testing visual summary" class="lesson-local-image" loading="lazy">
+            <figcaption>Day 13 local visual reference (<code>Day 13/image.webp</code>). Review the testing pyramid, isolation boundaries, and auth/edge-case verification.</figcaption>
+          </figure>
+        </section>
+
+        <nav class="lesson-pagination" aria-label="Lesson day navigation">
+          <a href="../Day 12/index.html" class="pagination-btn">
+            <span class="pagination-label">Previous Day</span>
+            <span class="pagination-title">&larr; Day 12: Logging, Monitoring, and Error Tracking</span>
+          </a>
+          <a href="../Day 14/index.html" class="pagination-btn pagination-next">
+            <span class="pagination-label">Next Day</span>
+            <span class="pagination-title">Day 14: Rate Limiting and API Security &rarr;</span>
+          </a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="https://arslan-weblab.netlify.app/" target="_blank" class="brand-identity">
+          <img src="../logo.webp" alt="Arslan Weblab Logo" class="brand-logo" width="34" height="34">
+          <span class="brand-name">Arslan Weblab</span>
+        </a>
+        <p class="footer-description">
+          Phase 6: Advanced Backend Development — an 18-day structured curriculum focused on architecture, scalability, security, testing, and production engineering.
+        </p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Course Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Course Homepage</a></li>
+          <li><a href="../Day 1/index.html">Day 1: Architecture</a></li>
+          <li><a href="../Day 12/index.html">Day 12: Observability</a></li>
+          <li><a href="../Day 13/index.html">Day 13: Backend Testing</a></li>
+          <li><a href="../Day 14/index.html">Day 14: API Security</a></li>
+          <li><a href="../Day 18/index.html">Day 18: Final Assessment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Arslan Weblab</h4>
+        <ul>
+          <li><a href="https://arslan-weblab.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="https://myprojects-hub.netlify.app/" target="_blank" rel="noopener noreferrer">Projects Hub</a></li>
+          <li><a href="https://github.com/arslansahil850-alt/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:arslansahil850@gmail.com">Email Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="footer-year">2026</span> Arslan Weblab. Phase 6: Advanced Backend Development.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
